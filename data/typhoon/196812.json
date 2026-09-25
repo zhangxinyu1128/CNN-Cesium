@@ -1,0 +1,2122 @@
+[
+  {
+    "tfbh": "196812",
+    "ident": "196812",
+    "name": "-",
+    "ename": "Agnes",
+    "isCurrent": 0,
+    "beginTime": "1968-08-27T14:00:00",
+    "endTime": "1968-09-11T20:00:00",
+    "land": [],
+    "points": [
+      {
+        "time": "1968-08-27T14:00:00",
+        "lng": 173,
+        "lat": 11,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1008,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-27T20:00:00",
+        "lng": 172.7,
+        "lat": 11.6,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1008,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-28T02:00:00",
+        "lng": 172.4,
+        "lat": 12.4,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1006,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-28T08:00:00",
+        "lng": 172.2,
+        "lat": 13.3,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1006,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-28T14:00:00",
+        "lng": 171.8,
+        "lat": 14,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1004,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-28T20:00:00",
+        "lng": 171.5,
+        "lat": 14.5,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1004,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-29T02:00:00",
+        "lng": 170.8,
+        "lat": 15.2,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1002,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-29T08:00:00",
+        "lng": 170.1,
+        "lat": 15.8,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 15,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1002,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-29T14:00:00",
+        "lng": 169.1,
+        "lat": 16.2,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 15,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1000,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-29T20:00:00",
+        "lng": 168.1,
+        "lat": 16.7,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 20,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 998,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-30T02:00:00",
+        "lng": 166.9,
+        "lat": 17.1,
+        "strong": "强热带风暴(STS)",
+        "power": 10,
+        "speed": 25,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 996,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-30T08:00:00",
+        "lng": 165.7,
+        "lat": 17.2,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 990,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-30T14:00:00",
+        "lng": 164.2,
+        "lat": 17.4,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 987,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-30T20:00:00",
+        "lng": 162.4,
+        "lat": 17.4,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 986,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-31T02:00:00",
+        "lng": 160.7,
+        "lat": 17.2,
+        "strong": "强台风(STY)",
+        "power": 14,
+        "speed": 45,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 977,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-31T08:00:00",
+        "lng": 159.1,
+        "lat": 16.8,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 968,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-31T14:00:00",
+        "lng": 157.4,
+        "lat": 16.3,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 963,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-08-31T20:00:00",
+        "lng": 155.6,
+        "lat": 16.1,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 55,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 957,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-01T02:00:00",
+        "lng": 153.8,
+        "lat": 16.1,
+        "strong": "超强台风(Super TY)",
+        "power": 17,
+        "speed": 60,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 951,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-01T08:00:00",
+        "lng": 152.2,
+        "lat": 16.2,
+        "strong": "超强台风(Super TY)",
+        "power": 17,
+        "speed": 60,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 956,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-01T14:00:00",
+        "lng": 150.5,
+        "lat": 16.1,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 55,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 963,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-01T20:00:00",
+        "lng": 149.1,
+        "lat": 16.1,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 964,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-02T02:00:00",
+        "lng": 147.9,
+        "lat": 16.2,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 965,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-02T08:00:00",
+        "lng": 146.6,
+        "lat": 16.4,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 964,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-02T14:00:00",
+        "lng": 145.2,
+        "lat": 16.7,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 962,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-02T20:00:00",
+        "lng": 144.1,
+        "lat": 16.9,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-03T02:00:00",
+        "lng": 143,
+        "lat": 17.1,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 957,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-03T08:00:00",
+        "lng": 141.8,
+        "lat": 17.6,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 55,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 953,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-03T14:00:00",
+        "lng": 140.7,
+        "lat": 17.8,
+        "strong": "超强台风(Super TY)",
+        "power": 17,
+        "speed": 60,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 944,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-03T20:00:00",
+        "lng": 139.8,
+        "lat": 18.3,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 70,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 926,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-04T02:00:00",
+        "lng": 138.9,
+        "lat": 18.5,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 75,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 907,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-04T08:00:00",
+        "lng": 138.3,
+        "lat": 18.7,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 75,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 902,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-04T14:00:00",
+        "lng": 137.6,
+        "lat": 19.3,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 75,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 909,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-04T20:00:00",
+        "lng": 136.9,
+        "lat": 19.4,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 65,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 915,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-05T02:00:00",
+        "lng": 136.7,
+        "lat": 19.3,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 65,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 922,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-05T08:00:00",
+        "lng": 136.5,
+        "lat": 19.2,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 65,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 929,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-05T14:00:00",
+        "lng": 136.7,
+        "lat": 19.1,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 65,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 934,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-05T20:00:00",
+        "lng": 137,
+        "lat": 19.1,
+        "strong": "超强台风(Super TY)",
+        "power": 18,
+        "speed": 65,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 935,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-06T02:00:00",
+        "lng": 137.1,
+        "lat": 19.3,
+        "strong": "超强台风(Super TY)",
+        "power": 17,
+        "speed": 60,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 938,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-06T08:00:00",
+        "lng": 137.2,
+        "lat": 19.4,
+        "strong": "超强台风(Super TY)",
+        "power": 17,
+        "speed": 60,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 941,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-06T14:00:00",
+        "lng": 137.3,
+        "lat": 19.9,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 55,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 947,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-06T20:00:00",
+        "lng": 137,
+        "lat": 20.4,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 956,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-07T02:00:00",
+        "lng": 136.6,
+        "lat": 20.3,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 959,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-07T08:00:00",
+        "lng": 136.8,
+        "lat": 20.2,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 50,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-07T14:00:00",
+        "lng": 137.1,
+        "lat": 21,
+        "strong": "强台风(STY)",
+        "power": 14,
+        "speed": 45,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 966,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-07T20:00:00",
+        "lng": 137.4,
+        "lat": 21.8,
+        "strong": "强台风(STY)",
+        "power": 14,
+        "speed": 45,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 971,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-08T02:00:00",
+        "lng": 137.4,
+        "lat": 22.7,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 973,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-08T08:00:00",
+        "lng": 137.4,
+        "lat": 23.6,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 973,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-08T14:00:00",
+        "lng": 137.6,
+        "lat": 24.3,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 976,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-08T20:00:00",
+        "lng": 137.5,
+        "lat": 25.2,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 980,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-09T02:00:00",
+        "lng": 138.7,
+        "lat": 26.4,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 978,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-09T08:00:00",
+        "lng": 140.7,
+        "lat": 27.9,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 975,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-09T14:00:00",
+        "lng": 143,
+        "lat": 29.7,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 975,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-09T20:00:00",
+        "lng": 145.9,
+        "lat": 31.7,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 980,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-10T02:00:00",
+        "lng": 149,
+        "lat": 33.2,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 980,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-10T08:00:00",
+        "lng": 154,
+        "lat": 36,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 980,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-10T14:00:00",
+        "lng": 158.5,
+        "lat": 40.5,
+        "strong": "强热带风暴(STS)",
+        "power": 10,
+        "speed": 25,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 982,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-10T20:00:00",
+        "lng": 161,
+        "lat": 43,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 982,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-11T02:00:00",
+        "lng": 163.4,
+        "lat": 45.4,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 984,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-11T08:00:00",
+        "lng": 166.1,
+        "lat": 48,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 986,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-11T14:00:00",
+        "lng": 170,
+        "lat": 49.8,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 986,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1968-09-11T20:00:00",
+        "lng": 176,
+        "lat": 50,
+        "strong": "",
+        "power": 0,
+        "speed": 0,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 990,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      }
+    ]
+  }
+]

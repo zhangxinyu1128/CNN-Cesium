@@ -1,0 +1,727 @@
+[
+  {
+    "tfbh": "194813",
+    "name": "-",
+    "ename": "-",
+    "is_current": 0,
+    "begin_time": "1948-09-02T06:00:00",
+    "end_time": "1948-09-07T06:00:00",
+    "land": [],
+    "points": [
+      {
+        "time": "1948-09-02T06:00:00",
+        "lng": 133.7,
+        "lat": 14.8,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-02T12:00:00",
+        "lng": 132.8,
+        "lat": 14.9,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-02T18:00:00",
+        "lng": 131.8,
+        "lat": 15.2,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-03T00:00:00",
+        "lng": 130.7,
+        "lat": 15.5,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 33,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-03T06:00:00",
+        "lng": 129.9,
+        "lat": 15.9,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-03T12:00:00",
+        "lng": 129,
+        "lat": 16.3,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-03T18:00:00",
+        "lng": 128,
+        "lat": 16.8,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-04T00:00:00",
+        "lng": 127.2,
+        "lat": 17.4,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-04T06:00:00",
+        "lng": 126.3,
+        "lat": 18,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 38,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-04T12:00:00",
+        "lng": 125.5,
+        "lat": 18.5,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 38,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-04T18:00:00",
+        "lng": 124.6,
+        "lat": 19.2,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 38,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-05T00:00:00",
+        "lng": 123.7,
+        "lat": 20,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 38,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-05T06:00:00",
+        "lng": 123,
+        "lat": 21,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 41,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-05T12:00:00",
+        "lng": 122.5,
+        "lat": 22,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 41,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-05T18:00:00",
+        "lng": 122.2,
+        "lat": 23,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 41,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-06T00:00:00",
+        "lng": 122,
+        "lat": 24.1,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-06T06:00:00",
+        "lng": 122,
+        "lat": 25,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-06T12:00:00",
+        "lng": 122.1,
+        "lat": 26.2,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-06T18:00:00",
+        "lng": 122.4,
+        "lat": 27.3,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-07T00:00:00",
+        "lng": 122.9,
+        "lat": 28.6,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 20,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1948-09-07T06:00:00",
+        "lng": 123.4,
+        "lat": 29.7,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      }
+    ]
+  }
+]

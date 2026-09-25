@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+backend/.pytest_cache/
+artifacts/runs/
+data/processed/*.jsonl
+data/processed/*.tmp
+
+# Frontend dependencies, builds, IDE files, and local environment secrets.
+CNN-Cesium/node_modules/
+CNN-Cesium/dist/
+CNN-Cesium/.vite/
+CNN-Cesium/.idea/

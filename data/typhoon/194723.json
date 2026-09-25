@@ -1,0 +1,931 @@
+[
+  {
+    "tfbh": "194723",
+    "name": "-",
+    "ename": "-",
+    "is_current": 0,
+    "begin_time": "1947-11-13T00:00:00",
+    "end_time": "1947-11-19T12:00:00",
+    "land": [],
+    "points": [
+      {
+        "time": "1947-11-13T00:00:00",
+        "lng": 135.5,
+        "lat": 8,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-13T06:00:00",
+        "lng": 134.4,
+        "lat": 8.6,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 51,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-13T12:00:00",
+        "lng": 133.1,
+        "lat": 9.2,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 51,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-13T18:00:00",
+        "lng": 132,
+        "lat": 9.8,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 51,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-14T00:00:00",
+        "lng": 130.7,
+        "lat": 10.5,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 51,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-14T06:00:00",
+        "lng": 129.6,
+        "lat": 11,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 56,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-14T12:00:00",
+        "lng": 128.1,
+        "lat": 11.6,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 56,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-14T18:00:00",
+        "lng": 126.2,
+        "lat": 12.5,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 51,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-15T00:00:00",
+        "lng": 124.4,
+        "lat": 13.7,
+        "strong": "超强台风(Super TY)",
+        "power": 16,
+        "speed": 51,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-15T06:00:00",
+        "lng": 122.9,
+        "lat": 14.6,
+        "strong": "强台风(STY)",
+        "power": 15,
+        "speed": 48,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-15T12:00:00",
+        "lng": 121.2,
+        "lat": 15.7,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 38,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-15T18:00:00",
+        "lng": 120.3,
+        "lat": 16.5,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 38,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-16T00:00:00",
+        "lng": 119.4,
+        "lat": 17.4,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-16T06:00:00",
+        "lng": 118.7,
+        "lat": 18.3,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-16T12:00:00",
+        "lng": 118.9,
+        "lat": 19.4,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-16T18:00:00",
+        "lng": 120,
+        "lat": 20.2,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 33,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-17T00:00:00",
+        "lng": 121.7,
+        "lat": 20.4,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-17T06:00:00",
+        "lng": 122.8,
+        "lat": 22.4,
+        "strong": "强热带风暴(STS)",
+        "power": 10,
+        "speed": 25,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-17T12:00:00",
+        "lng": 123.6,
+        "lat": 24.2,
+        "strong": "热带风暴(TS)",
+        "power": 9,
+        "speed": 23,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-17T18:00:00",
+        "lng": 125.8,
+        "lat": 25,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 33,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-18T00:00:00",
+        "lng": 128.3,
+        "lat": 25.3,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 41,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-18T06:00:00",
+        "lng": 132.3,
+        "lat": 25.7,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-18T12:00:00",
+        "lng": 135.2,
+        "lat": 26.5,
+        "strong": "强热带风暴(STS)",
+        "power": 10,
+        "speed": 28,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-18T18:00:00",
+        "lng": 137,
+        "lat": 27,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 20,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-19T00:00:00",
+        "lng": 138,
+        "lat": 27.5,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 17,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-19T06:00:00",
+        "lng": 140,
+        "lat": 28,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 17,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1947-11-19T12:00:00",
+        "lng": 142,
+        "lat": 28.2,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 17,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": null,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      }
+    ]
+  }
+]

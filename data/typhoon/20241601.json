@@ -1,0 +1,170 @@
+[
+  {
+    "tfbh": "20241601",
+    "ident": "TD",
+    "name": "热带低压",
+    "ename": "TD",
+    "is_current": 0,
+    "begin_time": "2024-09-22T08:00:00",
+    "end_time": "2024-09-22T17:00:00",
+    "land": [],
+    "points": [
+      {
+        "time": "2024-09-22T08:00:00",
+        "lng": 119.9,
+        "lat": 24.8,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 16,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1002,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2024-09-22T11:00:00",
+        "lng": 119.5,
+        "lat": 24.7,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 15,
+        "move_dir": "西西南",
+        "move_speed": 14,
+        "pressure": 1002,
+        "radius7": 0,
+        "radius10": 0,
+        "radius12": 0,
+        "radius7_quad": {
+          "ne": 0,
+          "se": 0,
+          "sw": 0,
+          "nw": 0
+        },
+        "radius10_quad": {
+          "ne": 0,
+          "se": 0,
+          "sw": 0,
+          "nw": 0
+        },
+        "radius12_quad": {
+          "ne": 0,
+          "se": 0,
+          "sw": 0,
+          "nw": 0
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2024-09-22T14:00:00",
+        "lng": 119.2,
+        "lat": 24.5,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1002,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": [
+          {
+            "sets": "中国",
+            "points": [
+              {
+                "time": "2024-09-22T20:00:00",
+                "lng": 118.5,
+                "lat": 24.2,
+                "strong": "热带低压(TD)",
+                "power": 7,
+                "speed": 14,
+                "move_dir": null,
+                "move_speed": null,
+                "pressure": 1004,
+                "radius7": null,
+                "radius10": null,
+                "remark": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "time": "2024-09-22T17:00:00",
+        "lng": 118.7,
+        "lat": 24.3,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1002,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      }
+    ]
+  }
+]

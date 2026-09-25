@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-23T13:10:07.573320+00:00",
+  "source": {
+    "root": "D:\\project\\CNN-Cesium\\data",
+    "fingerprint_sha256": "b030d20cda08a82283756c59b7ff642a85707165439930c56cdc2004b4638f1d",
+    "bytes": 49366813,
+    "components": [
+      "annual typhoon indexes",
+      "best-track JSON files"
+    ],
+    "gridded_meteorology_files": 0
+  },
+  "coverage": {
+    "year_files": 80,
+    "year_min": 1945,
+    "year_max": 2024,
+    "annual_index_rows": 1905,
+    "typhoon_files": 1905,
+    "valid_tracks": 1903,
+    "point_count": 72389,
+    "invalid_coordinate_points": 0,
+    "duplicate_timestamps": 0,
+    "non_monotonic_steps": 0
+  },
+  "field_missing": {
+    "time": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "lng": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "lat": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "speed": {
+      "count": 15,
+      "fraction": 0.00020721
+    },
+    "power": {
+      "count": 15,
+      "fraction": 0.00020721
+    },
+    "pressure": {
+      "count": 2083,
+      "fraction": 0.02877509
+    },
+    "move_dir": {
+      "count": 48647,
+      "fraction": 0.67202199
+    },
+    "move_speed": {
+      "count": 48922,
+      "fraction": 0.67582091
+    },
+    "radius7": {
+      "count": 47041,
+      "fraction": 0.6498363
+    },
+    "radius10": {
+      "count": 51489,
+      "fraction": 0.7112821
+    }
+  },
+  "interval_hours": {
+    "0.0003": 1,
+    "0.3333": 1,
+    "0.5": 16,
+    "0.6667": 1,
+    "1.0": 14169,
+    "2.0": 121,
+    "3.0": 8256,
+    "4.0": 6,
+    "5.0": 6,
+    "6.0": 47866,
+    "8.0": 2,
+    "9.0": 7,
+    "12.0": 19,
+    "15.0": 1,
+    "18.0": 5,
+    "24.0": 2,
+    "36.0": 5,
+    "42.0": 2
+  },
+  "index_consistency": {
+    "index_ids_without_track_file": [],
+    "track_files_without_index_row": [],
+    "duplicate_track_ids": [],
+    "filename_id_mismatches": []
+  },
+  "errors": {
+    "invalid_track_files": [
+      {
+        "file": "196118.json",
+        "reason": "no track object"
+      },
+      {
+        "file": "197319.json",
+        "reason": "no track object"
+      }
+    ],
+    "invalid_year_files": []
+  },
+  "splits": {
+    "time_holdout_year_ranges": {
+      "train": [
+        1945,
+        2016
+      ],
+      "validation": [
+        2017,
+        2019
+      ],
+      "test": [
+        2020,
+        2024
+      ]
+    },
+    "time_holdout_track_counts": {
+      "train": 1687,
+      "validation": 94,
+      "test": 122,
+      "outside_range": 0
+    },
+    "random_track_split": {
+      "seed": 2026,
+      "fractions": {
+        "train": 0.7,
+        "validation": 0.15,
+        "test": 0.15
+      },
+      "counts": {
+        "train": 1332,
+        "validation": 285,
+        "test": 286
+      }
+    }
+  },
+  "preprocessing_policy": {
+    "input_steps": 4,
+    "input_features": [
+      "lng",
+      "lat",
+      "speed",
+      "power",
+      "delta_lng",
+      "delta_lat"
+    ],
+    "target_steps": 6,
+    "target_interval_hours": 6,
+    "normalization": "fit on training storms only",
+    "time_resampling": "linear interpolation to a six-hour cadence within segments; segments split when a source gap exceeds the configured limit"
+  },
+  "preprocessing": {
+    "input_steps": 4,
+    "input_features": [
+      "lng",
+      "lat",
+      "speed",
+      "power",
+      "delta_lng",
+      "delta_lat"
+    ],
+    "target_steps": 6,
+    "target_features": [
+      "lng",
+      "lat",
+      "speed"
+    ],
+    "target_interval_hours": 6,
+    "maximum_interpolation_gap_hours": 9.0,
+    "interpolation": "linear for speed, power and latitude; shortest-arc linear for longitude",
+    "normalization": "population mean and standard deviation fit on unique resampled training points only",
+    "empty_and_invalid_tracks": 2,
+    "invalid_points_skipped": 0,
+    "duplicate_points_removed": 0,
+    "source_segments": 1927,
+    "usable_segments": 1927,
+    "segments_too_short": 206,
+    "unusable_resampled_points": 5,
+    "resampled_points": 56230,
+    "valid_tracks": 1903,
+    "normalizer": {
+      "feature_names": [
+        "lng",
+        "lat",
+        "speed",
+        "power",
+        "delta_lng",
+        "delta_lat"
+      ],
+      "mean": [
+        133.36255672934223,
+        20.966611842105266,
+        27.244801604653627,
+        9.663660425610855,
+        -0.2164404118301797,
+        0.5238208578470345
+      ],
+      "std": [
+        15.197561591977497,
+        8.851879252451754,
+        15.576084372400597,
+        3.932950383631522,
+        1.2237390550773408,
+        0.6129548035494448
+      ],
+      "target_feature_indexes": [
+        0,
+        1,
+        2
+      ]
+    },
+    "split_track_counts": {
+      "train": 1568,
+      "validation": 69,
+      "test": 83
+    },
+    "split_sample_counts": {
+      "train": 33761,
+      "validation": 926,
+      "test": 1143
+    },
+    "sample_files": [
+      {
+        "file": "train.jsonl",
+        "samples": 33761,
+        "bytes": 43108018,
+        "sha256": "bb7e685eaf0e00173a30830892cbb5ec90b699cf6278113f3d6c8a1c41dd6428"
+      },
+      {
+        "file": "validation.jsonl",
+        "samples": 926,
+        "bytes": 1182853,
+        "sha256": "911b993b35c599040aebf0e9268e8b16265f75934de23004949e052ab0c9c6ea"
+      },
+      {
+        "file": "test.jsonl",
+        "samples": 1143,
+        "bytes": 1468167,
+        "sha256": "93d92801d757cd7531f89bec58a5ecf6f3b72be022ca3a61633fd76a25c88348"
+      }
+    ],
+    "source_track_splits": {
+      "train": [
+        1945,
+        2016
+      ],
+      "validation": [
+        2017,
+        2019
+      ],
+      "test": [
+        2020,
+        2024
+      ]
+    },
+    "created_at_utc": "2026-09-23T13:10:12.995344+00:00"
+  }
+}

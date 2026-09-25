@@ -1,0 +1,53 @@
+{
+  "name": "typhoonsystem",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "dev": "vite --mode dev",
+    "dev:test": "vite --mode test",
+    "dev:prod": "vite --mode prod",
+    "build": "vite build --mode prod",
+    "build:dev": "vite build --mode dev",
+    "build:test": "vite build --mode test",
+    "preview": "vite preview",
+    "lint": "eslint . --global .js,.mjs,.cjs,.ts,.vue",
+    "lint:fix": "eslint . --global .js,.mjs,.cjs,.ts,.vue --fix"
+  },
+  "dependencies": {
+    "@vueuse/core": "^12.3.0",
+    "axios": "^1.7.9",
+    "cesium": "^1.124.0",
+    "cesium-wind-layer": "^0.10.0",
+    "echarts": "^5.6.0",
+    "element-plus": "^2.9.1",
+    "ol": "^10.3.1",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "vue": "^3.5.13",
+    "wind-core": "^1.1.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/tsconfig": "^0.7.0",
+    "eslint": "^9.17.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "sass": "^1.83.0",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.18.2",
+    "unplugin-auto-import": "^0.19.0",
+    "unplugin-vue-components": "^0.28.0",
+    "vite": "^6.0.5",
+    "vite-plugin-cesium": "^1.2.23",
+    "vue-tsc": "^2.2.0"
+  }
+}

@@ -1,0 +1,966 @@
+[
+  {
+    "tfbh": "198927",
+    "ident": "198927",
+    "name": "-",
+    "ename": "Collen",
+    "isCurrent": 0,
+    "beginTime": "1989-10-02T02:00:00",
+    "endTime": "1989-10-08T20:00:00",
+    "land": [],
+    "points": [
+      {
+        "time": "1989-10-02T02:00:00",
+        "lng": 150,
+        "lat": 11.5,
+        "strong": "热带低压(TD)",
+        "power": 7,
+        "speed": 15,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 1000,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-02T08:00:00",
+        "lng": 149.2,
+        "lat": 11.7,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 20,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 995,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-02T14:00:00",
+        "lng": 148.3,
+        "lat": 12,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 20,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 995,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-02T20:00:00",
+        "lng": 147.6,
+        "lat": 12.3,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 20,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 995,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-03T02:00:00",
+        "lng": 147.4,
+        "lat": 12.7,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 20,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 995,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-03T08:00:00",
+        "lng": 147.4,
+        "lat": 14.3,
+        "strong": "强热带风暴(STS)",
+        "power": 10,
+        "speed": 25,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 990,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-03T14:00:00",
+        "lng": 146.6,
+        "lat": 15.4,
+        "strong": "强热带风暴(STS)",
+        "power": 10,
+        "speed": 25,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 985,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-03T20:00:00",
+        "lng": 146.2,
+        "lat": 16.2,
+        "strong": "强热带风暴(STS)",
+        "power": 10,
+        "speed": 25,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 980,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-04T02:00:00",
+        "lng": 145.8,
+        "lat": 17.2,
+        "strong": "强热带风暴(STS)",
+        "power": 11,
+        "speed": 30,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 975,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-04T08:00:00",
+        "lng": 145.4,
+        "lat": 18.1,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-04T14:00:00",
+        "lng": 145.3,
+        "lat": 18.8,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-04T20:00:00",
+        "lng": 144.9,
+        "lat": 19.5,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-05T02:00:00",
+        "lng": 144.6,
+        "lat": 20.2,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 965,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-05T08:00:00",
+        "lng": 144.4,
+        "lat": 20.7,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-05T14:00:00",
+        "lng": 144.1,
+        "lat": 21.4,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-05T20:00:00",
+        "lng": 143.8,
+        "lat": 22,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-06T02:00:00",
+        "lng": 143.5,
+        "lat": 22.7,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-06T08:00:00",
+        "lng": 142.6,
+        "lat": 23.5,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-06T14:00:00",
+        "lng": 141.6,
+        "lat": 24.7,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-06T20:00:00",
+        "lng": 140.9,
+        "lat": 25.4,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-07T02:00:00",
+        "lng": 140.6,
+        "lat": 26.4,
+        "strong": "台风(TY)",
+        "power": 13,
+        "speed": 40,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 960,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-07T08:00:00",
+        "lng": 140.9,
+        "lat": 27.3,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-07T14:00:00",
+        "lng": 141.5,
+        "lat": 29.2,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-07T20:00:00",
+        "lng": 142.9,
+        "lat": 30.8,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-08T02:00:00",
+        "lng": 145.2,
+        "lat": 33.1,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-08T08:00:00",
+        "lng": 148.4,
+        "lat": 36.4,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-08T14:00:00",
+        "lng": 152.8,
+        "lat": 39.8,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "1989-10-08T20:00:00",
+        "lng": 157.7,
+        "lat": 44,
+        "strong": "台风(TY)",
+        "power": 12,
+        "speed": 35,
+        "moveDir": null,
+        "moveSpeed": null,
+        "pressure": 970,
+        "r7": null,
+        "r10": null,
+        "r12": null,
+        "r7Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r10Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "r12Quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      }
+    ]
+  }
+]

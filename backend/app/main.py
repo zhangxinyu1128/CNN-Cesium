@@ -99,6 +99,14 @@ def get_typhoon(tfbh: str) -> dict:
     return typhoon
 
 
+@app.get("/api/{year}.json", response_model=List[TyphoonIndexItem])
+def get_legacy_year(year: int) -> List[dict]:
+    """Keep the original dashboard's year-list request compatible."""
+    if year not in repository.years():
+        raise HTTPException(status_code=404, detail="year data not found")
+    return repository.list_typhoons(year, limit=200)
+
+
 @app.get("/api/{tfbh}.json", response_model=TyphoonDetail)
 def get_legacy_typhoon(tfbh: str) -> dict:
     return get_typhoon(tfbh)

@@ -1,0 +1,322 @@
+[
+  {
+    "tfbh": "202501",
+    "ident": "202501",
+    "name": "WUTIP",
+    "ename": "WUTIP",
+    "is_current": 0,
+    "begin_time": "2025-06-10T12:00:00",
+    "end_time": "2025-06-15T18:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202502",
+    "ident": "202502",
+    "name": "SEPAT",
+    "ename": "SEPAT",
+    "is_current": 0,
+    "begin_time": "2025-06-21T06:00:00",
+    "end_time": "2025-06-26T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "20250301",
+    "ident": "TD",
+    "name": "热带低压",
+    "ename": "热带低压",
+    "is_current": 0,
+    "begin_time": "2025-06-24T00:00:00",
+    "end_time": "2025-06-27T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202503",
+    "ident": "202503",
+    "name": "MUN",
+    "ename": "MUN",
+    "is_current": 0,
+    "begin_time": "2025-07-01T00:00:00",
+    "end_time": "2025-07-08T06:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202504",
+    "ident": "202504",
+    "name": "DANAS",
+    "ename": "DANAS",
+    "is_current": 0,
+    "begin_time": "2025-07-03T00:00:00",
+    "end_time": "2025-07-11T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202505",
+    "ident": "202505",
+    "name": "NARI",
+    "ename": "NARI",
+    "is_current": 0,
+    "begin_time": "2025-07-10T00:00:00",
+    "end_time": "2025-07-15T18:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "20250701",
+    "ident": "TD",
+    "name": "热带低压",
+    "ename": "热带低压",
+    "is_current": 0,
+    "begin_time": "2025-07-11T18:00:00",
+    "end_time": "2025-07-14T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202506",
+    "ident": "202506",
+    "name": "WIPHA",
+    "ename": "WIPHA",
+    "is_current": 0,
+    "begin_time": "2025-07-16T06:00:00",
+    "end_time": "2025-07-22T18:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202507",
+    "ident": "202507",
+    "name": "FRANCISCO",
+    "ename": "FRANCISCO",
+    "is_current": 0,
+    "begin_time": "2025-07-22T06:00:00",
+    "end_time": "2025-07-26T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202508",
+    "ident": "202508",
+    "name": "CO-MAY",
+    "ename": "CO-MAY",
+    "is_current": 0,
+    "begin_time": "2025-07-22T06:00:00",
+    "end_time": "2025-08-02T15:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202509",
+    "ident": "202509",
+    "name": "KROSA",
+    "ename": "KROSA",
+    "is_current": 0,
+    "begin_time": "2025-07-23T12:00:00",
+    "end_time": "2025-08-05T18:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202510",
+    "ident": "202510",
+    "name": "BAILU",
+    "ename": "BAILU",
+    "is_current": 0,
+    "begin_time": "2025-07-31T12:00:00",
+    "end_time": "2025-08-07T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "20251301",
+    "ident": "TD",
+    "name": "热带低压",
+    "ename": "热带低压",
+    "is_current": 0,
+    "begin_time": "2025-08-05T12:00:00",
+    "end_time": "2025-08-07T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202511",
+    "ident": "202511",
+    "name": "PODUL",
+    "ename": "PODUL",
+    "is_current": 0,
+    "begin_time": "2025-08-06T00:00:00",
+    "end_time": "2025-08-15T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "20251501",
+    "ident": "TD",
+    "name": "热带低压",
+    "ename": "热带低压",
+    "is_current": 0,
+    "begin_time": "2025-08-16T18:00:00",
+    "end_time": "2025-08-19T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202512",
+    "ident": "202512",
+    "name": "LINGLING",
+    "ename": "LINGLING",
+    "is_current": 0,
+    "begin_time": "2025-08-17T06:00:00",
+    "end_time": "2025-08-23T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202513",
+    "ident": "202513",
+    "name": "KAJIKI",
+    "ename": "KAJIKI",
+    "is_current": 0,
+    "begin_time": "2025-08-21T12:00:00",
+    "end_time": "2025-08-27T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202514",
+    "ident": "202514",
+    "name": "NONGFA",
+    "ename": "NONGFA",
+    "is_current": 0,
+    "begin_time": "2025-08-28T00:00:00",
+    "end_time": "2025-08-31T06:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202515",
+    "ident": "202515",
+    "name": "PEIPAH",
+    "ename": "PEIPAH",
+    "is_current": 0,
+    "begin_time": "2025-09-02T00:00:00",
+    "end_time": "2025-09-10T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202516",
+    "ident": "202516",
+    "name": "TAPAH",
+    "ename": "TAPAH",
+    "is_current": 0,
+    "begin_time": "2025-09-05T00:00:00",
+    "end_time": "2025-09-09T03:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202517",
+    "ident": "202517",
+    "name": "MITAG",
+    "ename": "MITAG",
+    "is_current": 0,
+    "begin_time": "2025-09-16T06:00:00",
+    "end_time": "2025-09-20T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202518",
+    "ident": "202518",
+    "name": "RAGASA",
+    "ename": "RAGASA",
+    "is_current": 0,
+    "begin_time": "2025-09-17T00:00:00",
+    "end_time": "2025-09-25T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202519",
+    "ident": "202519",
+    "name": "NEOGURI",
+    "ename": "NEOGURI",
+    "is_current": 0,
+    "begin_time": "2025-09-17T12:00:00",
+    "end_time": "2025-10-01T00:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202520",
+    "ident": "202520",
+    "name": "BUALOI",
+    "ename": "BUALOI",
+    "is_current": 0,
+    "begin_time": "2025-09-23T00:00:00",
+    "end_time": "2025-09-30T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202521",
+    "ident": "202521",
+    "name": "MATMO",
+    "ename": "MATMO",
+    "is_current": 0,
+    "begin_time": "2025-10-01T00:00:00",
+    "end_time": "2025-10-06T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202522",
+    "ident": "202522",
+    "name": "HALONG",
+    "ename": "HALONG",
+    "is_current": 0,
+    "begin_time": "2025-10-04T00:00:00",
+    "end_time": "2025-10-11T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202523",
+    "ident": "202523",
+    "name": "NAKRI",
+    "ename": "NAKRI",
+    "is_current": 0,
+    "begin_time": "2025-10-07T12:00:00",
+    "end_time": "2025-10-16T06:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202524",
+    "ident": "202524",
+    "name": "FENGSHEN",
+    "ename": "FENGSHEN",
+    "is_current": 0,
+    "begin_time": "2025-10-16T18:00:00",
+    "end_time": "2025-10-23T06:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202525",
+    "ident": "202525",
+    "name": "KALMAEGI",
+    "ename": "KALMAEGI",
+    "is_current": 0,
+    "begin_time": "2025-10-31T12:00:00",
+    "end_time": "2025-11-07T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202526",
+    "ident": "202526",
+    "name": "FUNG-WONG",
+    "ename": "FUNG-WONG",
+    "is_current": 0,
+    "begin_time": "2025-11-05T00:00:00",
+    "end_time": "2025-11-13T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "202527",
+    "ident": "202527",
+    "name": "KOTO",
+    "ename": "KOTO",
+    "is_current": 0,
+    "begin_time": "2025-11-23T18:00:00",
+    "end_time": "2025-12-03T12:00:00",
+    "land": []
+  },
+  {
+    "tfbh": "20253201",
+    "ident": "TD",
+    "name": "热带低压",
+    "ename": "热带低压",
+    "is_current": 0,
+    "begin_time": "2025-11-25T12:00:00",
+    "end_time": "2025-11-30T06:00:00",
+    "land": []
+  }
+]

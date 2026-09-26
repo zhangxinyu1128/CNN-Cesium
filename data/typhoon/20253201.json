@@ -1,0 +1,694 @@
+[
+  {
+    "tfbh": "20253201",
+    "ident": "TD",
+    "name": "热带低压",
+    "ename": "热带低压",
+    "is_current": 0,
+    "begin_time": "2025-11-25T12:00:00",
+    "end_time": "2025-11-30T06:00:00",
+    "land": [],
+    "points": [
+      {
+        "time": "2025-11-25T12:00:00",
+        "lng": 98.9,
+        "lat": 5.1,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 13,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1008,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-25T18:00:00",
+        "lng": 98.4,
+        "lat": 5.1,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-26T00:00:00",
+        "lng": 98.0,
+        "lat": 5.0,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 18,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1002,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-26T06:00:00",
+        "lng": 97.8,
+        "lat": 4.7,
+        "strong": "热带风暴(TS)",
+        "power": 8,
+        "speed": 18,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1002,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-26T12:00:00",
+        "lng": 98.3,
+        "lat": 4.1,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-26T18:00:00",
+        "lng": 99.2,
+        "lat": 3.7,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-27T00:00:00",
+        "lng": 99.9,
+        "lat": 3.6,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-27T06:00:00",
+        "lng": 100.4,
+        "lat": 3.6,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-27T12:00:00",
+        "lng": 101.1,
+        "lat": 3.6,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-27T18:00:00",
+        "lng": 101.8,
+        "lat": 3.6,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 13,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1008,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-28T00:00:00",
+        "lng": 103.0,
+        "lat": 3.6,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 13,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1008,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-28T06:00:00",
+        "lng": 103.8,
+        "lat": 3.9,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-28T12:00:00",
+        "lng": 104.3,
+        "lat": 4.2,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-28T18:00:00",
+        "lng": 105.1,
+        "lat": 4.4,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-29T00:00:00",
+        "lng": 106.1,
+        "lat": 4.6,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-29T06:00:00",
+        "lng": 106.8,
+        "lat": 4.9,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 15,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1006,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-29T12:00:00",
+        "lng": 107.6,
+        "lat": 5.3,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 13,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1008,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-29T18:00:00",
+        "lng": 108.4,
+        "lat": 5.8,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 13,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1008,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-30T00:00:00",
+        "lng": 108.9,
+        "lat": 6.5,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 13,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1008,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      },
+      {
+        "time": "2025-11-30T06:00:00",
+        "lng": 109.3,
+        "lat": 7.4,
+        "strong": "热带低压(TD)",
+        "power": 6,
+        "speed": 13,
+        "move_dir": null,
+        "move_speed": null,
+        "pressure": 1008,
+        "radius7": null,
+        "radius10": null,
+        "radius12": null,
+        "radius7_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius10_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "radius12_quad": {
+          "ne": null,
+          "se": null,
+          "sw": null,
+          "nw": null
+        },
+        "remark": "",
+        "forecast": null
+      }
+    ]
+  }
+]

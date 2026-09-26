@@ -17,7 +17,7 @@ GRID_EXTENSIONS = {".nc", ".grib", ".grb", ".grb2"}
 SPLIT_RANGES = {
     "train": (1945, 2016),
     "validation": (2017, 2019),
-    "test": (2020, 2024),
+    "test": (2020, 2025),
 }
 
 

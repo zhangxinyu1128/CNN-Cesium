@@ -34,6 +34,7 @@ let currentEntity: Cesium.Entity | null = null
 let forecastEntity: Cesium.Entity | null = null
 let pointEntities: Cesium.Entity[] = []
 let forecastPointEntities: Cesium.Entity[] = []
+let validTrackPoints: TyphoonPoint[] = []
 
 const colors = [
   Cesium.Color.fromCssColorString('#6bd7c7'),
@@ -62,6 +63,7 @@ function clearTrack() {
   forecastEntity = null
   pointEntities = []
   forecastPointEntities = []
+  validTrackPoints = []
 }
 
 function renderForecast() {
@@ -118,6 +120,32 @@ function renderForecast() {
   })
 }
 
+function updateCurrentMarker() {
+  if (!viewer || !validTrackPoints.length || !currentEntity) return
+
+  const index = Math.min(Math.max(props.currentIndex, 0), validTrackPoints.length - 1)
+  const currentPoint = validTrackPoints[index]
+  currentEntity.position = Cesium.Cartesian3.fromDegrees(currentPoint.lng, currentPoint.lat)
+  currentEntity.label!.text = currentPoint.strong || '当前台风'
+
+  pointEntities.forEach((entity, pointIndex) => {
+    if (entity.point) entity.point.pixelSize = pointIndex === index ? 9 : 5
+  })
+}
+
+function focusTrack() {
+  if (!viewer || !trackEntity) return
+
+  const cameraTarget = forecastEntity
+    ? [trackEntity, forecastEntity, ...forecastPointEntities]
+    : [trackEntity]
+  void viewer.flyTo(cameraTarget, {
+    duration: 1.1,
+    // Keep the camera high enough to show the whole route without following each point.
+    offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-68), 0)
+  })
+}
+
 function renderTrack() {
   if (!viewer) return
   clearTrack()
@@ -127,6 +155,7 @@ function renderTrack() {
     (point) => Number.isFinite(point.lng) && Number.isFinite(point.lat)
   )
   if (!validPoints.length) return
+  validTrackPoints = validPoints
 
   const positions = validPoints.flatMap((point) => [point.lng, point.lat])
   const linePositions = Cesium.Cartesian3.fromDegreesArray(positions)
@@ -158,7 +187,7 @@ function renderTrack() {
     if (entity) pointEntities.push(entity)
   })
 
-  const currentPoint = validPoints[Math.min(props.currentIndex, validPoints.length - 1)]
+  const currentPoint = validPoints[Math.min(Math.max(props.currentIndex, 0), validPoints.length - 1)]
   currentEntity = viewer.entities.add({
     name: '当前时刻',
     position: Cesium.Cartesian3.fromDegrees(currentPoint.lng, currentPoint.lat),
@@ -182,13 +211,7 @@ function renderTrack() {
 
   renderForecast()
 
-  const cameraTarget = forecastEntity
-    ? [currentEntity, forecastEntity, ...forecastPointEntities]
-    : currentEntity
-  void viewer.flyTo(cameraTarget, {
-    duration: 0.8,
-    offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-35), 0)
-  })
+  focusTrack()
 }
 
 function resetView() {
@@ -252,13 +275,17 @@ onMounted(() => {
 watch(
   () => [
     props.points,
-    props.currentIndex,
     props.showTrack,
     props.forecastStart,
     props.predictions
   ],
   () => renderTrack(),
   { deep: true }
+)
+
+watch(
+  () => props.currentIndex,
+  () => updateCurrentMarker()
 )
 
 onBeforeUnmount(() => {

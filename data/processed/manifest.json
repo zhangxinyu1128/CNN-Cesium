@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "created_at_utc": "2026-09-23T13:10:07.573320+00:00",
+  "created_at_utc": "2026-09-25T17:56:48.511332+00:00",
   "source": {
     "root": "D:\\project\\CNN-Cesium\\data",
-    "fingerprint_sha256": "b030d20cda08a82283756c59b7ff642a85707165439930c56cdc2004b4638f1d",
-    "bytes": 49366813,
+    "fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+    "bytes": 50170477,
     "components": [
       "annual typhoon indexes",
       "best-track JSON files"
@@ -12,13 +12,13 @@
     "gridded_meteorology_files": 0
   },
   "coverage": {
-    "year_files": 80,
+    "year_files": 81,
     "year_min": 1945,
-    "year_max": 2024,
-    "annual_index_rows": 1905,
-    "typhoon_files": 1905,
-    "valid_tracks": 1903,
-    "point_count": 72389,
+    "year_max": 2025,
+    "annual_index_rows": 1937,
+    "typhoon_files": 1937,
+    "valid_tracks": 1935,
+    "point_count": 73388,
     "invalid_coordinate_points": 0,
     "duplicate_timestamps": 0,
     "non_monotonic_steps": 0
@@ -38,31 +38,31 @@
     },
     "speed": {
       "count": 15,
-      "fraction": 0.00020721
+      "fraction": 0.00020439
     },
     "power": {
       "count": 15,
-      "fraction": 0.00020721
+      "fraction": 0.00020439
     },
     "pressure": {
       "count": 2083,
-      "fraction": 0.02877509
+      "fraction": 0.02838339
     },
     "move_dir": {
-      "count": 48647,
-      "fraction": 0.67202199
+      "count": 49646,
+      "fraction": 0.67648662
     },
     "move_speed": {
-      "count": 48922,
-      "fraction": 0.67582091
+      "count": 49921,
+      "fraction": 0.68023383
     },
     "radius7": {
-      "count": 47041,
-      "fraction": 0.6498363
+      "count": 48040,
+      "fraction": 0.65460293
     },
     "radius10": {
-      "count": 51489,
-      "fraction": 0.7112821
+      "count": 52488,
+      "fraction": 0.7152123
     }
   },
   "interval_hours": {
@@ -72,10 +72,10 @@
     "0.6667": 1,
     "1.0": 14169,
     "2.0": 121,
-    "3.0": 8256,
+    "3.0": 8498,
     "4.0": 6,
     "5.0": 6,
-    "6.0": 47866,
+    "6.0": 48591,
     "8.0": 2,
     "9.0": 7,
     "12.0": 19,
@@ -116,13 +116,13 @@
       ],
       "test": [
         2020,
-        2024
+        2025
       ]
     },
     "time_holdout_track_counts": {
       "train": 1687,
       "validation": 94,
-      "test": 122,
+      "test": 154,
       "outside_range": 0
     },
     "random_track_split": {
@@ -133,9 +133,9 @@
         "test": 0.15
       },
       "counts": {
-        "train": 1332,
-        "validation": 285,
-        "test": 286
+        "train": 1354,
+        "validation": 290,
+        "test": 291
       }
     }
   },
@@ -177,12 +177,12 @@
     "empty_and_invalid_tracks": 2,
     "invalid_points_skipped": 0,
     "duplicate_points_removed": 0,
-    "source_segments": 1927,
-    "usable_segments": 1927,
-    "segments_too_short": 206,
+    "source_segments": 1959,
+    "usable_segments": 1959,
+    "segments_too_short": 207,
     "unusable_resampled_points": 5,
-    "resampled_points": 56230,
-    "valid_tracks": 1903,
+    "resampled_points": 57107,
+    "valid_tracks": 1935,
     "normalizer": {
       "feature_names": [
         "lng",
@@ -217,12 +217,12 @@
     "split_track_counts": {
       "train": 1568,
       "validation": 69,
-      "test": 83
+      "test": 114
     },
     "split_sample_counts": {
       "train": 33761,
       "validation": 926,
-      "test": 1143
+      "test": 1670
     },
     "sample_files": [
       {
@@ -239,9 +239,9 @@
       },
       {
         "file": "test.jsonl",
-        "samples": 1143,
-        "bytes": 1468167,
-        "sha256": "93d92801d757cd7531f89bec58a5ecf6f3b72be022ca3a61633fd76a25c88348"
+        "samples": 1670,
+        "bytes": 2143744,
+        "sha256": "f0222bd28b1cf4dc22535d64ded03e37995393288b9be0b059af73ef3f100531"
       }
     ],
     "source_track_splits": {
@@ -255,9 +255,9 @@
       ],
       "test": [
         2020,
-        2024
+        2025
       ]
     },
-    "created_at_utc": "2026-09-23T13:10:12.995344+00:00"
+    "created_at_utc": "2026-09-25T17:56:54.055696+00:00"
   }
 }

@@ -1,0 +1,23 @@
+{
+  "source": "Copernicus Climate Change Service (C3S)",
+  "dataset": "ERA5 hourly data on pressure levels from 1940 to present",
+  "dataset_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels",
+  "file": "era5_2025_tc_times.grib.gz",
+  "format": "gzip-compressed GRIB",
+  "year": 2025,
+  "selection": "ERA5 synoptic timestamps matching CMA 2025 best-track observations at 00, 06, 12, or 18 UTC",
+  "matched_track_times": 558,
+  "grib_messages": 5580,
+  "variables": ["u", "v"],
+  "pressure_levels_hPa": [200, 300, 500, 700, 850],
+  "time_utc": ["00:00", "06:00", "12:00", "18:00"],
+  "date_min_utc": "2025-06-10",
+  "date_max_utc": "2025-12-03",
+  "geographical_area": {"north": 45.0, "south": 0.0, "west": 100.0, "east": 180.0},
+  "grid": {"type": "regular_ll", "Ni": 321, "Nj": 181, "resolution_degrees": 0.25},
+  "selected_grib_bytes": 649009800,
+  "compressed_bytes": 588200739,
+  "selected_grib_sha256": "c4097473465b60b35fb5a21a72ff5c9bcf47469d590950feca112a951b0bf4af",
+  "compressed_file_sha256": "d6cc8ef04f61bd7ec547107430d17ccf38b0ad91c89fe81bf686b09837912c57",
+  "coverage_note": "This derived file contains selected 2025 timestamps only. It does not provide ERA5 coverage for the project's 1945-2024 best-track data."
+}

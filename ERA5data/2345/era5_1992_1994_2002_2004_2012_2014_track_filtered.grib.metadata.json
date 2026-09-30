@@ -1,0 +1,56 @@
+{
+  "selection_method": "For each CMA best-track observation, retain the preceding and following 6-hour ERA5 synoptic times; retain one time when the observation is already on a synoptic time.",
+  "variables": [
+    "u",
+    "v"
+  ],
+  "pressure_levels_hPa": [
+    500,
+    850
+  ],
+  "time_utc": [
+    "00:00",
+    "06:00",
+    "12:00",
+    "18:00"
+  ],
+  "geographical_area": {
+    "north": 45.0,
+    "south": 0.0,
+    "west": 100.0,
+    "east": 180.0
+  },
+  "grid": {
+    "type": "regular_ll",
+    "Ni": 321,
+    "Nj": 181,
+    "resolution_degrees": 0.25
+  },
+  "source_preserved": true,
+  "source_file": "E:\\文献\\浏览器\\b3950f087ada50f02d6c75034243ccf.grib",
+  "source_format": "GRIB",
+  "source_bytes": 6118836480,
+  "source_sha256": "ca1639957e48def97630ccf42e389620e30ded19777f269ca2a1812f8fb578fa",
+  "source_messages": 52608,
+  "source_available_year_blocks": [
+    "1992-1994",
+    "2002-2004",
+    "2012-2014"
+  ],
+  "output_file": "D:\\project\\CNN-Cesium\\ERA5data\\2345\\era5_1992_1994_2002_2004_2012_2014_track_filtered.grib.gz",
+  "name": "era5_1992_1994_2002_2004_2012_2014_track_filtered.grib.gz",
+  "track_year_range": "1992-2014",
+  "track_observations": 21265,
+  "candidate_bracketing_times": 11093,
+  "matched_source_times": 5039,
+  "output_messages": 20156,
+  "output_raw_grib_bytes": 2344344360,
+  "output_compressed_bytes": 2109991145,
+  "output_date_min_utc": "1992-01-05",
+  "output_date_max_utc": "2014-12-31",
+  "output_decompressed_sha256": "a5a86a4c2dec436493bf8a9b08f3801d0ab59129c9de9c8d19a7ec8414ee4dac",
+  "output_compressed_sha256": "9771a0945caa7aabab9e2e5f3f6eb99ac1bcf0d6dd44a8ca39358cd7bed6f363",
+  "note": "The source is not continuous across 1992-2014; 1995-2001 and 2005-2011 are absent.",
+  "message_retention_percent": 38.31,
+  "compressed_retention_percent_of_source": 34.48
+}

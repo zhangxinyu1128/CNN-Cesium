@@ -1,0 +1,63 @@
+{
+  "selection_method": "For each CMA best-track observation, retain the preceding and following 6-hour ERA5 synoptic times; retain one time when the observation is already on a synoptic time.",
+  "variables": [
+    "u",
+    "v"
+  ],
+  "pressure_levels_hPa": [
+    500,
+    850
+  ],
+  "time_utc": [
+    "00:00",
+    "06:00",
+    "12:00",
+    "18:00"
+  ],
+  "geographical_area": {
+    "north": 45.0,
+    "south": 0.0,
+    "west": 100.0,
+    "east": 180.0
+  },
+  "grid": {
+    "type": "regular_ll",
+    "Ni": 321,
+    "Nj": 181,
+    "resolution_degrees": 0.25
+  },
+  "source_preserved": true,
+  "source_file": "C:\\Users\\15826\\Desktop\\1949, 1950, 1951.grib",
+  "source_format": "GRIB",
+  "source_bytes": 2037751200,
+  "source_sha256": "48939cc68d1a9934de16b10bb65d03510715117c4bbb6f70d042bc846bb35bee",
+  "source_messages": 17520,
+  "source_years": [
+    1949,
+    1950,
+    1951
+  ],
+  "output_file": "C:\\Users\\15826\\Desktop\\ERA5data\\901\\era5_1949_1950_1951_track_filtered.grib.gz",
+  "name": "era5_1949_1950_1951_track_filtered.grib.gz",
+  "track_year_range": "1949-2021",
+  "track_observations": 66225,
+  "candidate_bracketing_times": 39523,
+  "matched_source_times": 1676,
+  "output_messages": 6704,
+  "output_raw_grib_bytes": 779742240,
+  "output_compressed_bytes": 708422128,
+  "output_date_min_utc": "1949-01-13",
+  "output_date_max_utc": "1951-12-19",
+  "output_selected_times": 1676,
+  "output_decompressed_sha256": "abe6832ad3fc2c443577ac3f711dbbf95c6a1e015cbcb9cd743e72b8dcd7e379",
+  "output_compressed_sha256": "ed61dd86b34fed790be781af11ec49e2aef336d9d5513bdcdc647c90769d2462",
+  "message_retention_percent": 38.26,
+  "compressed_retention_percent_of_source": 34.76,
+  "distinct_param_level_combos": [
+    "131/500",
+    "131/850",
+    "132/500",
+    "132/850"
+  ],
+  "note": "Source years: [1949, 1950, 1951]. Contains only ERA5 synoptic times bracketing CMA best-track observations."
+}

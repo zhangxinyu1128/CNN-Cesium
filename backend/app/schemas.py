@@ -112,15 +112,26 @@ class PredictionPoint(BaseModel):
     speed_ms: Optional[float] = None
     p05: Optional[PredictionInterval] = None
     p95: Optional[PredictionInterval] = None
+    location_radius_90_km: Optional[float] = None
+
+
+class PredictionUncertainty(BaseModel):
+    status: str
+    target_coverage: Optional[float] = None
+    method: Optional[str] = None
+    calibration_storms: Optional[int] = None
+    interpretation: Optional[str] = None
 
 
 class PredictionResponse(BaseModel):
     model_version: str
+    model_type: Optional[str] = None
     generated_at: str
     typhoon_id: Optional[str] = None
     input_window: int
     horizons_hours: List[int]
     predictions: List[PredictionPoint]
+    uncertainty: Optional[PredictionUncertainty] = None
 
 
 class ModelStatus(BaseModel):
@@ -129,6 +140,7 @@ class ModelStatus(BaseModel):
     exists: bool
     size_bytes: int
     model_version: Optional[str] = None
+    model_type: Optional[str] = None
     device: Optional[str] = None
     checkpoint_sha256: Optional[str] = None
     reason: Optional[str] = None

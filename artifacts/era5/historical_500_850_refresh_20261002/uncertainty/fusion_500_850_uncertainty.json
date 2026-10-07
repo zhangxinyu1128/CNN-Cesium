@@ -1,0 +1,191 @@
+{
+  "model_version": "era5-500-850-residual-mc-dropout",
+  "seed": 2026,
+  "mc_samples": 50,
+  "checkpoint": "D:\\project\\CNN-Cesium\\artifacts\\era5\\historical_500_850_refresh_20261002\\ablation\\20261002T155059Z\\fusion_500_850.pth",
+  "calibration": {
+    "method": "storm-group split conformal absolute residual quantile",
+    "target_coverage": 0.9,
+    "validation_windows": 687,
+    "validation_storms": 48,
+    "coordinate_quantiles": [
+      [
+        1.4432645152387522,
+        0.9109076029860965,
+        9.387847308692656
+      ],
+      [
+        2.598679384355222,
+        1.7052738851863651,
+        14.910536781402051
+      ],
+      [
+        3.5848802542937506,
+        3.064678332074834,
+        17.399567006482357
+      ],
+      [
+        4.743260623017733,
+        4.161495768835874,
+        16.907413755454407
+      ],
+      [
+        7.048852987325546,
+        5.687412680011736,
+        19.362851298736473
+      ],
+      [
+        8.895438686524926,
+        7.411092666174948,
+        21.583236098632327
+      ]
+    ],
+    "location_radius_km": [
+      160.7245493967921,
+      301.7769458045425,
+      438.26749826922594,
+      561.2839508163121,
+      731.6189812318585,
+      956.0917400210799
+    ]
+  },
+  "evaluation": {
+    "sample_count": 1661,
+    "mc_samples": 50,
+    "by_horizon": [
+      {
+        "lead_hours": 6,
+        "longitude_coverage_90": 0.9939795304033715,
+        "longitude_storm_coverage_90": 0.9375,
+        "longitude_interval_width": 2.8865290304775044,
+        "latitude_coverage_90": 0.99157134256472,
+        "latitude_storm_coverage_90": 0.8839285714285714,
+        "latitude_interval_width": 1.8218152059721928,
+        "wind_coverage_90": 0.9885611077664058,
+        "wind_storm_coverage_90": 0.8571428571428571,
+        "wind_interval_width": 18.775694617385312,
+        "joint_coverage_90": 0.975316074653823,
+        "joint_storm_coverage_90": 0.7232142857142857,
+        "joint_interval_width_proxy": 3.4133649802652077,
+        "location_radius_90_km": 160.7245493967921,
+        "location_coverage_90": 0.9909692956050572,
+        "location_storm_coverage_90": 0.9017857142857143,
+        "median_prediction_wind_mae_ms": 2.1719252871536874
+      },
+      {
+        "lead_hours": 12,
+        "longitude_coverage_90": 0.99157134256472,
+        "longitude_storm_coverage_90": 0.9017857142857143,
+        "longitude_interval_width": 5.197358768710444,
+        "latitude_coverage_90": 0.983744732089103,
+        "latitude_storm_coverage_90": 0.8482142857142857,
+        "latitude_interval_width": 3.4105477703727303,
+        "wind_coverage_90": 0.9897652016857315,
+        "wind_storm_coverage_90": 0.9017857142857143,
+        "wind_interval_width": 29.82107356280409,
+        "joint_coverage_90": 0.9662853702588802,
+        "joint_storm_coverage_90": 0.7232142857142857,
+        "joint_interval_width_proxy": 6.2164599463590005,
+        "location_radius_90_km": 301.7769458045425,
+        "location_coverage_90": 0.9909692956050572,
+        "location_storm_coverage_90": 0.9196428571428571,
+        "median_prediction_wind_mae_ms": 3.6718342045749632
+      },
+      {
+        "lead_hours": 18,
+        "longitude_coverage_90": 0.9891631547260686,
+        "longitude_storm_coverage_90": 0.9107142857142857,
+        "longitude_interval_width": 7.169760508587501,
+        "latitude_coverage_90": 0.9903672486453944,
+        "latitude_storm_coverage_90": 0.9196428571428571,
+        "latitude_interval_width": 6.129356664149668,
+        "wind_coverage_90": 0.9813365442504516,
+        "wind_storm_coverage_90": 0.8660714285714286,
+        "wind_interval_width": 34.799134012964714,
+        "joint_coverage_90": 0.9620710415412402,
+        "joint_storm_coverage_90": 0.7767857142857143,
+        "joint_interval_width_proxy": 9.432628417724132,
+        "location_radius_90_km": 438.26749826922594,
+        "location_coverage_90": 0.9921733895243829,
+        "location_storm_coverage_90": 0.9285714285714286,
+        "median_prediction_wind_mae_ms": 4.935686897363313
+      },
+      {
+        "lead_hours": 24,
+        "longitude_coverage_90": 0.9885611077664058,
+        "longitude_storm_coverage_90": 0.8839285714285714,
+        "longitude_interval_width": 9.486521246035466,
+        "latitude_coverage_90": 0.9903672486453944,
+        "latitude_storm_coverage_90": 0.9196428571428571,
+        "latitude_interval_width": 8.32299153767175,
+        "wind_coverage_90": 0.9602649006622517,
+        "wind_storm_coverage_90": 0.8035714285714286,
+        "wind_interval_width": 33.8148275109088,
+        "joint_coverage_90": 0.9403973509933775,
+        "joint_storm_coverage_90": 0.7053571428571429,
+        "joint_interval_width_proxy": 12.620074226708727,
+        "location_radius_90_km": 561.2839508163121,
+        "location_coverage_90": 0.9867549668874173,
+        "location_storm_coverage_90": 0.8928571428571429,
+        "median_prediction_wind_mae_ms": 5.949034376553621
+      },
+      {
+        "lead_hours": 30,
+        "longitude_coverage_90": 0.9933774834437086,
+        "longitude_storm_coverage_90": 0.9285714285714286,
+        "longitude_interval_width": 14.097705974651092,
+        "latitude_coverage_90": 0.9921733895243829,
+        "latitude_storm_coverage_90": 0.9196428571428571,
+        "latitude_interval_width": 11.37482536002347,
+        "wind_coverage_90": 0.9554485249849488,
+        "wind_storm_coverage_90": 0.8125,
+        "wind_interval_width": 38.725702597472946,
+        "joint_coverage_90": 0.9416014449127031,
+        "joint_storm_coverage_90": 0.7232142857142857,
+        "joint_interval_width_proxy": 18.114413203820497,
+        "location_radius_90_km": 731.6189812318585,
+        "location_coverage_90": 0.9879590608067429,
+        "location_storm_coverage_90": 0.9107142857142857,
+        "median_prediction_wind_mae_ms": 6.746134591482525
+      },
+      {
+        "lead_hours": 36,
+        "longitude_coverage_90": 0.9933774834437086,
+        "longitude_storm_coverage_90": 0.9464285714285714,
+        "longitude_interval_width": 17.790877373049852,
+        "latitude_coverage_90": 0.9951836243226971,
+        "latitude_storm_coverage_90": 0.9553571428571429,
+        "latitude_interval_width": 14.822185332349902,
+        "wind_coverage_90": 0.9572546658639374,
+        "wind_storm_coverage_90": 0.8392857142857143,
+        "wind_interval_width": 43.166472197264646,
+        "joint_coverage_90": 0.9458157736303432,
+        "joint_storm_coverage_90": 0.7678571428571429,
+        "joint_interval_width_proxy": 23.156262559606322,
+        "location_radius_90_km": 956.0917400210799,
+        "location_coverage_90": 0.9903672486453944,
+        "location_storm_coverage_90": 0.9375,
+        "median_prediction_wind_mae_ms": 7.4797110539570095
+      }
+    ]
+  },
+  "probability_cone": {
+    "horizons_hours": [
+      6,
+      12,
+      18,
+      24,
+      30,
+      36
+    ],
+    "radius_km_90": [
+      160.7245493967921,
+      301.7769458045425,
+      438.26749826922594,
+      561.2839508163121,
+      731.6189812318585,
+      956.0917400210799
+    ],
+    "interpretation": "historical 90% storm-calibrated location radius; not a real-time probability guarantee"
+  }
+}

@@ -9,8 +9,9 @@ import numpy as np
 import torch
 from pydantic import ValidationError
 
-from backend.app.schemas import PredictionRequest
+from backend.app.schemas import PredictionRequest, PredictionResponse
 from backend.app.services.model import ModelService
+from ml.models.residual_cnn import ResidualTrackCNN
 from ml.models.track_cnn import TrackCNN
 
 
@@ -25,9 +26,17 @@ class PredictionIntegrationTests(unittest.TestCase):
         with (cls.data_root / "test.jsonl").open("r", encoding="utf-8") as handle:
             cls.sample = json.loads(handle.readline())
         cls.checkpoint_path = PROJECT_ROOT / "artifacts" / "checkpoints" / "track_cnn_baseline.pth"
-        cls.service = ModelService(cls.checkpoint_path)
+        cls.residual_checkpoint_path = PROJECT_ROOT / "artifacts" / "residual" / "checkpoints" / "track_cnn_residual.pth"
+        cls.uncertainty_path = PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261007.json"
+        cls.service = ModelService(cls.checkpoint_path, uncertainty_path=cls.uncertainty_path)
+        cls.residual_service = ModelService(cls.residual_checkpoint_path)
         if not cls.service.ready:
             raise RuntimeError("trained checkpoint could not be loaded: " + str(cls.service.status()))
+        if not cls.residual_service.ready:
+            raise RuntimeError("residual checkpoint could not be loaded: " + str(cls.residual_service.status()))
+
+    def test_default_model_remains_track_cnn(self):
+        self.assertEqual(self.service.status()["model_type"], "track")
 
     def _history(self):
         scaler = self.manifest["preprocessing"]["normalizer"]
@@ -86,6 +95,17 @@ class PredictionIntegrationTests(unittest.TestCase):
             self.assertAlmostEqual(prediction["speed_ms"], expected_wind[index], delta=1e-4)
             self.assertIsNone(prediction["p05"])
             self.assertIsNone(prediction["p95"])
+            self.assertGreater(prediction["location_radius_90_km"], 0)
+        self.assertEqual(result["uncertainty"]["status"], "historical_calibration")
+        validated = PredictionResponse(**result)
+        self.assertAlmostEqual(validated.predictions[0].location_radius_90_km, 479.7534459833955)
+
+    def test_uncertainty_is_not_reused_for_a_different_checkpoint(self):
+        service = ModelService(self.residual_checkpoint_path, uncertainty_path=self.uncertainty_path)
+        self.assertTrue(service.ready)
+        result = service.predict(self._history(), [6])
+        self.assertEqual(result["uncertainty"]["status"], "unavailable")
+        self.assertIsNone(result["predictions"][0]["location_radius_90_km"])
 
     def test_request_rejects_wrong_window_spacing_and_horizons(self):
         history = self._history()
@@ -106,6 +126,39 @@ class PredictionIntegrationTests(unittest.TestCase):
         result = self.service.predict(self._history(), [12, 24, 36])
         self.assertEqual(result["horizons_hours"], [12, 24, 36])
         self.assertEqual([item["lead_hours"] for item in result["predictions"]], [12, 24, 36])
+
+    def test_residual_checkpoint_inference_matches_prior_plus_residual(self):
+        service = self.residual_service
+        result = service.predict(self._history(), [6, 12, 18, 24, 30, 36])
+        checkpoint = torch.load(self.residual_checkpoint_path, map_location=service._device, weights_only=False)
+        model = ResidualTrackCNN(input_features=6, horizons=6, dropout=0.3).to(service._device)
+        model.load_state_dict(checkpoint["model_state_dict"])
+        model.eval()
+        features = torch.tensor([self.sample["x"]], dtype=torch.float32, device=service._device)
+        scaler = self.manifest["preprocessing"]["normalizer"]
+        means = torch.tensor(scaler["mean"], dtype=features.dtype, device=service._device)
+        scales = torch.tensor(scaler["std"], dtype=features.dtype, device=service._device)
+        with torch.no_grad():
+            output = model(features)
+            last = features[:, -1, :] * scales + means
+            steps = torch.arange(1, 7, dtype=features.dtype, device=service._device).view(1, -1)
+            prior = torch.zeros((1, 6, 3), dtype=features.dtype, device=service._device)
+            prior[..., 0] = (last[:, None, 0] + steps * last[:, None, 4]) % 360.0
+            prior[..., 1] = last[:, None, 1] + steps * last[:, None, 5]
+            prior[..., 2] = last[:, None, 2]
+            residual = torch.cat((output["track"], output["wind"]), dim=-1)
+            expected = ((prior - means[:3]) / scales[:3] + residual)[0].cpu().numpy()
+        expected = expected * np.asarray(scaler["std"][:3]) + np.asarray(scaler["mean"][:3])
+        expected[:, 0] %= 360.0
+        expected[:, 1] = np.clip(expected[:, 1], -90.0, 90.0)
+        expected[:, 2] = np.maximum(expected[:, 2], 0.0)
+        self.assertEqual(result["model_version"], "track-cnn-residual-v1")
+        for index, prediction in enumerate(result["predictions"]):
+            np.testing.assert_allclose(
+                [prediction["lng"], prediction["lat"], prediction["speed_ms"]],
+                expected[index],
+                atol=1e-4,
+            )
 
 
 if __name__ == "__main__":

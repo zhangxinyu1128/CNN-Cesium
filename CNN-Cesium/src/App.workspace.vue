@@ -2,9 +2,12 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import TyphoonGlobe from '@/components/TyphoonGlobe.vue'
+import TyphoonCharts from '@/components/TyphoonCharts.vue'
 import {
+  fetchExperimentSummary,
   fetchHealth,
   fetchTyphoon,
+  fetchTyphoonEra5,
   fetchTyphoonIndex,
   fetchYears,
   predictTyphoon
@@ -12,6 +15,10 @@ import {
 import { buildPredictionWindow } from '@/services/predictionWindow'
 import type {
   HealthResponse,
+  Era5Point,
+  Era5Response,
+  ExperimentModelSummary,
+  ExperimentSummary,
   PredictionHistoryPoint,
   PredictionResponse,
   TyphoonDetail,
@@ -33,16 +40,22 @@ const loadingDetail = ref(false)
 const dataError = ref('')
 const health = ref<HealthResponse | null>(null)
 const healthError = ref('')
-const activeTab = ref<'overview' | 'forecast'>('overview')
+const activeTab = ref<'overview' | 'forecast' | 'comparison' | 'evaluation'>('overview')
 const currentIndex = ref(0)
 const playing = ref(false)
 const showTrack = ref(true)
 const showForecast = ref(true)
+const showEra5 = ref(true)
+const era5Level = ref(850)
+const era5 = ref<Era5Response | null>(null)
+const era5Error = ref('')
+const experimentSummary = ref<ExperimentSummary | null>(null)
 const prediction = ref<PredictionResponse | null>(null)
 const predictionInput = ref<PredictionHistoryPoint[] | null>(null)
 const predictionError = ref('')
 const loadingPrediction = ref(false)
 const selectedLead = ref(24)
+const analysisHorizon = ref(24)
 let playTimer: number | undefined
 
 const points = computed<TyphoonPoint[]>(() => selectedTyphoon.value?.points ?? [])
@@ -91,6 +104,42 @@ const modelStatusLabel = computed(() => {
   if (!health.value) return '模型状态检查中'
   return health.value.model.status === 'ready' ? 'CNN 已就绪' : '模型不可用'
 })
+const currentEra5 = computed<Era5Point | null>(() => {
+  const target = canonicalTime(currentPoint.value?.time)
+  if (!target || !era5.value?.points.length) return null
+  return era5.value.points.find((point) => canonicalTime(point.time) === target) ?? null
+})
+const era5Levels = computed(() => era5.value?.levels_hpa ?? [])
+const currentWind = computed(() => currentEra5.value?.levels[String(era5Level.value)] ?? null)
+const currentShear = computed(() => currentEra5.value?.shear_500_850_ms ?? null)
+const era5StatusLabel = computed(() => {
+  if (era5Error.value) return '读取失败'
+  if (!era5.value) return '同步中'
+  if (era5.value.status !== 'ready') return '未匹配'
+  return currentEra5.value ? '已同步' : '当前时刻缺测'
+})
+function canonicalTime(value?: string | null) {
+  return value ? value.replace('Z', '').slice(0, 19) : ''
+}
+
+function metricAt(model: ExperimentModelSummary, lead = analysisHorizon.value) {
+  return model.by_horizon.find((item) => item.lead_hours === lead) ?? model.by_horizon[0]
+}
+
+function uncertaintyAt(lead = analysisHorizon.value) {
+  return experimentSummary.value?.uncertainty.by_horizon?.find((item) => item.lead_hours === lead)
+}
+
+function modelMetricText(key: string, field: 'path_mae_km' | 'path_rmse_km') {
+  const model = experimentSummary.value?.models.find((item) => item.key === key)
+  const metric = model ? metricAt(model) : undefined
+  const value = metric?.[field]
+  return typeof value === 'number' ? `${value.toFixed(1)} km` : '--'
+}
+
+function formatPercent(value?: number | null) {
+  return typeof value === 'number' ? `${(value * 100).toFixed(1)}%` : '--'
+}
 
 function formatTime(value?: string) {
   if (!value) return '--'
@@ -160,9 +209,19 @@ async function selectTyphoon(id: string) {
   prediction.value = null
   predictionInput.value = null
   predictionError.value = ''
+  era5.value = null
+  era5Error.value = ''
   loadingDetail.value = true
   try {
     selectedTyphoon.value = await fetchTyphoon(id)
+    try {
+      era5.value = await fetchTyphoonEra5(id)
+      if (era5.value.levels_hpa.length && !era5.value.levels_hpa.includes(era5Level.value)) {
+        era5Level.value = era5.value.levels_hpa[0]
+      }
+    } catch (error) {
+      era5Error.value = error instanceof Error ? error.message : 'ERA5 风场加载失败'
+    }
     const firstPredictableIndex = points.value.findIndex((_, index) =>
       buildPredictionWindow(points.value, index).ok
     )
@@ -275,6 +334,11 @@ watch(currentIndex, () => {
 
 onMounted(async () => {
   void loadHealth()
+  void fetchExperimentSummary().then((result) => {
+    experimentSummary.value = result
+  }).catch(() => {
+    experimentSummary.value = null
+  })
   await loadYears()
   await loadList()
 })
@@ -295,6 +359,7 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="topbar-meta">
+        <a class="home-link" href="/" title="返回主页面">返回主页面</a>
         <span class="status-dot" :class="{ 'is-offline': health?.data.status !== 'ready' }"></span>
         <span>{{ health?.data.status === 'ready' ? '历史数据在线' : '数据状态未知' }}</span>
         <span class="divider"></span>
@@ -389,6 +454,19 @@ onUnmounted(() => {
             <span>⌁</span>
             <small>预测</small>
           </button>
+          <button
+            class="tool-button"
+            :class="{ selected: showEra5 }"
+            type="button"
+            title="显示或隐藏当前台风位置的 ERA5 风矢量"
+            @click="showEra5 = !showEra5"
+          >
+            <span>↗</span>
+            <small>ERA5</small>
+          </button>
+          <select v-model.number="era5Level" class="era5-level-select" :disabled="!era5Levels.length">
+            <option v-for="level in era5Levels" :key="level" :value="level">{{ level }} hPa</option>
+          </select>
           <button class="tool-button" type="button" title="导出台风数据" @click="downloadTrack">
             <span>⇩</span>
             <small>导出</small>
@@ -401,10 +479,13 @@ onUnmounted(() => {
           :show-track="showTrack"
           :forecast-start="forecastOrigin"
           :predictions="showForecast ? prediction?.predictions ?? [] : []"
+          :show-era5="showEra5"
+          :era5-point="currentEra5"
+          :era5-level="era5Level"
         />
         <div class="map-caption">
           <span>CESIUM 3D VIEW</span>
-          <span>经度 95°E — 196°E · 纬度 2°N — 58°N</span>
+          <span>{{ showEra5 ? `ERA5 ${era5Level} hPa · ${era5StatusLabel}` : 'ERA5 图层已隐藏' }}</span>
         </div>
       </section>
 
@@ -433,6 +514,20 @@ onUnmounted(() => {
               @click="activeTab = 'forecast'"
             >
               预测推演
+            </button>
+            <button
+              type="button"
+              :class="{ active: activeTab === 'comparison' }"
+              @click="activeTab = 'comparison'"
+            >
+              模型对比
+            </button>
+            <button
+              type="button"
+              :class="{ active: activeTab === 'evaluation' }"
+              @click="activeTab = 'evaluation'"
+            >
+              误差评估
             </button>
           </div>
 
@@ -484,14 +579,47 @@ onUnmounted(() => {
                 :title="`${formatTime(point.time)} · ${point.speed ?? '--'} m/s`"
               ></span>
             </div>
+            <section class="environment-panel">
+              <div class="section-label">
+                <span>ERA5 环境风场</span>
+                <span>{{ era5StatusLabel }}</span>
+              </div>
+              <div v-if="currentEra5" class="environment-grid">
+                <div class="environment-cell">
+                  <span>{{ era5Level }} hPa 风速</span>
+                  <strong>{{ currentWind?.speed_ms.toFixed(1) ?? '--' }}</strong>
+                  <small>m/s</small>
+                </div>
+                <div class="environment-cell">
+                  <span>{{ era5Level }} hPa 风向</span>
+                  <strong>{{ currentWind ? `${currentWind.direction_deg.toFixed(0)}°` : '--' }}</strong>
+                  <small>矢量指向</small>
+                </div>
+                <div class="environment-cell">
+                  <span>500/850 风切变</span>
+                  <strong>{{ currentShear?.toFixed(1) ?? '--' }}</strong>
+                  <small>m/s</small>
+                </div>
+                <div class="environment-cell">
+                  <span>ERA5 时效</span>
+                  <strong>{{ currentEra5.era5_age_hours.toFixed(1) }}</strong>
+                  <small>小时</small>
+                </div>
+              </div>
+              <p v-else class="environment-empty">
+                {{ era5Error || '当前轨迹点没有匹配的 ERA5 风场样本。' }}
+              </p>
+            </section>
+            <TyphoonCharts :points="points" :current-index="currentIndex" />
           </template>
 
-          <template v-else>
+          <template v-else-if="activeTab === 'forecast'">
             <div class="forecast-workspace">
               <div class="forecast-model-row">
                 <div>
                   <span class="metric-label">模型版本</span>
-                  <strong>{{ health?.model.model_version || '未加载' }}</strong>
+                  <strong>轨迹 CNN baseline</strong>
+                  <small class="model-subtitle">ERA5 环境量已接入展示</small>
                 </div>
                 <span
                   class="forecast-state"
@@ -530,9 +658,18 @@ onUnmounted(() => {
                     <span>风速</span>
                     <strong>{{ selectedForecastPoint.speed_ms?.toFixed(1) ?? '--' }} m/s</strong>
                   </div>
+                  <div>
+                    <span>90% 历史误差半径</span>
+                    <strong>{{ selectedForecastPoint.location_radius_90_km?.toFixed(0) ?? '--' }} km</strong>
+                  </div>
                 </div>
                 <p class="forecast-quality-note">
-                  固定测试集提示：CNN 路径在 6-18h 尚未优于匀速基线。预测不确定性区间未校准。
+                  <template v-if="prediction.uncertainty?.status === 'historical_calibration'">
+                    地图圆圈表示同一模型在历史验证集校准的 90% 位置误差范围；不是实时概率保证或灾害风险范围。
+                  </template>
+                  <template v-else>
+                    当前模型没有匹配的历史校准结果，地图不显示概率范围。
+                  </template>
                 </p>
                 <div class="forecast-actions">
                   <button
@@ -569,6 +706,67 @@ onUnmounted(() => {
                   {{ loadingPrediction ? '计算中…' : '运行 CNN 预测' }}
                 </button>
               </template>
+            </div>
+          </template>
+
+          <template v-else-if="activeTab === 'comparison'">
+            <div class="analysis-workspace">
+              <div class="analysis-headline">
+                <div>
+                  <span class="metric-label">固定测试集</span>
+                  <strong>{{ experimentSummary?.test_samples ?? '--' }} 个窗口 · {{ experimentSummary?.test_storms ?? '--' }} 个台风</strong>
+                </div>
+                <span class="forecast-state is-ready">ERA5 500/850</span>
+              </div>
+              <div class="analysis-horizons" role="group" aria-label="对比时效">
+                <button
+                  v-for="hour in [6, 12, 18, 24, 30, 36]"
+                  :key="hour"
+                  type="button"
+                  :class="{ active: analysisHorizon === hour }"
+                  @click="analysisHorizon = hour"
+                >
+                  {{ hour }}h
+                </button>
+              </div>
+              <div v-if="experimentSummary?.models.length" class="analysis-table-wrap">
+                <table class="analysis-table">
+                  <thead>
+                    <tr><th>模型</th><th>MAE</th><th>RMSE</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="model in experimentSummary.models" :key="model.key">
+                      <td>{{ model.name }}</td>
+                      <td>{{ metricAt(model)?.path_mae_km.toFixed(1) ?? '--' }} km</td>
+                      <td>{{ metricAt(model)?.path_rmse_km.toFixed(1) ?? '--' }} km</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p v-else class="environment-empty">实验摘要尚未加载。</p>
+              <p class="analysis-note">指标来自固定台风分组测试集；当前在线预测仍是轨迹 CNN，ERA5 融合模型用于实验对比。</p>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="analysis-workspace">
+              <div class="analysis-headline">
+                <div>
+                  <span class="metric-label">{{ analysisHorizon }}h 评估</span>
+                  <strong>路径误差与区间覆盖</strong>
+                </div>
+                <span class="forecast-state is-ready">可追溯实验</span>
+              </div>
+              <div class="analysis-metric-list">
+                <div><span>ERA5 500/850 融合路径 MAE</span><strong>{{ modelMetricText('fusion_500_850', 'path_mae_km') }}</strong></div>
+                <div><span>匀速外推路径 MAE</span><strong>{{ modelMetricText('constant_velocity', 'path_mae_km') }}</strong></div>
+                <div><span>轨迹 CNN 90% 窗口覆盖率</span><strong>{{ formatPercent(uncertaintyAt()?.location_coverage_90) }}</strong></div>
+                <div><span>轨迹 CNN 历史误差半径</span><strong>{{ uncertaintyAt()?.location_radius_90_km?.toFixed(0) ?? '--' }} km</strong></div>
+              </div>
+              <div class="coverage-bar">
+                <span :style="{ width: `${Math.min(100, (uncertaintyAt()?.location_coverage_90 ?? 0) * 100)}%` }"></span>
+              </div>
+              <p class="analysis-note">目标覆盖率为 90%；区间来自当前在线轨迹 CNN checkpoint 的 MC Dropout + conformal 历史校准，不代表实时灾害风险概率。</p>
             </div>
           </template>
 

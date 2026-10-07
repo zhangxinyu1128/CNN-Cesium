@@ -5,6 +5,12 @@ backend/.pytest_cache/
 artifacts/runs/
 data/processed/*.jsonl
 data/processed/*.tmp
+data/era5/
+ERA5data/*.grib
+ERA5data/**/*.grib
+ERA5data/**/*.grib.gz
+ERA5data/**/*.grib.gz.tmp
+artifacts/**/*.jsonl
 
 # Frontend dependencies, builds, IDE files, and local environment secrets.
 CNN-Cesium/node_modules/

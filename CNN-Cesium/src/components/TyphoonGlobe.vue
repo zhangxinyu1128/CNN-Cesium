@@ -2,6 +2,7 @@
 import * as Cesium from 'cesium'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type {
+  Era5Point,
   PredictionHistoryPoint,
   PredictionPoint,
   TyphoonPoint
@@ -13,11 +14,17 @@ const props = withDefaults(
     points: TyphoonPoint[]
     currentIndex: number
     showTrack?: boolean
+    showEra5?: boolean
+    era5Level?: number
+    era5Point?: Era5Point | null
     forecastStart?: PredictionHistoryPoint | null
     predictions?: PredictionPoint[]
   }>(),
   {
     showTrack: true,
+    showEra5: true,
+    era5Level: 850,
+    era5Point: null,
     forecastStart: null,
     predictions: () => []
   }
@@ -32,8 +39,11 @@ let viewer: Cesium.Viewer | null = null
 let trackEntity: Cesium.Entity | null = null
 let currentEntity: Cesium.Entity | null = null
 let forecastEntity: Cesium.Entity | null = null
+let era5ArrowEntity: Cesium.Entity | null = null
+let era5CenterEntity: Cesium.Entity | null = null
 let pointEntities: Cesium.Entity[] = []
 let forecastPointEntities: Cesium.Entity[] = []
+let uncertaintyEntities: Cesium.Entity[] = []
 let validTrackPoints: TyphoonPoint[] = []
 
 const colors = [
@@ -56,13 +66,19 @@ function clearTrack() {
   if (trackEntity) viewer.entities.remove(trackEntity)
   if (currentEntity) viewer.entities.remove(currentEntity)
   if (forecastEntity) viewer.entities.remove(forecastEntity)
+  if (era5ArrowEntity) viewer.entities.remove(era5ArrowEntity)
+  if (era5CenterEntity) viewer.entities.remove(era5CenterEntity)
   pointEntities.forEach((entity) => viewer?.entities.remove(entity))
   forecastPointEntities.forEach((entity) => viewer?.entities.remove(entity))
+  uncertaintyEntities.forEach((entity) => viewer?.entities.remove(entity))
   trackEntity = null
   currentEntity = null
   forecastEntity = null
+  era5ArrowEntity = null
+  era5CenterEntity = null
   pointEntities = []
   forecastPointEntities = []
+  uncertaintyEntities = []
   validTrackPoints = []
 }
 
@@ -105,6 +121,22 @@ function renderForecast() {
   forecastPointEntities.push(originEntity)
 
   forecastPoints.forEach((point) => {
+    if (typeof point.location_radius_90_km === 'number' && point.location_radius_90_km > 0) {
+      const circle = viewer?.entities.add({
+        name: `+${point.lead_hours} 小时 · 90% 历史校准位置范围 · 半径 ${Math.round(point.location_radius_90_km)} km`,
+        position: Cesium.Cartesian3.fromDegrees(point.lng, point.lat),
+        ellipse: {
+          semiMajorAxis: point.location_radius_90_km * 1000,
+          semiMinorAxis: point.location_radius_90_km * 1000,
+          material: Cesium.Color.fromCssColorString('#ff806f').withAlpha(0.10),
+          outline: true,
+          outlineColor: Cesium.Color.fromCssColorString('#ff9c8d').withAlpha(0.72),
+          outlineWidth: 1,
+          height: 1000
+        }
+      })
+      if (circle) uncertaintyEntities.push(circle)
+    }
     const entity = viewer?.entities.add({
       name: `预测 +${point.lead_hours} 小时 · ${point.speed_ms?.toFixed(1) ?? '--'} m/s`,
       position: Cesium.Cartesian3.fromDegrees(point.lng, point.lat),
@@ -130,6 +162,58 @@ function updateCurrentMarker() {
 
   pointEntities.forEach((entity, pointIndex) => {
     if (entity.point) entity.point.pixelSize = pointIndex === index ? 9 : 5
+  })
+}
+
+function renderEra5() {
+  if (!viewer) return
+  if (era5ArrowEntity) viewer.entities.remove(era5ArrowEntity)
+  if (era5CenterEntity) viewer.entities.remove(era5CenterEntity)
+  era5ArrowEntity = null
+  era5CenterEntity = null
+  if (!props.showEra5 || !props.era5Point) return
+
+  const level = props.era5Point.levels[String(props.era5Level)]
+  if (!level || !Number.isFinite(level.speed_ms)) return
+  const speed = Math.max(level.speed_ms, 0.01)
+  const lengthDegrees = Math.max(0.35, Math.min(2.3, speed * 0.09))
+  const latitudeScale = Math.max(Math.cos(Cesium.Math.toRadians(props.era5Point.lat)), 0.25)
+  const endLng = props.era5Point.lng + (lengthDegrees * level.u / speed) / latitudeScale
+  const endLat = props.era5Point.lat + lengthDegrees * level.v / speed
+  const positions = Cesium.Cartesian3.fromDegreesArray([
+    props.era5Point.lng,
+    props.era5Point.lat,
+    endLng,
+    endLat
+  ])
+  const color = Cesium.Color.fromCssColorString('#f7c873')
+  era5ArrowEntity = viewer.entities.add({
+    name: `ERA5 ${props.era5Level} hPa 风矢量`,
+    polyline: {
+      positions,
+      width: 5,
+      material: new Cesium.PolylineArrowMaterialProperty(color)
+    }
+  })
+  era5CenterEntity = viewer.entities.add({
+    name: `ERA5 ${props.era5Level} hPa ${level.speed_ms.toFixed(1)} m/s`,
+    position: Cesium.Cartesian3.fromDegrees(props.era5Point.lng, props.era5Point.lat),
+    point: {
+      pixelSize: 12,
+      color: Cesium.Color.TRANSPARENT,
+      outlineColor: color,
+      outlineWidth: 2,
+      disableDepthTestDistance: Number.POSITIVE_INFINITY
+    },
+    label: {
+      text: `ERA5 ${props.era5Level} hPa · ${level.speed_ms.toFixed(1)} m/s`,
+      font: '11px sans-serif',
+      fillColor: Cesium.Color.WHITE,
+      showBackground: true,
+      backgroundColor: Cesium.Color.fromCssColorString('#102b38cc'),
+      pixelOffset: new Cesium.Cartesian2(12, 12),
+      disableDepthTestDistance: Number.POSITIVE_INFINITY
+    }
   })
 }
 
@@ -210,6 +294,7 @@ function renderTrack() {
   })
 
   renderForecast()
+  renderEra5()
 
   focusTrack()
 }
@@ -276,6 +361,9 @@ watch(
   () => [
     props.points,
     props.showTrack,
+    props.showEra5,
+    props.era5Level,
+    props.era5Point,
     props.forecastStart,
     props.predictions
   ],
@@ -285,7 +373,10 @@ watch(
 
 watch(
   () => props.currentIndex,
-  () => updateCurrentMarker()
+  () => {
+    updateCurrentMarker()
+    renderEra5()
+  }
 )
 
 onBeforeUnmount(() => {

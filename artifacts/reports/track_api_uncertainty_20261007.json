@@ -1,0 +1,73 @@
+{
+  "model_version": "track-cnn-1d-v1",
+  "model_type": "track",
+  "seed": 2026,
+  "mc_samples": 50,
+  "dataset_fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+  "checkpoint_sha256": "136de0d4ad9441bcd92b0518fcd00a453823a742f1beb5db6d84d6e9040574e4",
+  "calibration": {
+    "method": "storm-group split conformal 90th percentile of location error",
+    "split": "validation",
+    "storm_count": 69,
+    "window_count": 926,
+    "target_coverage": 0.9,
+    "location_radius_km": [
+      479.7534459833955,
+      479.7534459833955,
+      491.16876611762007,
+      616.5440675339663,
+      838.4583804794671,
+      1008.2428867274161
+    ]
+  },
+  "evaluation": {
+    "split": "frozen_test",
+    "storm_count": 114,
+    "window_count": 1670,
+    "by_horizon": [
+      {
+        "lead_hours": 6,
+        "location_radius_90_km": 479.7534459833955,
+        "location_coverage_90": 0.9904191616766467,
+        "location_storm_coverage_90": 0.9473684210526315,
+        "median_error_km": 138.47810596812377
+      },
+      {
+        "lead_hours": 12,
+        "location_radius_90_km": 479.7534459833955,
+        "location_coverage_90": 0.9964071856287425,
+        "location_storm_coverage_90": 0.9736842105263158,
+        "median_error_km": 129.6026858357212
+      },
+      {
+        "lead_hours": 18,
+        "location_radius_90_km": 491.16876611762007,
+        "location_coverage_90": 0.9790419161676647,
+        "location_storm_coverage_90": 0.8596491228070176,
+        "median_error_km": 145.98510420407746
+      },
+      {
+        "lead_hours": 24,
+        "location_radius_90_km": 616.5440675339663,
+        "location_coverage_90": 0.9820359281437125,
+        "location_storm_coverage_90": 0.8771929824561403,
+        "median_error_km": 177.85919805868525
+      },
+      {
+        "lead_hours": 30,
+        "location_radius_90_km": 838.4583804794671,
+        "location_coverage_90": 0.9868263473053892,
+        "location_storm_coverage_90": 0.9035087719298246,
+        "median_error_km": 227.8854460286986
+      },
+      {
+        "lead_hours": 36,
+        "location_radius_90_km": 1008.2428867274161,
+        "location_coverage_90": 0.9838323353293413,
+        "location_storm_coverage_90": 0.8859649122807017,
+        "median_error_km": 288.72281710023617
+      }
+    ]
+  },
+  "interpretation": "Historical 90% storm-calibrated location radius for this exact checkpoint; not a real-time forecast guarantee or a hazard probability."
+}

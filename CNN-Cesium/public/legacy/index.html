@@ -8,6 +8,53 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Typhoon_System</title>
+    <script>
+      (() => {
+        try {
+          if (window.top !== window.self) document.documentElement.classList.add('main-screen-embedded')
+        } catch {}
+      })()
+    </script>
+    <style>
+      /* The main page embeds this legacy screen below its own title. */
+      html.main-screen-embedded .layout-main .list-panel .widget-panel {
+        top: 10vh !important;
+        left: 4px !important;
+        width: min(20vw, 420px) !important;
+        height: min(60vh, 700px) !important;
+        transform: none !important;
+        transform-origin: top left;
+      }
+
+      html.main-screen-embedded .layout-main .list-panel .widget-panel .widget-panel-main {
+        max-height: calc(100% - 35px) !important;
+        overflow: hidden;
+      }
+
+      html.main-screen-embedded .layout-main .list-panel .el-table {
+        height: min(42vh, 500px) !important;
+      }
+    </style>
+    <script>
+      (() => {
+        try {
+          const state = JSON.parse(localStorage.getItem('typhoon-store') || '{}')
+          localStorage.setItem('typhoon-store', JSON.stringify({ ...state, selectedYear: '2025' }))
+        } catch {}
+
+        const originalOpen = XMLHttpRequest.prototype.open
+        let redirectedInitialYear = false
+        XMLHttpRequest.prototype.open = function (method, url, async, username, password) {
+          let nextUrl = String(url)
+          if (!redirectedInitialYear && /\/api\/2024\.json(?:\?|$)/.test(nextUrl)) {
+            nextUrl = nextUrl.replace('/api/2024.json', '/api/2025.json')
+            redirectedInitialYear = true
+          }
+          return originalOpen.call(this, method, nextUrl, async, username, password)
+        }
+      })()
+    </script>
+    <script src="/legacy/replay-bridge.js"></script>
     <script type="module" crossorigin src="/legacy/assets/index-CQH6EaLQ.js"></script>
     <link rel="stylesheet" crossorigin href="/legacy/assets/index-BqmoK0ws.css">
   </head>

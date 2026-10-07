@@ -1,0 +1,560 @@
+{
+  "levels_hPa": [
+    500,
+    850
+  ],
+  "variables": [
+    "u",
+    "v"
+  ],
+  "features": [
+    "u500",
+    "v500",
+    "u850",
+    "v850",
+    "era5_age_hours"
+  ],
+  "interpolation": {
+    "time": "most recent 6-hour UTC ERA5 cycle at or before the observation; age is included as a feature",
+    "space": "bilinear on each GRIB regular latitude-longitude grid",
+    "future_weather_leakage": "avoided; no ERA5 cycle later than the track observation is used",
+    "coverage_rule": "all four 500/850 hPa u/v fields required at the preceding cycle"
+  },
+  "track_points": 73388,
+  "paired_points": 58098,
+  "paired_point_fraction": 0.7916553114950673,
+  "by_track_year": {
+    "1945": {
+      "track_points": 560,
+      "paired_points": 0
+    },
+    "1946": {
+      "track_points": 453,
+      "paired_points": 451
+    },
+    "1947": {
+      "track_points": 501,
+      "paired_points": 0
+    },
+    "1948": {
+      "track_points": 544,
+      "paired_points": 544
+    },
+    "1949": {
+      "track_points": 730,
+      "paired_points": 708
+    },
+    "1950": {
+      "track_points": 548,
+      "paired_points": 508
+    },
+    "1951": {
+      "track_points": 691,
+      "paired_points": 670
+    },
+    "1952": {
+      "track_points": 834,
+      "paired_points": 0
+    },
+    "1953": {
+      "track_points": 801,
+      "paired_points": 0
+    },
+    "1954": {
+      "track_points": 670,
+      "paired_points": 0
+    },
+    "1955": {
+      "track_points": 766,
+      "paired_points": 711
+    },
+    "1956": {
+      "track_points": 646,
+      "paired_points": 638
+    },
+    "1957": {
+      "track_points": 822,
+      "paired_points": 0
+    },
+    "1958": {
+      "track_points": 744,
+      "paired_points": 730
+    },
+    "1959": {
+      "track_points": 549,
+      "paired_points": 544
+    },
+    "1960": {
+      "track_points": 1040,
+      "paired_points": 998
+    },
+    "1961": {
+      "track_points": 909,
+      "paired_points": 886
+    },
+    "1962": {
+      "track_points": 815,
+      "paired_points": 773
+    },
+    "1963": {
+      "track_points": 796,
+      "paired_points": 0
+    },
+    "1964": {
+      "track_points": 1008,
+      "paired_points": 988
+    },
+    "1965": {
+      "track_points": 961,
+      "paired_points": 893
+    },
+    "1966": {
+      "track_points": 737,
+      "paired_points": 707
+    },
+    "1967": {
+      "track_points": 797,
+      "paired_points": 0
+    },
+    "1968": {
+      "track_points": 945,
+      "paired_points": 917
+    },
+    "1969": {
+      "track_points": 502,
+      "paired_points": 496
+    },
+    "1970": {
+      "track_points": 665,
+      "paired_points": 651
+    },
+    "1971": {
+      "track_points": 1088,
+      "paired_points": 1071
+    },
+    "1972": {
+      "track_points": 853,
+      "paired_points": 833
+    },
+    "1973": {
+      "track_points": 677,
+      "paired_points": 0
+    },
+    "1974": {
+      "track_points": 838,
+      "paired_points": 832
+    },
+    "1975": {
+      "track_points": 576,
+      "paired_points": 573
+    },
+    "1976": {
+      "track_points": 838,
+      "paired_points": 827
+    },
+    "1977": {
+      "track_points": 663,
+      "paired_points": 0
+    },
+    "1978": {
+      "track_points": 926,
+      "paired_points": 920
+    },
+    "1979": {
+      "track_points": 831,
+      "paired_points": 814
+    },
+    "1980": {
+      "track_points": 748,
+      "paired_points": 737
+    },
+    "1981": {
+      "track_points": 795,
+      "paired_points": 776
+    },
+    "1982": {
+      "track_points": 1013,
+      "paired_points": 980
+    },
+    "1983": {
+      "track_points": 586,
+      "paired_points": 0
+    },
+    "1984": {
+      "track_points": 665,
+      "paired_points": 657
+    },
+    "1985": {
+      "track_points": 831,
+      "paired_points": 805
+    },
+    "1986": {
+      "track_points": 1131,
+      "paired_points": 1124
+    },
+    "1987": {
+      "track_points": 769,
+      "paired_points": 0
+    },
+    "1988": {
+      "track_points": 705,
+      "paired_points": 699
+    },
+    "1989": {
+      "track_points": 919,
+      "paired_points": 917
+    },
+    "1990": {
+      "track_points": 949,
+      "paired_points": 942
+    },
+    "1991": {
+      "track_points": 1028,
+      "paired_points": 1021
+    },
+    "1992": {
+      "track_points": 1081,
+      "paired_points": 1066
+    },
+    "1993": {
+      "track_points": 834,
+      "paired_points": 0
+    },
+    "1994": {
+      "track_points": 1253,
+      "paired_points": 1237
+    },
+    "1995": {
+      "track_points": 607,
+      "paired_points": 606
+    },
+    "1996": {
+      "track_points": 789,
+      "paired_points": 789
+    },
+    "1997": {
+      "track_points": 804,
+      "paired_points": 0
+    },
+    "1998": {
+      "track_points": 293,
+      "paired_points": 290
+    },
+    "1999": {
+      "track_points": 389,
+      "paired_points": 387
+    },
+    "2000": {
+      "track_points": 614,
+      "paired_points": 612
+    },
+    "2001": {
+      "track_points": 791,
+      "paired_points": 786
+    },
+    "2002": {
+      "track_points": 765,
+      "paired_points": 760
+    },
+    "2003": {
+      "track_points": 717,
+      "paired_points": 0
+    },
+    "2004": {
+      "track_points": 835,
+      "paired_points": 834
+    },
+    "2005": {
+      "track_points": 1084,
+      "paired_points": 1084
+    },
+    "2006": {
+      "track_points": 1157,
+      "paired_points": 1157
+    },
+    "2007": {
+      "track_points": 896,
+      "paired_points": 0
+    },
+    "2008": {
+      "track_points": 1075,
+      "paired_points": 1075
+    },
+    "2009": {
+      "track_points": 1211,
+      "paired_points": 1211
+    },
+    "2010": {
+      "track_points": 918,
+      "paired_points": 918
+    },
+    "2011": {
+      "track_points": 1084,
+      "paired_points": 1084
+    },
+    "2012": {
+      "track_points": 1556,
+      "paired_points": 1549
+    },
+    "2013": {
+      "track_points": 1401,
+      "paired_points": 0
+    },
+    "2014": {
+      "track_points": 1111,
+      "paired_points": 1111
+    },
+    "2015": {
+      "track_points": 1538,
+      "paired_points": 1538
+    },
+    "2016": {
+      "track_points": 1291,
+      "paired_points": 1291
+    },
+    "2017": {
+      "track_points": 1400,
+      "paired_points": 0
+    },
+    "2018": {
+      "track_points": 1771,
+      "paired_points": 1771
+    },
+    "2019": {
+      "track_points": 1643,
+      "paired_points": 1633
+    },
+    "2020": {
+      "track_points": 1437,
+      "paired_points": 1416
+    },
+    "2021": {
+      "track_points": 1475,
+      "paired_points": 1475
+    },
+    "2022": {
+      "track_points": 1228,
+      "paired_points": 1228
+    },
+    "2023": {
+      "track_points": 1231,
+      "paired_points": 1231
+    },
+    "2024": {
+      "track_points": 1647,
+      "paired_points": 1647
+    },
+    "2025": {
+      "track_points": 999,
+      "paired_points": 971
+    }
+  },
+  "paired_windows_by_frozen_split": {
+    "train": {
+      "source_windows": 33761,
+      "paired_windows": 25961,
+      "coverage_fraction": 0.7689641894493646,
+      "storms": 1210,
+      "output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\historical_500_850_refresh_20261002\\windows\\train.jsonl"
+    },
+    "validation": {
+      "source_windows": 926,
+      "paired_windows": 687,
+      "coverage_fraction": 0.7419006479481641,
+      "storms": 48,
+      "output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\historical_500_850_refresh_20261002\\windows\\validation.jsonl"
+    },
+    "test": {
+      "source_windows": 1670,
+      "paired_windows": 1661,
+      "coverage_fraction": 0.9946107784431137,
+      "storms": 112,
+      "output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\historical_500_850_refresh_20261002\\windows\\test.jsonl"
+    }
+  },
+  "point_output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\historical_500_850_refresh_20261002\\point_winds_500_850.jsonl",
+  "files": [
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\2345\\234data_track_filtered.grib.gz.tmp",
+      "bytes": 2357836320,
+      "years_from_name_or_metadata": [
+        1962,
+        1964,
+        1972,
+        1974,
+        1982,
+        1984
+      ],
+      "messages_scanned": 20272,
+      "matched_wind_messages": 14300,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\2345\\data_track_times.grib",
+      "bytes": 649009800,
+      "years_from_name_or_metadata": [
+        2025
+      ],
+      "messages_scanned": 5580,
+      "matched_wind_messages": 2232,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\2345\\era5_1955_1965_1975_1985_1995_2005_2015_2022_2023_2024_track_filtered.grib",
+      "bytes": 2303868480,
+      "years_from_name_or_metadata": [
+        1955,
+        1965,
+        1975,
+        1985,
+        1995,
+        2005,
+        2015,
+        2022,
+        2023,
+        2024
+      ],
+      "messages_scanned": 19808,
+      "matched_wind_messages": 19304,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\2345\\era5_1992_1994_2002_2004_2012_2014_track_filtered.grib",
+      "bytes": 2344344360,
+      "years_from_name_or_metadata": [
+        1992,
+        1994,
+        2002,
+        2004,
+        2012,
+        2014
+      ],
+      "messages_scanned": 20156,
+      "matched_wind_messages": 13000,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\678\\era5_1946_1948_1956_1958_1966_1968_track_filtered.grib",
+      "bytes": 2188023720,
+      "years_from_name_or_metadata": [
+        1946,
+        1948,
+        1956,
+        1958,
+        1966,
+        1968
+      ],
+      "messages_scanned": 18812,
+      "matched_wind_messages": 12364,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\678\\era5_1976_1978_1986_1988_1996_1998_track_filtered.grib",
+      "bytes": 2387146440,
+      "years_from_name_or_metadata": [
+        1976,
+        1978,
+        1986,
+        1988,
+        1996,
+        1998
+      ],
+      "messages_scanned": 20524,
+      "matched_wind_messages": 13356,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\678\\era5_2006_2008_2016_2018_track_filtered.grib",
+      "bytes": 1217067840,
+      "years_from_name_or_metadata": [
+        2006,
+        2008,
+        2016,
+        2018
+      ],
+      "messages_scanned": 10464,
+      "matched_wind_messages": 7200,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\901\\era5_1949_1950_1951_track_filtered.grib.gz",
+      "bytes": 708422128,
+      "years_from_name_or_metadata": [
+        1949,
+        1950,
+        1951
+      ],
+      "messages_scanned": 6704,
+      "matched_wind_messages": 6572,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\901\\era5_1959_1960_1961_1969_1970_1971_track_filtered.grib.gz",
+      "bytes": 1436042478,
+      "years_from_name_or_metadata": [
+        1959,
+        1960,
+        1961,
+        1969,
+        1970,
+        1971
+      ],
+      "messages_scanned": 13580,
+      "matched_wind_messages": 13368,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\901\\era5_1979_1980_1981_1989_1990_1991_track_filtered.grib.gz",
+      "bytes": 1641067279,
+      "years_from_name_or_metadata": [
+        1979,
+        1980,
+        1981,
+        1989,
+        1990,
+        1991
+      ],
+      "messages_scanned": 15484,
+      "matched_wind_messages": 15208,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\901\\era5_1999_2000_2001_2009_2010_2011_track_filtered.grib.gz",
+      "bytes": 1022639231,
+      "years_from_name_or_metadata": [
+        1999,
+        2000,
+        2001,
+        2009,
+        2010,
+        2011
+      ],
+      "messages_scanned": 9672,
+      "matched_wind_messages": 9384,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\901\\era5_2019_2020_2021_track_filtered.grib.gz",
+      "bytes": 548397862,
+      "years_from_name_or_metadata": [
+        2019,
+        2020,
+        2021
+      ],
+      "messages_scanned": 5176,
+      "matched_wind_messages": 4972,
+      "sha256": null
+    },
+    {
+      "file": "D:\\project\\CNN-Cesium\\ERA5data\\data.grib.gz",
+      "bytes": 1539083918,
+      "years_from_name_or_metadata": [
+        2025
+      ],
+      "messages_scanned": 14600,
+      "matched_wind_messages": 2232,
+      "sha256": null
+    }
+  ],
+  "note": "Year availability reflects GRIB files physically present and readable during this run; temporary .tmp files are excluded."
+}

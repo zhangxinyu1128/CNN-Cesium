@@ -1,0 +1,8 @@
+# ERA5 GRIB inspection and extraction for the project's Windows/Python 3.8 setup.
+eccodes==2.41.0
+cfgrib==0.9.14.1
+attrs==23.2.0
+findlibs==0.1.2
+cffi==1.17.1
+pycparser==2.22
+packaging==24.2

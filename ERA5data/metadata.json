@@ -1,0 +1,37 @@
+{
+  "file": "D:\\project\\CNN-Cesium\\ERA5data\\data.grib",
+  "format": "GRIB",
+  "messages": 14600,
+  "variables": [
+    "u",
+    "v"
+  ],
+  "pressure_levels_hPa": [
+    200,
+    300,
+    500,
+    700,
+    850
+  ],
+  "time_utc": [
+    "00:00",
+    "06:00",
+    "12:00",
+    "18:00"
+  ],
+  "date_min_utc": "2025-01-01",
+  "date_max_utc": "2025-12-31",
+  "grids": [
+    {
+      "grid_type": "regular_ll",
+      "north": 45.0,
+      "south": 0.0,
+      "west": 100.0,
+      "east": 180.0,
+      "dx": 0.25,
+      "dy": 0.25,
+      "Ni": 321,
+      "Nj": 181
+    }
+  ]
+}

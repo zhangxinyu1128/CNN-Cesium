@@ -1,0 +1,7 @@
+# Optional high-level xarray/cfgrib interface. The project's low-level GRIB
+# inspector and planned point sampler do not require this extra file.
+-r requirements-era5.txt
+xarray==2023.1.0
+pandas==1.5.3
+python-dateutil==2.9.0.post0
+pytz==2024.2

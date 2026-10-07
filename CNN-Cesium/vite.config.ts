@@ -9,7 +9,7 @@ import Components from 'unplugin-vue-components/vite'
 const projectRoot = resolve(__dirname, '..')
 const dataRoot = resolve(projectRoot, 'data')
 
-function localTyphoonDataPlugin(enabled: boolean) {
+function localTyphoonDataPlugin(enabled: boolean, legacyFallback: boolean) {
   return {
     name: 'local-typhoon-data',
     configureServer(server: {
@@ -27,7 +27,7 @@ function localTyphoonDataPlugin(enabled: boolean) {
         ) => void
       }
     }) {
-      if (!enabled) return
+      if (!enabled && !legacyFallback) return
       server.middlewares.use((req, res, next) => {
         if (!req.url?.startsWith('/api/')) {
           next()
@@ -51,7 +51,26 @@ function localTyphoonDataPlugin(enabled: boolean) {
               .filter((file) => /^\d{4}\.json$/.test(file))
               .map((file) => Number(file.slice(0, 4)))
               .sort((a, b) => b - a)
-            sendJson(200, years)
+            sendJson(200, years.map((year) => ({ year })))
+            return
+          }
+
+          // The original Cesium build requests these two legacy endpoints directly.
+          // Keep them available from the local dataset even when the Python API is down.
+          const legacyYearMatch = pathname.match(/^\/api\/(\d{4})\.json$/)
+          if (legacyFallback && legacyYearMatch) {
+            const year = legacyYearMatch[1]
+            const source = await readFile(resolve(dataRoot, 'year', `${year}.json`), 'utf8')
+            sendJson(200, JSON.parse(source))
+            return
+          }
+
+          const legacyTyphoonMatch = pathname.match(/^\/api\/([A-Za-z0-9_-]+)\.json$/)
+          if (legacyFallback && legacyTyphoonMatch) {
+            const id = legacyTyphoonMatch[1]
+            const source = await readFile(resolve(dataRoot, 'typhoon', `${id}.json`), 'utf8')
+            const parsed = JSON.parse(source)
+            sendJson(200, Array.isArray(parsed) ? parsed : [parsed])
             return
           }
 
@@ -80,7 +99,9 @@ function localTyphoonDataPlugin(enabled: boolean) {
             return
           }
 
-          const typhoonMatch = pathname.match(/^\/api\/(?:typhoons\/|)([A-Za-z0-9_-]+)(?:\.json)?$/)
+          // Do not let the local legacy fallback swallow newer API routes such as
+          // POST /api/predict. Only direct typhoon resources are handled here.
+          const typhoonMatch = pathname.match(/^\/api\/typhoons\/([A-Za-z0-9_-]+)$/)
           if (typhoonMatch) {
             const id = typhoonMatch[1]
             const source = await readFile(resolve(dataRoot, 'typhoon', `${id}.json`), 'utf8')
@@ -114,7 +135,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       cesium(),
-      localTyphoonDataPlugin(!proxyEnabled),
+      localTyphoonDataPlugin(!proxyEnabled, true),
       AutoImport({
         imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
         include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/, /\.md$/],

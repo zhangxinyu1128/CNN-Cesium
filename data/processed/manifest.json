@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "created_at_utc": "2026-09-25T17:56:48.511332+00:00",
+  "created_at_utc": "2026-09-27T12:06:10.462233+00:00",
   "source": {
     "root": "D:\\project\\CNN-Cesium\\data",
     "fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
@@ -258,6 +258,13 @@
         2025
       ]
     },
-    "created_at_utc": "2026-09-25T17:56:54.055696+00:00"
+    "split_file": "D:\\project\\CNN-Cesium\\data\\splits\\storm_splits.json",
+    "split_file_sha256": "2836e1da45f6de2dc2081cdb8c92eccf2042a483215cb83c9e5831d8736ac00e",
+    "split_file_storm_counts": {
+      "train": 1687,
+      "validation": 94,
+      "test": 154
+    },
+    "created_at_utc": "2026-09-27T12:06:15.344323+00:00"
   }
 }

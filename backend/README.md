@@ -11,7 +11,7 @@ python -m pip install -r backend\requirements.txt -r ml\requirements.txt
 python -m uvicorn backend.app.main:app --reload --port 8000
 ```
 
-预测输入必须包含五个时间递增且相隔 6 小时的历史观测。第一个点用于计算位移特征，后四个点需要提供 `speed` 和 `power`。模型输出 6、12、18、24、30、36 小时结果；可在 `horizons_hours` 中请求其中的有序子集。数据中的无时区时间按照 UTC 处理。预测区间尚未校准，`p05` 和 `p95` 为 `null`。
+预测输入必须包含五个时间递增且相隔 6 小时的历史观测。第一个点用于计算位移特征，后四个点需要提供 `speed` 和 `power`。模型输出 6、12、18、24、30、36 小时结果；可在 `horizons_hours` 中请求其中的有序子集。数据中的无时区时间按照 UTC 处理。默认 checkpoint 若与校准记录中的 SHA-256 完全匹配，响应会包含 `location_radius_90_km` 和校准说明；这是历史位置误差范围，不是灾害概率或实时预报保证。`p05` 和 `p95` 经纬度分位坐标当前为 `null`。
 
 接口：
 
@@ -30,6 +30,15 @@ $env:TC_DATA_ROOT = 'D:\project\CNN-Cesium\data'
 $env:TC_MODEL_PATH = 'D:\project\CNN-Cesium\artifacts\checkpoints\track_cnn_baseline.pth'
 $env:TC_DEVICE = 'auto' # auto, cuda, cpu
 ```
+
+默认仍使用原始轨迹 CNN。试用残差 CNN 时，在启动后端前改为：
+
+```powershell
+$env:TC_MODEL_PATH = 'D:\project\CNN-Cesium\artifacts\residual\checkpoints\track_cnn_residual.pth'
+python -m uvicorn backend.app.main:app --reload --port 8000
+```
+
+`/health` 的 `model.model_type` 会显示当前模型类型。要切回默认模型，将 `TC_MODEL_PATH` 设回上面的 `track_cnn_baseline.pth`。残差模型是可选实验模型；是否优于基线应以固定测试集逐时效指标为准，不因接入服务而默认宣称更优。
 
 运行单元/集成测试：
 

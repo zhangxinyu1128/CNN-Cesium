@@ -1,5 +1,7 @@
 import type {
   HealthResponse,
+  Era5Response,
+  ExperimentSummary,
   PredictionHistoryPoint,
   PredictionResponse,
   TyphoonDetail,
@@ -19,7 +21,11 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 export function fetchYears() {
-  return request<number[]>('/api/years.json')
+  return request<Array<number | { year?: number }>>('/api/years.json').then((items) =>
+    items
+      .map((item) => typeof item === 'number' ? item : item.year)
+      .filter((year): year is number => typeof year === 'number')
+  )
 }
 
 export function fetchTyphoonIndex(year: number, query = '') {
@@ -39,6 +45,14 @@ export function fetchTyphoon(id: string) {
 
 export function fetchHealth() {
   return request<HealthResponse>('/health')
+}
+
+export function fetchTyphoonEra5(typhoonId: string) {
+  return request<Era5Response>(`/api/typhoons/${encodeURIComponent(typhoonId)}/era5`)
+}
+
+export function fetchExperimentSummary() {
+  return request<ExperimentSummary>('/api/experiments/summary')
 }
 
 export function predictTyphoon(typhoonId: string, history: PredictionHistoryPoint[]) {

@@ -16,6 +16,7 @@ FEATURES = ("lng", "lat", "speed", "power", "delta_lng", "delta_lat")
 TARGETS = ("lng", "lat", "speed")
 INPUT_STEPS = 4
 TARGET_STEPS = 6
+DEFAULT_SPLIT_FILE = PROJECT_ROOT / "data" / "splits" / "storm_splits.json"
 
 
 def linear_value(
@@ -166,10 +167,64 @@ def load_track(path: Path, counters: Counter) -> Optional[Tuple[str, List[Dict[s
     return identifier, unique_points
 
 
+def load_or_create_split_file(
+    data_root: Path,
+    split_file: Path,
+    source_fingerprint: str,
+    seed: int,
+) -> Dict[str, str]:
+    """Load a frozen storm assignment, creating it once from the time holdout rule."""
+    if split_file.exists():
+        payload = json.loads(split_file.read_text(encoding="utf-8"))
+        if payload.get("source_fingerprint_sha256") != source_fingerprint:
+            raise ValueError(
+                "source data changed; regenerate the split file explicitly: " + str(split_file)
+            )
+        assignments = payload.get("assignments")
+        if not isinstance(assignments, dict) or not assignments:
+            raise ValueError("split file has no storm assignments: " + str(split_file))
+        owners = {str(storm_id): str(split) for storm_id, split in assignments.items()}
+        if set(owners.values()) - set(SPLIT_RANGES):
+            raise ValueError("split file contains an unknown split")
+        return owners
+
+    assignments: Dict[str, str] = {}
+    counters: Counter = Counter()
+    for path in sorted((data_root / "typhoon").glob("*.json")):
+        loaded = load_track(path, counters)
+        if loaded is None:
+            continue
+        identifier, _ = loaded
+        year = track_year(identifier)
+        split = next(
+            (name for name, (start, end) in SPLIT_RANGES.items()
+             if year is not None and start <= year <= end),
+            None,
+        )
+        if split is not None:
+            assignments[identifier] = split
+    if not assignments:
+        raise ValueError("no valid storms available to create split file")
+    counts = {split: sum(owner == split for owner in assignments.values()) for split in SPLIT_RANGES}
+    payload = {
+        "schema_version": 1,
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source_fingerprint_sha256": source_fingerprint,
+        "rule": "storm-year holdout; train 1945-2016, validation 2017-2019, test 2020-2025",
+        "seed": seed,
+        "counts": counts,
+        "assignments": dict(sorted(assignments.items())),
+    }
+    split_file.parent.mkdir(parents=True, exist_ok=True)
+    split_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return assignments
+
+
 def build_samples(
     data_root: Path,
     gap_hours: float,
     interval_hours: int,
+    split_assignments: Dict[str, str],
 ) -> Tuple[Dict[str, List[Dict[str, Any]]], Dict[str, List[List[float]]], Counter, Dict[str, set]]:
     split_samples: Dict[str, List[Dict[str, Any]]] = {
         "train": [],
@@ -186,11 +241,7 @@ def build_samples(
         if loaded is None:
             continue
         identifier, points = loaded
-        year = track_year(identifier)
-        split = next(
-            (name for name, (start, end) in SPLIT_RANGES.items() if year is not None and start <= year <= end),
-            None,
-        )
+        split = split_assignments.get(identifier)
         if split is None:
             counters["outside_split_years"] += 1
             continue
@@ -330,6 +381,7 @@ def prepare(
     interval_hours: int,
     max_gap_hours: float,
     seed: int,
+    split_file: Path,
 ) -> Dict[str, Any]:
     if interval_hours <= 0:
         raise ValueError("interval_hours must be positive")
@@ -337,8 +389,11 @@ def prepare(
         raise ValueError("max_gap_hours must be between interval_hours and 24")
 
     manifest = audit(data_root, seed)
+    split_assignments = load_or_create_split_file(
+        data_root, split_file, manifest["source"]["fingerprint_sha256"], seed
+    )
     split_samples, training_rows, counters, storms = build_samples(
-        data_root, max_gap_hours, interval_hours
+        data_root, max_gap_hours, interval_hours, split_assignments
     )
     validate_samples(split_samples, interval_hours)
     scaler = fit_scaler(training_rows["train"])
@@ -382,6 +437,12 @@ def prepare(
         "source_track_splits": {
             name: list(years) for name, years in SPLIT_RANGES.items()
         },
+        "split_file": str(split_file.resolve()),
+        "split_file_sha256": hashlib.sha256(split_file.read_bytes()).hexdigest(),
+        "split_file_storm_counts": {
+            name: sum(owner == name for owner in split_assignments.values())
+            for name in SPLIT_RANGES
+        },
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
     }
     manifest["preprocessing_policy"]["time_resampling"] = (
@@ -405,6 +466,7 @@ def main() -> None:
     parser.add_argument("--interval-hours", type=int, default=6)
     parser.add_argument("--max-gap-hours", type=float, default=9.0)
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument("--split-file", type=Path, default=DEFAULT_SPLIT_FILE)
     args = parser.parse_args()
 
     manifest = prepare(
@@ -413,6 +475,7 @@ def main() -> None:
         args.interval_hours,
         args.max_gap_hours,
         args.seed,
+        args.split_file,
     )
     print(json.dumps(manifest["preprocessing"], ensure_ascii=False, indent=2))
     print("Manifest:", (args.output_root / "manifest.json").resolve())

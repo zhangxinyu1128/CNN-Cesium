@@ -202,9 +202,20 @@ pnpm preview
 
 ## 当前模型结果说明
 
-当前模型是可运行的 CNN 基线，不代表所有预测时效都优于传统方法。项目报告和答辩材料中的指标应以 `artifacts/` 中的实际实验日志和测试结果为准，不应把规划中的气象格点融合、概率锥体或不确定性区间描述成已经完成的功能。
+主实验使用按台风编号和年份隔离的训练、验证、测试集（训练 1945-2016，验证 2017-2019，测试 2020-2025），测试集包含 154 场台风和 1,670 个窗口。残差 CNN 以匀速运动为先验，在固定测试集上 6-36 小时路径误差均低于匀速外推，三种随机种子方向一致。主实验指标保存在 `artifacts/residual/runs/` 和 `artifacts/residual_seed_sensitivity/`。
 
-后续算法改进方向包括：轨迹与气象格点双分支融合、局地坐标残差预测、地理距离损失、多步解码和不确定性校准。每项改进都应在相同数据划分和训练预算下进行消融实验。
+项目已完成 ERA5 500/850 hPa 风场匹配和融合消融。扩展测试子集含 1,661 个配对窗口、112 场台风；三种子均值下，500/850 hPa 融合路径 MAE 在 6/12/18/24/30/36 小时分别为 41.93/81.18/127.01/179.85/239.52/306.65 km，轨迹-only 对照分别为 44.17/86.63/134.35/187.28/246.63/312.25 km。结果仅适用于当前 ERA5 配对历史测试集，不能外推为实时业务预报结论。
+
+在线默认 API 仍加载 `artifacts/checkpoints/track_cnn_baseline.pth` 轨迹模型。该 checkpoint 有单独的台风分组 conformal 历史位置误差校准，6-36 小时展示半径约为 479.8/479.8/491.2/616.5/838.5/1,008.2 km；测试集窗口覆盖率较高，但整场台风覆盖率在部分时效低于 90%。该范围是历史位置误差，不是灾害概率、实际影响半径或实时预报保证。官方预报公平配对审计目前可比位置为 0，因此项目不声称优于官方预报。
+
+ERA5 来源为 [Copernicus Climate Change Service ERA5 pressure levels](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels)，来源登记和原始文件元数据见 `ERA5data/SOURCE.json` 与 `ERA5data/metadata.json`。轨迹对齐、配对样本和实验指标保存在 `artifacts/era5/historical_500_850_refresh_20261002/`。原始 GRIB 和派生 JSONL 属于本地数据材料，不随普通 GitHub 源码提交；按项目数据清单准备后可复现实验。
+
+ERA5 解析环境配置文件为 `ml/requirements-era5.txt`。核验命令：
+
+```powershell
+cd D:\project\CNN-Cesium
+.venv\Scripts\python.exe ml\inspect_era5_grib.py --verify
+```
 
 ## 许可证与材料
 

@@ -1,0 +1,23 @@
+{
+  "source": "Copernicus Climate Change Service (C3S)",
+  "dataset": "ERA5 hourly data on pressure levels from 1940 to present",
+  "dataset_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels",
+  "provider_url": "https://climate.copernicus.eu/",
+  "local_file": "data.grib",
+  "local_file_sha256": "3E552168E7285ED976DA6B08FC4116ADEAC1317893C39E8A779EE6C14D74E474",
+  "local_file_bytes": 1698126000,
+  "downloaded_at": "2026-09-28",
+  "status": "raw_file_present_metadata_verified",
+  "verification": {
+    "format_signature": "GRIB",
+    "variables": ["u", "v"],
+    "pressure_levels_hPa": [200, 300, 500, 700, 850],
+    "time_range_utc": ["2025-01-01", "2025-12-31"],
+    "times_utc": ["00:00", "06:00", "12:00", "18:00"],
+    "geographical_area": {"north": 45.0, "south": 0.0, "west": 100.0, "east": 180.0},
+    "grid": {"type": "regular_ll", "Ni": 321, "Nj": 181, "resolution_degrees": 0.25},
+    "messages": 14600,
+    "verified_by": "ml/inspect_era5_grib.py"
+  },
+  "use_policy": "Use only after confirming the CDS dataset terms and recording the exact request parameters. Keep this raw file separate from derived, track-aligned samples."
+}

@@ -49,6 +49,7 @@ export default [
       '.idea',
       '*.sh',
       '**/node_modules',
+      'public/legacy/**',
       '*.md',
       '*.woff',
       '*.woff',

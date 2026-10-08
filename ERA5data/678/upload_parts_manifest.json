@@ -1,0 +1,57 @@
+{
+  "part_limit_bytes": 1800000000,
+  "format": "Concatenate each file's parts in numeric order to reconstruct the original GRIB stream. Splits are made only between complete GRIB messages.",
+  "files": [
+    {
+      "original_name": "era5_1946_1948_1956_1958_1966_1968_track_filtered.grib",
+      "original_bytes": 2188023720,
+      "parts": [
+        "era5_1946_1948_1956_1958_1966_1968_track_filtered.grib.part01",
+        "era5_1946_1948_1956_1958_1966_1968_track_filtered.grib.part02"
+      ],
+      "part_bytes": [
+        1799897250,
+        388126470
+      ],
+      "part_sha256": [
+        "02c92161e4f4c5b7b98faf65029e7776195b71fba70c9269d317dd17d9d69162",
+        "348c10f9f5a4f2bb4670ef02890d5ebedd48841819aaa7904491fa5e37462e91"
+      ],
+      "messages": 18812,
+      "original_sha256": "8499f7605aa1b9d0efe64470de999fc475758e35ffb4a82c277a804a9505eadd"
+    },
+    {
+      "original_name": "era5_1976_1978_1986_1988_1996_1998_track_filtered.grib",
+      "original_bytes": 2387146440,
+      "parts": [
+        "era5_1976_1978_1986_1988_1996_1998_track_filtered.grib.part01",
+        "era5_1976_1978_1986_1988_1996_1998_track_filtered.grib.part02"
+      ],
+      "part_bytes": [
+        1799897250,
+        587249190
+      ],
+      "part_sha256": [
+        "648f69c4c2231aab6cade3ad616b95e9114042761ec4762f8e98a994442ec821",
+        "dda2a49aec670d9e0aedb1c021210eb7db09be0f8a47e7e0f3f31b29c0c03080"
+      ],
+      "messages": 20524,
+      "original_sha256": "5d7b58dcb8b2becc9ca18a483db1cc17822eaff9a503f1ffb0239e6637ae37db"
+    },
+    {
+      "original_name": "era5_2006_2008_2016_2018_track_filtered.grib",
+      "original_bytes": 1217067840,
+      "parts": [
+        "era5_2006_2008_2016_2018_track_filtered.grib.part01"
+      ],
+      "part_bytes": [
+        1217067840
+      ],
+      "part_sha256": [
+        "9cef8b8efbd3009fa8b68ccd46d2935ab4cbdb827653e79052c1941dae8f4604"
+      ],
+      "messages": 10464,
+      "original_sha256": "9cef8b8efbd3009fa8b68ccd46d2935ab4cbdb827653e79052c1941dae8f4604"
+    }
+  ]
+}

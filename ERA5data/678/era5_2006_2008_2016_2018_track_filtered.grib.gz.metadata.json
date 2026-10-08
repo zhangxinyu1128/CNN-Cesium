@@ -1,0 +1,61 @@
+{
+  "selection_method": "For each CMA best-track observation, retain the preceding and following 6-hour ERA5 synoptic times; retain one time when the observation is already on a synoptic time.",
+  "variables": [
+    "u",
+    "v"
+  ],
+  "pressure_levels_hPa": [
+    500,
+    850
+  ],
+  "time_utc": [
+    "00:00",
+    "06:00",
+    "12:00",
+    "18:00"
+  ],
+  "geographical_area": {
+    "north": 45.0,
+    "south": 0.0,
+    "west": 100.0,
+    "east": 180.0
+  },
+  "grid": {
+    "type": "regular_ll",
+    "Ni": 321,
+    "Nj": 181,
+    "resolution_degrees": 0.25
+  },
+  "source_preserved": true,
+  "source_files": [
+    "E:\\b083db235ad66666ea7e874c152a58b0.grib",
+    "E:\\dc942bb2f72b1b40d94cdb71b2035d4d.grib",
+    "E:\\3751e290ef759cb5c7e57a134dc84475.grib"
+  ],
+  "source_format": "GRIB",
+  "source_messages": 144568,
+  "source_bytes": 16814704080,
+  "source_sha256": {
+    "b083db235ad66666ea7e874c152a58b0.grib": "7bdb9cfad46e7e02b15ffe66898d69b7b5181d51614ec1220b942d4841d92088",
+    "dc942bb2f72b1b40d94cdb71b2035d4d.grib": "da53151c49586dc15054ef5ce7181687253c2fa7037cef4d48c57a31ae3fc39b",
+    "3751e290ef759cb5c7e57a134dc84475.grib": "85b8098c16a834239f524df0460ef016f974d88e2140e30cffa795a58dab859c"
+  },
+  "source_available_year_blocks": [
+    "2006-2008",
+    "2016-2018"
+  ],
+  "output_file": "e:\\OneDrive\\Desktop\\比赛\\AIC气象赛\\ERA5data\\678\\era5_2006_2008_2016_2018_track_filtered.grib.gz",
+  "name": "era5_2006_2008_2016_2018_track_filtered.grib.gz",
+  "track_year_range": "2006-2018",
+  "track_observations": 16410,
+  "candidate_bracketing_times": 5687,
+  "matched_source_times": 2616,
+  "output_messages": 10464,
+  "output_raw_grib_bytes": 1217067840,
+  "output_compressed_bytes": 1077976433,
+  "output_date_min_utc": "2006-05-09",
+  "output_date_max_utc": "2018-12-31",
+  "output_decompressed_sha256": "9cef8b8efbd3009fa8b68ccd46d2935ab4cbdb827653e79052c1941dae8f4604",
+  "output_compressed_sha256": "05b4c12ac4e78668ccf8e33060b70758db9d2afaab0c89b2403c5967baf7ffa0",
+  "note": "Source covers years 2006-2018 in the 6/7/8 year-digit group. Source months covered: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]."
+}

@@ -10,6 +10,8 @@ ERA5data/*.grib
 ERA5data/**/*.grib
 ERA5data/**/*.grib.gz
 ERA5data/**/*.grib.gz.tmp
+!ERA5data/678/*.grib
+!ERA5data/678/*.grib.part*
 artifacts/**/*.jsonl
 
 # Frontend dependencies, builds, IDE files, and local environment secrets.

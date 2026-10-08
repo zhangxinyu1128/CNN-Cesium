@@ -1,0 +1,62 @@
+{
+  "selection_method": "For each CMA best-track observation, retain the preceding and following 6-hour ERA5 synoptic times; retain one time when the observation is already on a synoptic time.",
+  "variables": [
+    "u",
+    "v"
+  ],
+  "pressure_levels_hPa": [
+    500,
+    850
+  ],
+  "time_utc": [
+    "00:00",
+    "06:00",
+    "12:00",
+    "18:00"
+  ],
+  "geographical_area": {
+    "north": 45.0,
+    "south": 0.0,
+    "west": 100.0,
+    "east": 180.0
+  },
+  "grid": {
+    "type": "regular_ll",
+    "Ni": 321,
+    "Nj": 181,
+    "resolution_degrees": 0.25
+  },
+  "source_preserved": true,
+  "source_files": [
+    "E:\\b083db235ad66666ea7e874c152a58b0.grib",
+    "E:\\dc942bb2f72b1b40d94cdb71b2035d4d.grib",
+    "E:\\3751e290ef759cb5c7e57a134dc84475.grib"
+  ],
+  "source_format": "GRIB",
+  "source_messages": 144568,
+  "source_bytes": 16814704080,
+  "source_sha256": {
+    "b083db235ad66666ea7e874c152a58b0.grib": "7bdb9cfad46e7e02b15ffe66898d69b7b5181d51614ec1220b942d4841d92088",
+    "dc942bb2f72b1b40d94cdb71b2035d4d.grib": "da53151c49586dc15054ef5ce7181687253c2fa7037cef4d48c57a31ae3fc39b",
+    "3751e290ef759cb5c7e57a134dc84475.grib": "85b8098c16a834239f524df0460ef016f974d88e2140e30cffa795a58dab859c"
+  },
+  "source_available_year_blocks": [
+    "1976-1978",
+    "1986-1988",
+    "1996-1998"
+  ],
+  "output_file": "e:\\OneDrive\\Desktop\\比赛\\AIC气象赛\\ERA5data\\678\\era5_1976_1978_1986_1988_1996_1998_track_filtered.grib.gz",
+  "name": "era5_1976_1978_1986_1988_1996_1998_track_filtered.grib.gz",
+  "track_year_range": "1976-1998",
+  "track_observations": 19058,
+  "candidate_bracketing_times": 13628,
+  "matched_source_times": 5131,
+  "output_messages": 20524,
+  "output_raw_grib_bytes": 2387146440,
+  "output_compressed_bytes": 2114149092,
+  "output_date_min_utc": "1976-01-28",
+  "output_date_max_utc": "1998-12-14",
+  "output_decompressed_sha256": "5d7b58dcb8b2becc9ca18a483db1cc17822eaff9a503f1ffb0239e6637ae37db",
+  "output_compressed_sha256": "b6a1cd7fd097f28f347072fab0da6138b617a69c3ac4f4875383f59f92e2d9ca",
+  "note": "Source covers years 1976-1998 in the 6/7/8 year-digit group. Source months covered: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]."
+}

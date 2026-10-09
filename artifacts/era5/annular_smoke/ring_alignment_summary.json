@@ -1,0 +1,62 @@
+{
+  "experiment": "era5_annular_steering_flow",
+  "levels_hPa": [
+    500,
+    850
+  ],
+  "variables": [
+    "u",
+    "v"
+  ],
+  "annulus_km": [
+    350.0,
+    750.0
+  ],
+  "quadrature": {
+    "radii_km": [
+      350.0,
+      550.0,
+      750.0
+    ],
+    "equally_spaced_bearings": 8,
+    "interpolation": "bilinear on native regular lat/lon grid",
+    "aggregation": "radius-weighted mean over valid annular samples"
+  },
+  "time_policy": "latest ERA5 6-hour UTC cycle at or before track observation; no future fields",
+  "point_coverage": 0.0,
+  "field_coverage": {
+    "u500": 0,
+    "v500": 0,
+    "u850": 0,
+    "v850": 0
+  },
+  "paired_windows_by_frozen_split": {
+    "train": {
+      "center_point_windows": 25961,
+      "ring_complete_common_windows": 0,
+      "coverage_fraction": 0.0,
+      "storms": 0,
+      "output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\annular_smoke\\ring_windows\\train.jsonl"
+    },
+    "validation": {
+      "center_point_windows": 687,
+      "ring_complete_common_windows": 0,
+      "coverage_fraction": 0.0,
+      "storms": 0,
+      "output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\annular_smoke\\ring_windows\\validation.jsonl"
+    },
+    "test": {
+      "center_point_windows": 1661,
+      "ring_complete_common_windows": 0,
+      "coverage_fraction": 0.0,
+      "storms": 0,
+      "output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\annular_smoke\\ring_windows\\test.jsonl"
+    }
+  },
+  "files": [],
+  "limits": {
+    "max_points": 40,
+    "max_files": 6
+  },
+  "note": "Environmental flow proxy from ERA5 winds; not a dynamical steering-flow diagnostic with vortex removal."
+}

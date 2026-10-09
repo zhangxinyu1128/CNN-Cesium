@@ -2,6 +2,24 @@
   const nativeSetInterval = window.setInterval.bind(window)
   const nativeClearInterval = window.clearInterval.bind(window)
 
+  // Cesium clears its WebGL drawing buffer after presenting a frame by default.
+  // Keep the buffer so the host page can export the visible map as PNG/video.
+  const NativeViewer = window.Cesium && window.Cesium.Viewer
+  if (NativeViewer && !NativeViewer.__mainExportPatched) {
+    const ExportViewer = function (container, options) {
+      const nextOptions = { ...(options || {}) }
+      nextOptions.contextOptions = { ...(nextOptions.contextOptions || {}) }
+      nextOptions.contextOptions.webgl = {
+        ...(nextOptions.contextOptions.webgl || {}),
+        preserveDrawingBuffer: true
+      }
+      return new NativeViewer(container, nextOptions)
+    }
+    ExportViewer.prototype = NativeViewer.prototype
+    ExportViewer.__mainExportPatched = true
+    window.Cesium.Viewer = ExportViewer
+  }
+
   function isLegacyTyphoonAnimation(handler, timeout) {
     if (typeof handler !== 'function' || Number(timeout) !== 200) return false
     const source = Function.prototype.toString.call(handler)

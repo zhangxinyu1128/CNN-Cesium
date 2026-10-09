@@ -1,0 +1,39 @@
+{
+  "dataset_fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+  "split_file_sha256": "2836e1da45f6de2dc2081cdb8c92eccf2042a483215cb83c9e5831d8736ac00e",
+  "counts": {
+    "all_forecast_origins": 109,
+    "all_forecast_positions": 360,
+    "test_forecast_origins": 54,
+    "test_forecast_positions": 171,
+    "test_origins_with_model_history": 49,
+    "test_positions_with_supported_lead": 158,
+    "test_positions_with_best_track_verification": 2,
+    "comparable_positions": 0
+  },
+  "comparable_by_lead_hours": {},
+  "comparable_by_source_label": {},
+  "all_forecast_positions_by_source_label": {
+    "中国": 100,
+    "中国台湾": 26,
+    "中国香港": 28,
+    "日本": 92,
+    "欧洲": 5,
+    "美国": 53,
+    "菲律宾": 13,
+    "韩国": 43
+  },
+  "comparison_policy": {
+    "test_storms_only": true,
+    "history_times": "origin minus 24, 18, 12, 6, and 0 hours; linear interpolation only across gaps <= 9h",
+    "verification": "forecast valid time must have interpolated best-track longitude and latitude across a gap <= 9h",
+    "supported_model_leads_hours": [
+      6,
+      12,
+      18,
+      24,
+      30,
+      36
+    ]
+  }
+}

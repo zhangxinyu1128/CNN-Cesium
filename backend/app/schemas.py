@@ -1,7 +1,7 @@
 """Stable request and response models shared by the API endpoints."""
 
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field, validator
 
@@ -105,6 +105,23 @@ class PredictionInterval(BaseModel):
     lat: float
 
 
+class PredictionRegion(BaseModel):
+    geometry: str
+    coverage: float
+    semi_major_axis_km: float
+    semi_minor_axis_km: float
+    bearing_deg: float = 0.0
+    area_km2: Optional[float] = None
+    interpretation: Optional[str] = None
+
+
+class PredictionSpeedInterval(BaseModel):
+    lower: float
+    upper: float
+    unit: str
+    interpretation: Optional[str] = None
+
+
 class PredictionPoint(BaseModel):
     lead_hours: int
     lng: float
@@ -113,6 +130,8 @@ class PredictionPoint(BaseModel):
     p05: Optional[PredictionInterval] = None
     p95: Optional[PredictionInterval] = None
     location_radius_90_km: Optional[float] = None
+    uncertainty_region: Optional[PredictionRegion] = None
+    speed_interval_source: Optional[PredictionSpeedInterval] = None
 
 
 class PredictionUncertainty(BaseModel):
@@ -121,6 +140,10 @@ class PredictionUncertainty(BaseModel):
     method: Optional[str] = None
     calibration_storms: Optional[int] = None
     interpretation: Optional[str] = None
+    region_geometry: Optional[str] = None
+    region_note: Optional[str] = None
+    joint_region_geometry: Optional[str] = None
+    joint_region_note: Optional[str] = None
 
 
 class PredictionResponse(BaseModel):
@@ -159,3 +182,24 @@ class HealthResponse(BaseModel):
     service: str
     data: DataStatus
     model: ModelStatus
+
+
+ExportLegendId = Literal[
+    "history", "prediction", "error", "impact",
+]
+ExportInfoId = Literal["time", "position", "intensity", "era5"]
+
+
+class ExportSettings(BaseModel):
+    visible_legend_ids: List[ExportLegendId] = Field(
+        default_factory=lambda: [
+            "history", "prediction", "error", "impact",
+        ]
+    )
+    visible_info_ids: List[ExportInfoId] = Field(
+        default_factory=lambda: ["time", "position", "intensity", "era5"]
+    )
+
+    @validator("visible_legend_ids")
+    def remove_duplicate_legends(cls, value: List[ExportLegendId]) -> List[ExportLegendId]:
+        return list(dict.fromkeys(value))

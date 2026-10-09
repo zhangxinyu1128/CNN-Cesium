@@ -33,12 +33,37 @@ export interface TyphoonDetail extends TyphoonIndexItem {
   points: TyphoonPoint[]
 }
 
+export type ExportLegendId = 'history' | 'prediction' | 'error' | 'impact'
+export type ExportInfoId = 'time' | 'position' | 'intensity' | 'era5'
+
+export interface ExportSettings {
+  visible_legend_ids: ExportLegendId[]
+  visible_info_ids: ExportInfoId[]
+}
+
 export interface PredictionHistoryPoint {
   time: string
   lng: number
   lat: number
   speed?: number | null
   power?: number | null
+}
+
+export interface PredictionRegion {
+  geometry: string
+  coverage: number
+  semi_major_axis_km: number
+  semi_minor_axis_km: number
+  bearing_deg?: number
+  area_km2?: number
+  interpretation?: string | null
+}
+
+export interface PredictionSpeedInterval {
+  lower: number
+  upper: number
+  unit: string
+  interpretation?: string | null
 }
 
 export interface PredictionPoint {
@@ -49,6 +74,8 @@ export interface PredictionPoint {
   p05: { lng: number; lat: number } | null
   p95: { lng: number; lat: number } | null
   location_radius_90_km?: number | null
+  uncertainty_region?: PredictionRegion | null
+  speed_interval_source?: PredictionSpeedInterval | null
 }
 
 export interface PredictionResponse {
@@ -64,6 +91,10 @@ export interface PredictionResponse {
     method?: string | null
     calibration_storms?: number | null
     interpretation?: string | null
+    region_geometry?: string | null
+    region_note?: string | null
+    joint_region_geometry?: string | null
+    joint_region_note?: string | null
   } | null
 }
 
@@ -169,6 +200,17 @@ export interface ExperimentSummary {
       joint_coverage_90: number
       location_storm_coverage_90?: number
       median_error_km?: number
+      ellipse_90?: {
+        geometry: string
+        location_coverage_90: number
+        location_storm_coverage_90: number
+        semi_major_axis_km: number
+        semi_minor_axis_km: number
+        bearing_deg: number
+        area_km2: number
+        mean_error_km: number
+      }
+      energy_score_km?: number
     }>
   }
   official_forecast?: {
@@ -177,7 +219,20 @@ export interface ExperimentSummary {
     comparable_positions?: number
     test_forecast_origins?: number
     test_forecast_positions?: number
+    test_windows_scored?: number
+    storms_scored?: string[]
     supported_model_leads_hours?: number[]
+    by_horizon?: Array<{
+      lead_hours: number
+      sample_count: number
+      storm_count: number
+      mae_km: number
+      rmse_km: number
+      median_km?: number
+      storm_mean_mae_km?: number
+      p90_km?: number
+    }>
+    limitations?: string[]
     source?: string
   }
   era5?: {

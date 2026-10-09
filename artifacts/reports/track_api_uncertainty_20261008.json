@@ -1,0 +1,255 @@
+{
+  "model_version": "track-cnn-1d-v1",
+  "model_type": "track",
+  "seed": 2026,
+  "mc_samples": 50,
+  "dataset_fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+  "checkpoint_sha256": "136de0d4ad9441bcd92b0518fcd00a453823a742f1beb5db6d84d6e9040574e4",
+  "calibration": {
+    "method": "storm-group split conformal 90th percentile of location error",
+    "split": "validation",
+    "storm_count": 69,
+    "window_count": 926,
+    "target_coverage": 0.9,
+    "location_radius_km": [
+      483.9615881788603,
+      483.9615881788603,
+      483.9615881788603,
+      622.6435548506189,
+      844.2333969812674,
+      1034.0471385316278
+    ],
+    "location_ellipse_90": [
+      {
+        "geometry": "conformal_ellipse",
+        "coverage": 0.9,
+        "mahalanobis_quantile": 3.370033928373032,
+        "covariance_km2": [
+          [
+            26809.228458331963,
+            3947.67408777174
+          ],
+          [
+            3947.67408777174,
+            10301.015298715121
+          ]
+        ],
+        "semi_major_axis_km": 560.932804339698,
+        "semi_minor_axis_km": 326.83360085926466,
+        "bearing_deg": 77.21985387447356,
+        "area_km2": 575953.4850782924
+      },
+      {
+        "geometry": "conformal_ellipse",
+        "coverage": 0.9,
+        "mahalanobis_quantile": 3.2814785891614844,
+        "covariance_km2": [
+          [
+            20799.147905393584,
+            3071.6432533779116
+          ],
+          [
+            3071.6432533779116,
+            9643.094039977772
+          ]
+        ],
+        "semi_major_axis_km": 560.932804339698,
+        "semi_minor_axis_km": 326.83360085926466,
+        "bearing_deg": 75.5799057830651,
+        "area_km2": 575953.4850782924
+      },
+      {
+        "geometry": "conformal_ellipse",
+        "coverage": 0.9,
+        "mahalanobis_quantile": 3.206145804372476,
+        "covariance_km2": [
+          [
+            24937.69535630166,
+            2227.8341642763808
+          ],
+          [
+            2227.8341642763808,
+            13828.519293299523
+          ]
+        ],
+        "semi_major_axis_km": 560.932804339698,
+        "semi_minor_axis_km": 371.11608398974903,
+        "bearing_deg": 79.07263303578495,
+        "area_km2": 653989.0677719627
+      },
+      {
+        "geometry": "conformal_ellipse",
+        "coverage": 0.9,
+        "mahalanobis_quantile": 3.4333070498255736,
+        "covariance_km2": [
+          [
+            38894.29835301122,
+            2565.311194257561
+          ],
+          [
+            2565.311194257561,
+            23840.62555507401
+          ]
+        ],
+        "semi_major_axis_km": 680.7949935096904,
+        "semi_minor_axis_km": 525.3686290456305,
+        "bearing_deg": 80.58988107007828,
+        "area_km2": 1123648.2054936832
+      },
+      {
+        "geometry": "conformal_ellipse",
+        "coverage": 0.9,
+        "mahalanobis_quantile": 3.489681111639831,
+        "covariance_km2": [
+          [
+            63691.99418475314,
+            5359.141158369598
+          ],
+          [
+            5359.141158369598,
+            40882.12586714625
+          ]
+        ],
+        "semi_major_axis_km": 888.9332733669742,
+        "semi_minor_axis_km": 695.1892695094718,
+        "bearing_deg": 77.4156612435865,
+        "area_km2": 1941431.6041627228
+      },
+      {
+        "geometry": "conformal_ellipse",
+        "coverage": 0.9,
+        "mahalanobis_quantile": 3.384249117051084,
+        "covariance_km2": [
+          [
+            99511.30642166345,
+            11816.882034493161
+          ],
+          [
+            11816.882034493161,
+            65548.15519049685
+          ]
+        ],
+        "semi_major_axis_km": 1087.277641646635,
+        "semi_minor_axis_km": 841.5918229766459,
+        "bearing_deg": 72.58364950571624,
+        "area_km2": 2874695.4217651836
+      }
+    ]
+  },
+  "evaluation": {
+    "split": "frozen_test",
+    "storm_count": 114,
+    "window_count": 1670,
+    "by_horizon": [
+      {
+        "lead_hours": 6,
+        "location_radius_90_km": 483.9615881788603,
+        "location_coverage_90": 0.9964071856287425,
+        "location_storm_coverage_90": 0.9824561403508771,
+        "median_error_km": 137.25751760891097,
+        "ellipse_90": {
+          "geometry": "conformal_ellipse",
+          "location_coverage_90": 0.9958083832335329,
+          "location_storm_coverage_90": 0.9736842105263158,
+          "semi_major_axis_km": 560.932804339698,
+          "semi_minor_axis_km": 326.83360085926466,
+          "bearing_deg": 77.21985387447356,
+          "area_km2": 575953.4850782924,
+          "mean_error_km": 154.85210084072028
+        },
+        "energy_score_km": 122.42545556253567
+      },
+      {
+        "lead_hours": 12,
+        "location_radius_90_km": 483.9615881788603,
+        "location_coverage_90": 0.9958083832335329,
+        "location_storm_coverage_90": 0.9649122807017544,
+        "median_error_km": 126.42343890601421,
+        "ellipse_90": {
+          "geometry": "conformal_ellipse",
+          "location_coverage_90": 0.9928143712574851,
+          "location_storm_coverage_90": 0.9210526315789473,
+          "semi_major_axis_km": 560.932804339698,
+          "semi_minor_axis_km": 326.83360085926466,
+          "bearing_deg": 75.5799057830651,
+          "area_km2": 575953.4850782924,
+          "mean_error_km": 144.05609032987596
+        },
+        "energy_score_km": 117.77232902983013
+      },
+      {
+        "lead_hours": 18,
+        "location_radius_90_km": 483.9615881788603,
+        "location_coverage_90": 0.9820359281437125,
+        "location_storm_coverage_90": 0.868421052631579,
+        "median_error_km": 141.0800232710724,
+        "ellipse_90": {
+          "geometry": "conformal_ellipse",
+          "location_coverage_90": 0.9826347305389221,
+          "location_storm_coverage_90": 0.8771929824561403,
+          "semi_major_axis_km": 560.932804339698,
+          "semi_minor_axis_km": 371.11608398974903,
+          "bearing_deg": 79.07263303578495,
+          "area_km2": 653989.0677719627,
+          "mean_error_km": 163.23675441698856
+        },
+        "energy_score_km": 130.0575590714125
+      },
+      {
+        "lead_hours": 24,
+        "location_radius_90_km": 622.6435548506189,
+        "location_coverage_90": 0.9832335329341317,
+        "location_storm_coverage_90": 0.8859649122807017,
+        "median_error_km": 176.02900834008886,
+        "ellipse_90": {
+          "geometry": "conformal_ellipse",
+          "location_coverage_90": 0.9802395209580839,
+          "location_storm_coverage_90": 0.8771929824561403,
+          "semi_major_axis_km": 680.7949935096904,
+          "semi_minor_axis_km": 525.3686290456305,
+          "bearing_deg": 80.58988107007828,
+          "area_km2": 1123648.2054936832,
+          "mean_error_km": 206.94887298089375
+        },
+        "energy_score_km": 157.50041980988757
+      },
+      {
+        "lead_hours": 30,
+        "location_radius_90_km": 844.2333969812674,
+        "location_coverage_90": 0.9880239520958084,
+        "location_storm_coverage_90": 0.9122807017543859,
+        "median_error_km": 226.74257339028554,
+        "ellipse_90": {
+          "geometry": "conformal_ellipse",
+          "location_coverage_90": 0.9832335329341317,
+          "location_storm_coverage_90": 0.8947368421052632,
+          "semi_major_axis_km": 888.9332733669742,
+          "semi_minor_axis_km": 695.1892695094718,
+          "bearing_deg": 77.4156612435865,
+          "area_km2": 1941431.6041627228,
+          "mean_error_km": 265.8331222352146
+        },
+        "energy_score_km": 197.48080728291475
+      },
+      {
+        "lead_hours": 36,
+        "location_radius_90_km": 1034.0471385316278,
+        "location_coverage_90": 0.988622754491018,
+        "location_storm_coverage_90": 0.9035087719298246,
+        "median_error_km": 285.2679155140569,
+        "ellipse_90": {
+          "geometry": "conformal_ellipse",
+          "location_coverage_90": 0.9850299401197605,
+          "location_storm_coverage_90": 0.8771929824561403,
+          "semi_major_axis_km": 1087.277641646635,
+          "semi_minor_axis_km": 841.5918229766459,
+          "bearing_deg": 72.58364950571624,
+          "area_km2": 2874695.4217651836,
+          "mean_error_km": 333.8665462492593
+        },
+        "energy_score_km": 247.81262839217214
+      }
+    ]
+  },
+  "interpretation": "Historical storm-group conformal location regions for this exact checkpoint; not a real-time forecast guarantee or a hazard probability."
+}

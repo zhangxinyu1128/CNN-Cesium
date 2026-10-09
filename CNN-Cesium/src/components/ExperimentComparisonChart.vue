@@ -4,7 +4,8 @@ import * as echarts from 'echarts/core'
 import { LineChart } from 'echarts/charts'
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import type { ECharts, EChartsOption } from 'echarts'
+import type { EChartsType as ECharts } from 'echarts/core'
+import type { EChartsOption } from 'echarts'
 import type { ExperimentModelSummary } from '@/types/typhoon'
 
 echarts.use([LineChart, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer])
@@ -27,20 +28,12 @@ function render() {
   const metricLabel = props.metric === 'rmse' ? '路径 RMSE / km' : '路径 MAE / km'
   const option: EChartsOption = {
     animation: false,
-    grid: { left: 42, right: 12, top: 34, bottom: 34 },
+    grid: { left: 42, right: 12, top: 18, bottom: 34 },
     tooltip: {
       trigger: 'axis',
-      valueFormatter: (value) => typeof value === 'number' ? `${value.toFixed(1)} km` : '--'
+      valueFormatter: (value: unknown) => typeof value === 'number' ? `${value.toFixed(1)} km` : '--'
     },
-    legend: {
-      top: 0,
-      left: 0,
-      right: 0,
-      type: 'scroll',
-      textStyle: { color: '#b8d5d6', fontSize: 10 },
-      itemWidth: 13,
-      itemHeight: 8
-    },
+    legend: { show: false },
     xAxis: {
       type: 'category',
       data: horizons.map((hour) => `${hour}h`),
@@ -73,7 +66,7 @@ function render() {
       } : undefined
     }))
   }
-  chart.value.setOption(option, true)
+  chart.value!.setOption(option, true)
 }
 
 function resize() {
@@ -94,12 +87,51 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="chartEl" class="experiment-comparison-chart" :aria-label="`不同模型路径${metric === 'rmse' ? '均方根误差' : '平均绝对误差'}对比图`"></div>
+  <div class="experiment-comparison-wrap">
+    <div ref="chartEl" class="experiment-comparison-chart" :aria-label="`不同模型路径${metric === 'rmse' ? '均方根误差' : '平均绝对误差'}对比图`"></div>
+    <div class="experiment-comparison-legend" aria-label="模型图例">
+      <span v-for="(model, index) in models" :key="model.key" class="experiment-comparison-legend-item">
+        <i class="experiment-comparison-legend-line" :style="{ backgroundColor: colors[index % colors.length] }"></i>
+        <span>{{ model.name }}</span>
+      </span>
+    </div>
+  </div>
 </template>
 
 <style scoped>
+.experiment-comparison-wrap {
+  width: 100%;
+}
+
 .experiment-comparison-chart {
   width: 100%;
-  height: 226px;
+  height: 190px;
+}
+
+.experiment-comparison-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 14px;
+  min-height: 36px;
+  padding: 5px 2px 0;
+  color: #b8d5d6;
+  font-size: 10px;
+  line-height: 15px;
+}
+
+.experiment-comparison-legend-item {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.experiment-comparison-legend-line {
+  display: inline-block;
+  width: 16px;
+  height: 3px;
+  margin-right: 5px;
+  border-radius: 2px;
 }
 </style>

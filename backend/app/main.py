@@ -8,9 +8,11 @@ from typing import Any, Dict, List
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import ValidationError
 
 from .schemas import (
     HealthResponse,
+    ExportSettings,
     PredictionRequest,
     PredictionResponse,
     TyphoonDetail,
@@ -34,14 +36,35 @@ UNCERTAINTY_PATH = ERA5_ROOT / "historical_500_850_refresh_20261002" / "uncertai
 EXPERIMENT_ROOT = ERA5_ROOT / "historical_500_850_refresh_20261002"
 MANIFEST_PATH = PROJECT_ROOT / "data" / "processed" / "manifest.json"
 OPERATIONAL_AUDIT_PATH = PROJECT_ROOT / "artifacts" / "reports" / "operational_forecast_audit_20261003.json"
+OFFICIAL_COMPARISON_PATH = (
+    PROJECT_ROOT
+    / "artifacts"
+    / "era5"
+    / "annular_steering_flow"
+    / "official_comparison"
+    / "official_comparison.json"
+)
 PREDICTION_UNCERTAINTY_PATH = Path(os.getenv(
     "TC_PREDICTION_UNCERTAINTY_PATH",
-    str(PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261007.json"),
+    str(PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261008.json"),
+))
+JOINT_UNCERTAINTY_PATH = Path(os.getenv(
+    "TC_JOINT_UNCERTAINTY_PATH",
+    str(PROJECT_ROOT / "artifacts" / "reports" / "stage4_extensions_20261008.json"),
+))
+EXPORT_SETTINGS_PATH = Path(os.getenv(
+    "TC_EXPORT_SETTINGS_PATH",
+    str(PROJECT_ROOT / "data" / "export_settings.json"),
 ))
 
 repository = DataRepository(DATA_ROOT)
 era5_repository = Era5Repository(ERA5_ROOT)
-model_service = ModelService(CHECKPOINT_PATH, MODEL_VERSION, PREDICTION_UNCERTAINTY_PATH)
+model_service = ModelService(
+    CHECKPOINT_PATH,
+    MODEL_VERSION,
+    PREDICTION_UNCERTAINTY_PATH,
+    JOINT_UNCERTAINTY_PATH,
+)
 
 app = FastAPI(
     title="Tropical Cyclone Intelligence API",
@@ -61,7 +84,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT"],
     allow_headers=["*"],
 )
 
@@ -78,6 +101,28 @@ def health() -> dict:
         "data": data,
         "model": model,
     }
+
+
+@app.get("/api/export-settings", response_model=ExportSettings)
+def get_export_settings() -> ExportSettings:
+    stored = _read_json(EXPORT_SETTINGS_PATH)
+    try:
+        return ExportSettings(**stored)
+    except ValidationError:
+        return ExportSettings()
+
+
+@app.put("/api/export-settings", response_model=ExportSettings)
+def update_export_settings(settings: ExportSettings) -> ExportSettings:
+    try:
+        EXPORT_SETTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
+        EXPORT_SETTINGS_PATH.write_text(
+            json.dumps(settings.dict(), ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    except OSError as error:
+        raise HTTPException(status_code=500, detail="Could not save export settings") from error
+    return settings
 
 
 @app.get("/api/years.json")
@@ -252,6 +297,39 @@ def _era5_summary() -> Dict[str, Any]:
 
 
 def _official_forecast_summary() -> Dict[str, Any]:
+    comparison = _read_json(OFFICIAL_COMPARISON_PATH)
+    official = comparison.get("jtwc_official", {})
+    coverage = comparison.get("coverage", {})
+    supported_leads = {12, 24, 36}
+    by_horizon = [
+        item
+        for item in official.get("by_horizon", [])
+        if isinstance(item, dict) and item.get("lead_hours") in supported_leads
+    ]
+    if by_horizon:
+        comparable = sum(
+            int(item.get("sample_count", 0) or 0)
+            for item in by_horizon
+            if isinstance(item, dict)
+        )
+        return {
+            "status": "ready",
+            "reason": (
+                "JTWC 2025 f-deck 已完成同起报对比；"
+                "可比时效为 12/24/36 小时，真值采用审计后的 best-track 表。"
+            ),
+            "comparable_positions": comparable,
+            "test_windows_scored": coverage.get("test_windows_scored"),
+            "storms_scored": coverage.get("storms_scored", []),
+            "supported_model_leads_hours": sorted(supported_leads),
+            "by_horizon": by_horizon,
+            "source": str(OFFICIAL_COMPARISON_PATH),
+            "limitations": [
+                "官方预报归档当前仅覆盖 2025 年。",
+                "JTWC f-deck 没有 6/18/30 小时点，因此不展示这三档官方曲线。",
+                "官方预报误差与模型误差使用同一验证真值后才可比较，不能把官方误差当成 CNN 成绩。",
+            ],
+        }
     audit = _read_json(OPERATIONAL_AUDIT_PATH)
     counts = audit.get("counts", {})
     comparable = int(counts.get("comparable_positions", 0) or 0)
@@ -331,6 +409,33 @@ def _experiment_summary() -> Dict[str, Any]:
             **aggregate,
         })
 
+    official_comparison = _read_json(OFFICIAL_COMPARISON_PATH)
+    official_metrics = [
+        item
+        for item in official_comparison.get("jtwc_official", {}).get("by_horizon", [])
+        if isinstance(item, dict) and item.get("lead_hours") in {12, 24, 36}
+    ]
+    if official_metrics:
+        models.append({
+            "key": "jtwc_official",
+            "name": "JTWC 官方预报",
+            "kind": "official",
+            "feature_set": "JTWC f-deck（2025）",
+            "seed_count": 1,
+            "sample_count": official_comparison.get("coverage", {}).get("test_windows_scored"),
+            "by_horizon": [
+                {
+                    "lead_hours": item.get("lead_hours"),
+                    "path_mae_km": item.get("mae_km"),
+                    "path_rmse_km": item.get("rmse_km"),
+                    "path_median_km": item.get("median_km"),
+                    "run_count": 1,
+                }
+                for item in official_metrics
+                if isinstance(item, dict)
+            ],
+        })
+
     reference_metrics = metrics or (all_runs[0]["metrics"] if all_runs else {})
     manifest = _read_json(MANIFEST_PATH)
     preprocessing = manifest.get("preprocessing", {})
@@ -343,7 +448,7 @@ def _experiment_summary() -> Dict[str, Any]:
         "当前图表已聚合 3 个随机种子；仍应结合台风级 bootstrap 结果报告跨个例稳定性。",
         "当前保存的指标没有 ADE/FDE、强台风/转向/登陆分组结果，因此界面不展示这些未验证字段。",
         "当前实验只覆盖 6/12/18/24/30/36 小时；没有 48/72 小时实验结果。",
-        "官方预报审计的公平可比样本为 0，不能据此声称 CNN 优于官方预报。",
+        "JTWC 官方预报对比当前仅覆盖 2025 年和 12/24/36 小时；模型与官方结果只能在同一批配对样本上比较，不能外推为多年结论。",
         "当前没有独立的物理约束消融结果；残差 CNN 中的匀速运动先验不作为单独实验行展示。",
     ])
     unique_limitations = list(dict.fromkeys(limitations))

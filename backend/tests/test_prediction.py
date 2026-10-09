@@ -27,8 +27,13 @@ class PredictionIntegrationTests(unittest.TestCase):
             cls.sample = json.loads(handle.readline())
         cls.checkpoint_path = PROJECT_ROOT / "artifacts" / "checkpoints" / "track_cnn_baseline.pth"
         cls.residual_checkpoint_path = PROJECT_ROOT / "artifacts" / "residual" / "checkpoints" / "track_cnn_residual.pth"
-        cls.uncertainty_path = PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261007.json"
-        cls.service = ModelService(cls.checkpoint_path, uncertainty_path=cls.uncertainty_path)
+        cls.uncertainty_path = PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261008.json"
+        cls.joint_uncertainty_path = PROJECT_ROOT / "artifacts" / "reports" / "stage4_extensions_20261008.json"
+        cls.service = ModelService(
+            cls.checkpoint_path,
+            uncertainty_path=cls.uncertainty_path,
+            joint_uncertainty_path=cls.joint_uncertainty_path,
+        )
         cls.residual_service = ModelService(cls.residual_checkpoint_path)
         if not cls.service.ready:
             raise RuntimeError("trained checkpoint could not be loaded: " + str(cls.service.status()))
@@ -95,10 +100,24 @@ class PredictionIntegrationTests(unittest.TestCase):
             self.assertAlmostEqual(prediction["speed_ms"], expected_wind[index], delta=1e-4)
             self.assertIsNone(prediction["p05"])
             self.assertIsNone(prediction["p95"])
-            self.assertGreater(prediction["location_radius_90_km"], 0)
+        prediction = result["predictions"][0]
+        self.assertGreater(prediction["location_radius_90_km"], 0)
+        self.assertEqual(prediction["uncertainty_region"]["geometry"], "conformal_ellipse")
+        self.assertAlmostEqual(
+            prediction["uncertainty_region"]["semi_major_axis_km"],
+            560.932804339698,
+        )
+        self.assertGreater(prediction["uncertainty_region"]["semi_major_axis_km"], prediction["uncertainty_region"]["semi_minor_axis_km"])
+        self.assertGreater(prediction["uncertainty_region"]["area_km2"], 0)
+        self.assertTrue(0 <= prediction["uncertainty_region"]["bearing_deg"] < 180)
+        self.assertEqual(prediction["speed_interval_source"]["unit"], "source_native")
+        self.assertLess(prediction["speed_interval_source"]["lower"], prediction["speed_interval_source"]["upper"])
         self.assertEqual(result["uncertainty"]["status"], "historical_calibration")
         validated = PredictionResponse(**result)
-        self.assertAlmostEqual(validated.predictions[0].location_radius_90_km, 479.7534459833955)
+        self.assertAlmostEqual(validated.predictions[0].location_radius_90_km, 483.9615881788603)
+        self.assertEqual(validated.uncertainty.region_geometry, "conformal_ellipse")
+        self.assertEqual(validated.uncertainty.joint_region_geometry, "location_ellipse_and_source_speed_interval")
+        self.assertIn("不是实时预报保证", validated.uncertainty.region_note)
 
     def test_uncertainty_is_not_reused_for_a_different_checkpoint(self):
         service = ModelService(self.residual_checkpoint_path, uncertainty_path=self.uncertainty_path)

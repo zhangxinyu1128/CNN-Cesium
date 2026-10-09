@@ -29,6 +29,7 @@ class ModelService:
         checkpoint_path: Path,
         model_version: Optional[str] = None,
         uncertainty_path: Optional[Path] = None,
+        joint_uncertainty_path: Optional[Path] = None,
     ) -> None:
         self.checkpoint_path = checkpoint_path.resolve()
         self.model_version = model_version
@@ -41,6 +42,8 @@ class ModelService:
         self._checkpoint_sha256 = None
         self._uncertainty = None
         self._uncertainty_path = uncertainty_path
+        self._joint_uncertainty = None
+        self._joint_uncertainty_path = joint_uncertainty_path
         self._load()
 
     @property
@@ -123,13 +126,51 @@ class ModelService:
             if self._uncertainty_path and self._uncertainty_path.is_file():
                 uncertainty = json.loads(self._uncertainty_path.read_text(encoding="utf-8"))
                 radii = uncertainty.get("calibration", {}).get("location_radius_km", [])
+                ellipses = uncertainty.get("calibration", {}).get("location_ellipse_90", [])
                 valid_radii = (
                     isinstance(radii, list)
                     and len(radii) == FORECAST_STEPS
                     and all(math.isfinite(float(radius)) and float(radius) > 0 for radius in radii)
                 )
-                if uncertainty.get("checkpoint_sha256") == self._checkpoint_sha256 and valid_radii:
+                valid_ellipses = (
+                    not ellipses
+                    or (
+                        isinstance(ellipses, list)
+                        and len(ellipses) == FORECAST_STEPS
+                        and all(
+                            isinstance(item, dict)
+                            and all(
+                                key in item
+                                and math.isfinite(float(item[key])) and float(item[key]) > 0
+                                for key in ("semi_major_axis_km", "semi_minor_axis_km")
+                            )
+                            and "bearing_deg" in item
+                            and math.isfinite(float(item["bearing_deg"]))
+                            for item in ellipses
+                        )
+                    )
+                )
+                if (
+                    uncertainty.get("checkpoint_sha256") == self._checkpoint_sha256
+                    and valid_radii
+                    and valid_ellipses
+                ):
                     self._uncertainty = uncertainty
+            if self._joint_uncertainty_path and self._joint_uncertainty_path.is_file():
+                joint = json.loads(self._joint_uncertainty_path.read_text(encoding="utf-8"))
+                widths = joint.get("joint_location_speed", {}).get("calibration_by_horizon", [])
+                valid_widths = (
+                    isinstance(widths, list)
+                    and len(widths) == FORECAST_STEPS
+                    and all(
+                        isinstance(item, dict)
+                        and math.isfinite(float(item.get("speed_half_width_native", 0)))
+                        and float(item.get("speed_half_width_native", 0)) > 0
+                        for item in widths
+                    )
+                )
+                if joint.get("checkpoint_sha256") == self._checkpoint_sha256 and valid_widths:
+                    self._joint_uncertainty = joint
             logger.info("Loaded %s from %s on %s", self.model_version, self.checkpoint_path, device)
         except Exception as error:
             self._reason = "model load failed: {}: {}".format(type(error).__name__, error)
@@ -203,6 +244,8 @@ class ModelService:
                         self._uncertainty["calibration"]["location_radius_km"][index]
                         if self._uncertainty else None
                     ),
+                    "uncertainty_region": self._region_for_horizon(index),
+                    "speed_interval_source": self._speed_interval_for_horizon(index, speed),
                 }
             )
 
@@ -227,6 +270,58 @@ class ModelService:
             "method": calibration.get("method"),
             "calibration_storms": calibration.get("storm_count"),
             "interpretation": self._uncertainty.get("interpretation"),
+            "region_geometry": (
+                "conformal_ellipse"
+                if calibration.get("location_ellipse_90")
+                else "isotropic_circle"
+            ),
+            "region_note": "基于历史台风分组校准的二维位置区域，不是实时预报保证或灾害概率区。",
+            "joint_region_geometry": (
+                "location_ellipse_and_source_speed_interval"
+                if self._joint_uncertainty else None
+            ),
+            "joint_region_note": (
+                "位置椭圆与源数据风速字段区间的历史联合校准结果；风速单位沿用源字段，不是灾害概率或风圈。"
+                if self._joint_uncertainty else None
+            ),
+        }
+
+    def _speed_interval_for_horizon(self, index: int, speed: float) -> Optional[Dict[str, Any]]:
+        if not self._joint_uncertainty:
+            return None
+        calibrations = self._joint_uncertainty.get("joint_location_speed", {}).get("calibration_by_horizon", [])
+        if index >= len(calibrations):
+            return None
+        half_width = float(calibrations[index].get("speed_half_width_native", 0.0))
+        if not math.isfinite(half_width) or half_width <= 0:
+            return None
+        return {
+            "lower": max(0.0, float(speed) - half_width),
+            "upper": float(speed) + half_width,
+            "unit": "source_native",
+            "interpretation": "历史联合校准风速字段区间，不是灾害概率或业务风圈。",
+        }
+
+    def _region_for_horizon(self, index: int) -> Optional[Dict[str, Any]]:
+        if not self._uncertainty:
+            return None
+        calibration = self._uncertainty.get("calibration", {})
+        radii = calibration.get("location_radius_km", [])
+        if index >= len(radii):
+            return None
+        radius = float(radii[index])
+        if not math.isfinite(radius) or radius <= 0:
+            return None
+        ellipses = calibration.get("location_ellipse_90", [])
+        ellipse = ellipses[index] if index < len(ellipses) else None
+        return {
+            "geometry": ellipse.get("geometry", "conformal_ellipse") if ellipse else "isotropic_circle",
+            "coverage": float(calibration.get("target_coverage", 0.9)),
+            "semi_major_axis_km": float(ellipse["semi_major_axis_km"]) if ellipse else radius,
+            "semi_minor_axis_km": float(ellipse["semi_minor_axis_km"]) if ellipse else radius,
+            "bearing_deg": float(ellipse.get("bearing_deg", 0.0)) if ellipse else 0.0,
+            "area_km2": float(ellipse["area_km2"]) if ellipse else math.pi * radius * radius,
+            "interpretation": "历史台风分组校准的二维位置区域，不是实时预报保证或灾害概率区。",
         }
 
     def status(self) -> Dict[str, Any]:

@@ -11,7 +11,7 @@ python -m pip install -r backend\requirements.txt -r ml\requirements.txt
 python -m uvicorn backend.app.main:app --reload --port 8000
 ```
 
-预测输入必须包含五个时间递增且相隔 6 小时的历史观测。第一个点用于计算位移特征，后四个点需要提供 `speed` 和 `power`。模型输出 6、12、18、24、30、36 小时结果；可在 `horizons_hours` 中请求其中的有序子集。数据中的无时区时间按照 UTC 处理。默认 checkpoint 若与校准记录中的 SHA-256 完全匹配，响应会包含 `location_radius_90_km` 和校准说明；这是历史位置误差范围，不是灾害概率或实时预报保证。`p05` 和 `p95` 经纬度分位坐标当前为 `null`。
+预测输入必须包含五个时间递增且相隔 6 小时的历史观测。第一个点用于计算位移特征，后四个点需要提供 `speed` 和 `power`。模型输出 6、12、18、24、30、36 小时结果；可在 `horizons_hours` 中请求其中的有序子集。数据中的无时区时间按照 UTC 处理。默认 checkpoint 若与校准记录中的 SHA-256 完全匹配，响应会包含兼容字段 `location_radius_90_km` 和二维 `uncertainty_region`（椭圆长短半轴、方位角与面积）。椭圆以验证集台风分组残差协方差定向，并以台风为校准单位；它不是灾害概率、实时预报保证或受灾影响范围。`p05` 和 `p95` 经纬度分位坐标当前为 `null`。
 
 接口：
 

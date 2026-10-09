@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 
 from ml.models.track_cnn import TrackCNN
 from ml.train import PROJECT_ROOT, WindowDataset, haversine_km
+from ml.uncertainty_regions import calibrate_location_ellipse, ellipse_metrics, location_energy_score
 
 
 def storm_group_quantile(scores: np.ndarray, groups: Sequence[str], coverage: float) -> float:
@@ -52,8 +53,24 @@ def predict_draws(model, dataset, device, normalizer, samples: int) -> np.ndarra
     return np.stack(draws, axis=0)
 
 
-def evaluate(draws, actual, groups, radii):
-    center = np.median(draws, axis=0)
+def predict_deterministic(model, dataset, device, normalizer) -> np.ndarray:
+    model.eval()
+    loader = DataLoader(dataset, batch_size=512, shuffle=False)
+    means = np.asarray(normalizer["mean"][:3], dtype=np.float64)
+    scales = np.asarray(normalizer["std"][:3], dtype=np.float64)
+    batches = []
+    with torch.no_grad():
+        for features, _ in loader:
+            output = model(features.to(device))
+            batches.append(torch.cat((output["track"], output["wind"]), dim=-1).cpu().numpy())
+    prediction = np.concatenate(batches, axis=0) * scales + means
+    prediction[..., 0] %= 360.0
+    prediction[..., 1] = np.clip(prediction[..., 1], -90.0, 90.0)
+    prediction[..., 2] = np.maximum(prediction[..., 2], 0.0)
+    return prediction
+
+
+def evaluate(draws, center, actual, groups, radii, ellipses):
     result = []
     for index, radius in enumerate(radii):
         errors = haversine_km(
@@ -70,6 +87,10 @@ def evaluate(draws, actual, groups, radii):
             "location_coverage_90": float(np.mean(covered)),
             "location_storm_coverage_90": float(np.mean(list(storm_covered.values()))),
             "median_error_km": float(np.median(errors)),
+            "ellipse_90": ellipse_metrics(center[:, index, :2], actual[:, index, :2], groups, ellipses[index]),
+            "energy_score_km": location_energy_score(
+                draws[:, :, index, :2].transpose(1, 0, 2), actual[:, index, :2]
+            ),
         })
     return result
 
@@ -104,15 +125,30 @@ def main() -> None:
     test = WindowDataset(args.data_root / "processed" / "test.jsonl")
     validation_draws = predict_draws(model, validation, device, normalizer, args.samples)
     test_draws = predict_draws(model, test, device, normalizer, args.samples)
-    validation_center = np.median(validation_draws, axis=0)
+    validation_center = predict_deterministic(model, validation, device, normalizer)
+    test_center = predict_deterministic(model, test, device, normalizer)
     validation_actual = validation.raw_targets_tensor.numpy()
     radii = []
+    ellipses = []
     for horizon in range(6):
         errors = haversine_km(
             validation_center[:, horizon, 0], validation_center[:, horizon, 1],
             validation_actual[:, horizon, 0], validation_actual[:, horizon, 1],
         )
         radii.append(storm_group_quantile(errors, validation.track_ids, 0.9))
+        ellipse, _ = calibrate_location_ellipse(
+            validation_center[:, horizon, :2],
+            validation.raw_targets_tensor.numpy()[:, horizon, :2],
+            validation.track_ids,
+            0.9,
+        )
+        ellipses.append(ellipse)
+    major_axes = np.maximum.accumulate([item["semi_major_axis_km"] for item in ellipses])
+    minor_axes = np.maximum.accumulate([item["semi_minor_axis_km"] for item in ellipses])
+    for index, ellipse in enumerate(ellipses):
+        ellipse["semi_major_axis_km"] = float(major_axes[index])
+        ellipse["semi_minor_axis_km"] = float(minor_axes[index])
+        ellipse["area_km2"] = float(np.pi * major_axes[index] * minor_axes[index])
     # A forecast cone should not contract with increasing lead time.
     radii = np.maximum.accumulate(np.asarray(radii, dtype=np.float64)).tolist()
 
@@ -131,16 +167,17 @@ def main() -> None:
             "window_count": len(validation),
             "target_coverage": 0.9,
             "location_radius_km": radii,
+            "location_ellipse_90": ellipses,
         },
         "evaluation": {
             "split": "frozen_test",
             "storm_count": len(set(test.track_ids)),
             "window_count": len(test),
             "by_horizon": evaluate(
-                test_draws, test.raw_targets_tensor.numpy(), test.track_ids, radii
+                test_draws, test_center, test.raw_targets_tensor.numpy(), test.track_ids, radii, ellipses
             ),
         },
-        "interpretation": "Historical 90% storm-calibrated location radius for this exact checkpoint; not a real-time forecast guarantee or a hazard probability.",
+        "interpretation": "Historical storm-group conformal location regions for this exact checkpoint; not a real-time forecast guarantee or a hazard probability.",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

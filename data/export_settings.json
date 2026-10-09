@@ -1,0 +1,14 @@
+{
+  "visible_legend_ids": [
+    "history",
+    "prediction",
+    "error",
+    "impact"
+  ],
+  "visible_info_ids": [
+    "time",
+    "position",
+    "intensity",
+    "era5"
+  ]
+}

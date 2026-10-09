@@ -1,0 +1,22 @@
+{
+  "source_grib": "D:\\project\\CNN-Cesium\\ERA5data\\data.grib",
+  "source_grib_sha256": "3e552168e7285ed976da6b08fc4116adeac1317893c39e8a779ee6c14d74e474",
+  "year": 2025,
+  "requested_synoptic_track_points": 877,
+  "sampled_rows": 877,
+  "complete_5_level_uv_rows": 849,
+  "coverage_fraction": 0.9680729760547321,
+  "levels_hPa": [
+    200,
+    300,
+    500,
+    700,
+    850
+  ],
+  "variables": [
+    "u",
+    "v"
+  ],
+  "output": "D:\\project\\CNN-Cesium\\artifacts\\era5\\track_points_2025.jsonl",
+  "sampling": "nearest 0.25 degree grid point; exact UTC date and 00/06/12/18 cycle; no extrapolation"
+}

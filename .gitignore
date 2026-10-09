@@ -13,6 +13,8 @@ ERA5data/**/*.grib.gz.tmp
 !ERA5data/678/*.grib
 !ERA5data/678/*.grib.part*
 artifacts/**/*.jsonl
+official_forecast/JTWC/**/*.dat
+official_forecast/IBTrACS/*.csv
 
 # Frontend dependencies, builds, IDE files, and local environment secrets.
 CNN-Cesium/node_modules/

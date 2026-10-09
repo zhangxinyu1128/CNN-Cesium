@@ -1180,8 +1180,11 @@ button {
 }
 
 .history-chart {
+  position: relative;
   width: 100%;
   height: 142px;
+  z-index: 1;
+  pointer-events: auto;
 }
 .home-link {
   color: #ffffff;

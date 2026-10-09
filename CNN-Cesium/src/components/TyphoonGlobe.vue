@@ -44,6 +44,7 @@ let era5CenterEntity: Cesium.Entity | null = null
 let pointEntities: Cesium.Entity[] = []
 let forecastPointEntities: Cesium.Entity[] = []
 let uncertaintyEntities: Cesium.Entity[] = []
+let impactEntities: Cesium.Entity[] = []
 let validTrackPoints: TyphoonPoint[] = []
 
 const colors = [
@@ -71,6 +72,7 @@ function clearTrack() {
   pointEntities.forEach((entity) => viewer?.entities.remove(entity))
   forecastPointEntities.forEach((entity) => viewer?.entities.remove(entity))
   uncertaintyEntities.forEach((entity) => viewer?.entities.remove(entity))
+  impactEntities.forEach((entity) => viewer?.entities.remove(entity))
   trackEntity = null
   currentEntity = null
   forecastEntity = null
@@ -79,6 +81,7 @@ function clearTrack() {
   pointEntities = []
   forecastPointEntities = []
   uncertaintyEntities = []
+  impactEntities = []
   validTrackPoints = []
 }
 
@@ -128,15 +131,35 @@ function renderForecast() {
         ellipse: {
           semiMajorAxis: point.location_radius_90_km * 1000,
           semiMinorAxis: point.location_radius_90_km * 1000,
-          material: Cesium.Color.fromCssColorString('#ff806f').withAlpha(0.10),
+          material: Cesium.Color.fromCssColorString('#f7a64a').withAlpha(0.10),
           outline: true,
-          outlineColor: Cesium.Color.fromCssColorString('#ff9c8d').withAlpha(0.72),
+          outlineColor: Cesium.Color.fromCssColorString('#f7a64a').withAlpha(0.86),
           outlineWidth: 1,
           height: 1000
         }
       })
       if (circle) uncertaintyEntities.push(circle)
     }
+    // Impact range is a model estimate combining calibrated location error and
+    // a wind-dependent influence radius. It is deliberately labelled as an
+    // estimate and is not a warning or official hazard boundary.
+    const errorRadius = point.location_radius_90_km ?? 0
+    const impactRadius = Math.max(errorRadius + 35, errorRadius + (point.speed_ms ?? 0) * 2.5)
+    const impact = viewer?.entities.add({
+      name: `+${point.lead_hours} 小时 · 模型估计影响范围 · 半径 ${Math.round(impactRadius)} km`,
+      position: Cesium.Cartesian3.fromDegrees(point.lng, point.lat),
+      ellipse: {
+        semiMajorAxis: impactRadius * 1000,
+        semiMinorAxis: impactRadius * 1000 * 0.72,
+        rotation: Cesium.Math.toRadians(point.uncertainty_region?.bearing_deg ?? 0),
+        material: Cesium.Color.fromCssColorString('#ef4444').withAlpha(0.08),
+        outline: true,
+        outlineColor: Cesium.Color.fromCssColorString('#ef4444').withAlpha(0.72),
+        outlineWidth: 2,
+        height: 1100
+      }
+    })
+    if (impact) impactEntities.push(impact)
     const entity = viewer?.entities.add({
       name: `预测 +${point.lead_hours} 小时 · ${point.speed_ms?.toFixed(1) ?? '--'} m/s`,
       position: Cesium.Cartesian3.fromDegrees(point.lng, point.lat),
@@ -157,11 +180,13 @@ function updateCurrentMarker() {
 
   const index = Math.min(Math.max(props.currentIndex, 0), validTrackPoints.length - 1)
   const currentPoint = validTrackPoints[index]
-  currentEntity.position = Cesium.Cartesian3.fromDegrees(currentPoint.lng, currentPoint.lat)
-  currentEntity.label!.text = currentPoint.strong || '当前台风'
+  currentEntity.position = new Cesium.ConstantPositionProperty(
+    Cesium.Cartesian3.fromDegrees(currentPoint.lng, currentPoint.lat)
+  )
+  currentEntity.label!.text = new Cesium.ConstantProperty(currentPoint.strong || '当前台风')
 
   pointEntities.forEach((entity, pointIndex) => {
-    if (entity.point) entity.point.pixelSize = pointIndex === index ? 9 : 5
+    if (entity.point) entity.point.pixelSize = new Cesium.ConstantProperty(pointIndex === index ? 9 : 5)
   })
 }
 
@@ -312,7 +337,18 @@ function resetView() {
   })
 }
 
-defineExpose({ resetView })
+function captureScreenshot() {
+  if (!viewer || viewer.isDestroyed()) return null
+  viewer.render()
+  return viewer.canvas.toDataURL('image/png')
+}
+
+function captureStream() {
+  if (!viewer || viewer.isDestroyed() || !viewer.canvas.captureStream) return null
+  return viewer.canvas.captureStream(8)
+}
+
+defineExpose({ resetView, captureScreenshot, captureStream })
 
 onMounted(() => {
   if (!container.value) return

@@ -1,0 +1,87 @@
+{
+  "generated_at": "2026-10-08T14:43:07Z",
+  "rules": {
+    "kept_leads": [
+      6,
+      12,
+      18,
+      24,
+      30,
+      36
+    ],
+    "max_truth_gap_hours": 9.0,
+    "forecast_positions_interpolated": false
+  },
+  "truth_rows": 11810,
+  "truth_deck_rows": 10055,
+  "ibtracs_jtwc_rows": 1755,
+  "storm_years": [
+    2025
+  ],
+  "forecast_storms": 33,
+  "storm_ids_without_bdeck": [
+    "WP012025",
+    "WP022025",
+    "WP032025",
+    "WP042025",
+    "WP052025",
+    "WP062025",
+    "WP072025",
+    "WP082025",
+    "WP092025",
+    "WP102025",
+    "WP112025",
+    "WP122025",
+    "WP132025",
+    "WP142025",
+    "WP152025",
+    "WP162025",
+    "WP172025",
+    "WP182025",
+    "WP192025",
+    "WP202025",
+    "WP212025",
+    "WP222025",
+    "WP232025",
+    "WP242025",
+    "WP252025",
+    "WP262025",
+    "WP272025",
+    "WP282025",
+    "WP292025",
+    "WP302025",
+    "WP312025",
+    "WP322025",
+    "WP332025"
+  ],
+  "forecast_points_kept": 1749,
+  "forecast_points_dropped_no_truth": 274,
+  "lead_histogram_raw_fst": {
+    "0": 1033,
+    "12": 1073,
+    "24": 1089,
+    "36": 1015,
+    "48": 909,
+    "72": 735,
+    "96": 532,
+    "120": 381
+  },
+  "paired_by_lead": {
+    "12": {
+      "n": 548,
+      "mean_km": 50.7,
+      "max_km": 238.2
+    },
+    "24": {
+      "n": 494,
+      "mean_km": 69.5,
+      "max_km": 282.3
+    },
+    "36": {
+      "n": 433,
+      "mean_km": 85.8,
+      "max_km": 422.7
+    }
+  },
+  "mean_error_km_all_leads": 67.3
+}

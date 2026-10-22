@@ -8,8 +8,8 @@ export interface TyphoonPoint {
   pressure?: number | null
   move_dir?: number | null
   move_speed?: number | null
-  radius7?: number[] | null
-  radius10?: number[] | null
+  radius7?: number | null
+  radius10?: number | null
   remark?: string | null
 }
 

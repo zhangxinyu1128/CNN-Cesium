@@ -2,13 +2,14 @@
 
 import json
 import re
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 
 class AssistantService:
     """Answers questions by matching knowledge cards and real-time context."""
 
-    def __init__(self, cards_path: Optional[str] = None):
+    def __init__(self, cards_path: Optional[Union[str, Path]] = None):
         self.cards: List[Dict[str, Any]] = []
         if cards_path:
             self.cards = self.load_cards(cards_path)
@@ -192,6 +193,133 @@ class AssistantService:
             "answer": answer,
             "sources": sources,
             "matched_card_ids": matched_ids,
+            "caveats": caveats,
+        }
+
+    def _context_summary(self, context: Any) -> str:
+        if context is None:
+            return ""
+        typhoon_id = self._get(context, "typhoon_id")
+        typhoon_name = self._get(context, "typhoon_name")
+        lead_hours = self._get(context, "lead_hours")
+        forecast_position = self._get(context, "forecast_position")
+        speed_ms = self._get(context, "speed_ms")
+        radius = self._get(context, "location_radius_90_km")
+        uncertainty_region = self._get(context, "uncertainty_region")
+        era5 = self._get(context, "era5")
+
+        pieces: List[str] = []
+        if typhoon_name or typhoon_id:
+            label = str(typhoon_name) if typhoon_name else ""
+            if typhoon_id:
+                label = f"{label}（编号 {typhoon_id}）" if label else f"编号 {typhoon_id}"
+            pieces.append(f"当前台风：{label}")
+        if forecast_position is not None:
+            lng = self._get(forecast_position, "lng")
+            lat = self._get(forecast_position, "lat")
+            pieces.append(f"预测位置：经度 {self._fmt(lng)}、纬度 {self._fmt(lat)}")
+        if lead_hours is not None:
+            pieces.append(f"预测时效：{self._fmt(lead_hours)} 小时")
+        if speed_ms is not None:
+            pieces.append(f"预计风速：{self._fmt(speed_ms)} m/s")
+        if radius is not None:
+            pieces.append(f"位置误差半径：{self._fmt(radius)} km")
+        if uncertainty_region is not None:
+            semi_major = self._get(uncertainty_region, "semi_major_axis_km")
+            semi_minor = self._get(uncertainty_region, "semi_minor_axis_km")
+            coverage = self._get(uncertainty_region, "coverage")
+            pieces.append(
+                f"不确定性椭圆：半长轴 {self._fmt(semi_major)} km、"
+                f"半短轴 {self._fmt(semi_minor)} km、覆盖率 {self._fmt(coverage)}"
+            )
+        if era5 is not None:
+            level = self._get(era5, "level")
+            u = self._get(era5, "u")
+            v = self._get(era5, "v")
+            era5_speed = self._get(era5, "speed_ms")
+            direction = self._get(era5, "direction_deg")
+            shear = self._get(era5, "shear")
+            parts = []
+            if level is not None:
+                parts.append(f"层次 {self._fmt(level)} hPa")
+            if u is not None and v is not None:
+                parts.append(f"u/v = {self._fmt(u)}/{self._fmt(v)}")
+            if era5_speed is not None:
+                parts.append(f"风速 {self._fmt(era5_speed)} m/s")
+            if direction is not None:
+                parts.append(f"风向 {self._fmt(direction)}°")
+            if shear is not None:
+                parts.append(f"切变 {self._fmt(shear)}")
+            pieces.append("环境风场：" + "、".join(parts))
+        return "；".join(pieces)
+
+    def _live_sources(self, context: Any) -> List[Dict[str, Any]]:
+        if context is None:
+            return []
+        sources: List[Dict[str, Any]] = []
+        has_predict_value = any(
+            self._get(context, key) is not None
+            for key in (
+                "typhoon_id",
+                "typhoon_name",
+                "lead_hours",
+                "forecast_position",
+                "speed_ms",
+                "location_radius_90_km",
+                "uncertainty_region",
+            )
+        )
+        if has_predict_value:
+            sources.append({"path": "/api/predict"})
+        if self._get(context, "era5") is not None:
+            typhoon_id = self._get(context, "typhoon_id")
+            era5_id = typhoon_id if typhoon_id else "id"
+            sources.append({"path": f"/api/typhoons/{era5_id}/era5"})
+        return sources
+
+    def retrieve(self, text: str, context: Any = None) -> Dict[str, Any]:
+        top = self._score_cards(text)
+        cards: List[Dict[str, Any]] = []
+        for card in top:
+            cards.append({
+                "id": card.get("id"),
+                "title": card.get("title"),
+                "answer": card.get("answer"),
+                "sources": card.get("sources", []),
+                "caveats": card.get("caveats", []),
+            })
+
+        context_summary = self._context_summary(context)
+
+        sources: List[Dict[str, Any]] = []
+        seen_paths = set()
+        for card in top:
+            for source in card.get("sources", []):
+                if not isinstance(source, dict):
+                    continue
+                path = source.get("path")
+                if path is None or path in seen_paths:
+                    continue
+                seen_paths.add(path)
+                item = {"path": str(path)}
+                if source.get("section") is not None:
+                    item["section"] = str(source["section"])
+                sources.append(item)
+        for source in self._live_sources(context):
+            if source["path"] not in seen_paths:
+                seen_paths.add(source["path"])
+                sources.append(source)
+
+        caveats: List[str] = []
+        for card in top:
+            for caveat in card.get("caveats", []):
+                if caveat is not None and str(caveat) not in caveats:
+                    caveats.append(str(caveat))
+
+        return {
+            "cards": cards,
+            "context_summary": context_summary,
+            "sources": sources,
             "caveats": caveats,
         }
 

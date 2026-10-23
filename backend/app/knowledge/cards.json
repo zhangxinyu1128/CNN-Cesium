@@ -83,6 +83,75 @@
     "caveats": ["按台风整场划分，避免同场数据泄漏"]
   },
   {
+  "id": "greeting",
+  "title": "打招呼",
+  "keywords": ["你好", "您好", "hi", "hello", "在吗"],
+  "weight": 1,
+  "answer": "你好！我是台风研判助手，可以问我：在线预测模型、ERA5 融合实验、官方预报对比、误差范围、数据范围等。",
+  "sources": [],
+  "caveats": []
+},
+{
+  "id": "farewell",
+  "title": "道别",
+  "keywords": ["拜拜", "再见", "bye", "谢谢", "辛苦了"],
+  "weight": 1,
+  "answer": "不客气，有问题随时问我。",
+  "sources": [],
+  "caveats": []
+},
+  {
+    "id": "help",
+    "title": "帮助",
+    "keywords": ["帮助", "说明", "介绍", "功能", "能力"],
+    "weight": 1,
+    "answer": "我可以回答：在线预测模型、ERA5 融合实验、官方预报对比、误差范围、数据范围等问题。",
+    "sources": [],
+    "caveats": []
+  },
+  {
+    "id": "limitations",
+    "title": "免责红线",
+    "keywords": ["免责红线", "固定测试集", "官方对比边界", "误差半径", "实时预报", "口径限制"],
+    "weight": 1,
+    "answer": "免责红线：结论只适用本项目固定测试集。官方对比仅 2025 年且仅 12/24/36h。误差半径非灾害概率。官方预报误差不等于模型误差。不构成实时预报保证。",
+    "sources": [
+      {"path": "IMPLEMENTATION_PLAN.md", "section": "边界与限制"},
+      {"path": "official_forecast/说明.txt", "section": "口径与免责"}
+    ],
+    "caveats": ["不构成实时预报保证"]
+  },
+  {
+    "id": "greeting",
+    "title": "打招呼",
+    "keywords": [
+      "你好",
+      "您好",
+      "hi",
+      "hello",
+      "在吗"
+    ],
+    "weight": 1,
+    "answer": "你好！我是台风研判助手，可以问我：在线预测模型、ERA5 融合实验、官方预报对比、误差范围、数据范围等。",
+    "sources": [],
+    "caveats": []
+  },
+  {
+    "id": "farewell",
+    "title": "道别",
+    "keywords": [
+      "拜拜",
+      "再见",
+      "bye",
+      "谢谢",
+      "辛苦了"
+    ],
+    "weight": 1,
+    "answer": "不客气，有问题随时问我。",
+    "sources": [],
+    "caveats": []
+  },
+  {
     "id": "limitations",
     "title": "免责红线",
     "keywords": ["免责红线", "固定测试集", "官方对比边界", "误差半径", "实时预报", "口径限制"],

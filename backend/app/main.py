@@ -25,6 +25,7 @@ from .services.data import DataRepository
 from .services.era5 import Era5Repository
 from .services.model import ModelService
 from .services.knowledge import AssistantService
+from .services.llm import DeepSeekClient
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -69,6 +70,7 @@ model_service = ModelService(
     JOINT_UNCERTAINTY_PATH,
 )
 assistant_service = AssistantService(PROJECT_ROOT / "backend/app/knowledge/cards.json")
+deepseek_client = DeepSeekClient()
 
 app = FastAPI(
     title="Tropical Cyclone Intelligence API",
@@ -535,9 +537,57 @@ def predict(request: PredictionRequest) -> dict:
     return {**result, "typhoon_id": request.typhoon_id}
 
 
+SYSTEM_PROMPT = (
+    "你是一个专业气象助手，必须严格基于提供的知识卡片回答。"
+    "如果卡片中没有相关信息，请直接回复\"知识库中暂未收录该信息\"，"
+    "绝对不允许使用你自己的先验知识进行推测。"
+)
+
+
+def _assistant_llm_answer(request: AssistantQueryRequest) -> dict:
+    ret = assistant_service.retrieve(request.query, request.context)
+    
+
+    user_parts = []
+    if ret["cards"]:
+        user_parts.append("知识卡片：")
+        for card in ret["cards"]:
+            source_paths = [
+                str(source.get("path", ""))
+                for source in card.get("sources", [])
+                if isinstance(source, dict) and source.get("path") is not None
+            ]
+            line = f"- [{card.get('id')}] {card.get('title')}：{card.get('answer')}"
+            if source_paths:
+                line += f"（来源：{'、'.join(source_paths)}）"
+            user_parts.append(line)
+    if ret["context_summary"]:
+        user_parts.append("实时上下文：" + ret["context_summary"])
+    user_parts.append("用户问题：" + request.query)
+
+    answer = deepseek_client.chat([
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": "\n".join(user_parts)},
+    ])
+
+    matched_card_ids = [str(card.get("id")) for card in ret["cards"] if card.get("id") is not None]
+    return {
+        "answer": answer,
+        "status": "matched",
+        "sources": ret["sources"],
+        "matched_card_ids": matched_card_ids,
+        "caveats": ret["caveats"],
+    }
+
+
 @app.post("/api/assistant/query", response_model=AssistantAnswer)
 def assistant_query(request: AssistantQueryRequest) -> dict:
-    return assistant_service.query(request.query, request.context)
+    if not deepseek_client.enabled:
+        return assistant_service.query(request.query, request.context)
+    try:
+        return _assistant_llm_answer(request)
+    except Exception:
+        return assistant_service.query(request.query, request.context)
 
 
 if __name__ == "__main__":

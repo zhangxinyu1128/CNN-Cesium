@@ -28,7 +28,7 @@ function render() {
   const metricLabel = props.metric === 'rmse' ? '路径 RMSE / km' : '路径 MAE / km'
   const option: EChartsOption = {
     animation: false,
-    grid: { left: 42, right: 12, top: 18, bottom: 34 },
+    grid: { left: 42, right: 12, top: 30, bottom: 34 },
     tooltip: {
       trigger: 'axis',
       valueFormatter: (value: unknown) => typeof value === 'number' ? `${value.toFixed(1)} km` : '--'
@@ -106,6 +106,7 @@ onBeforeUnmount(() => {
 .experiment-comparison-chart {
   width: 100%;
   height: 190px;
+  margin-top: 12px;
 }
 
 .experiment-comparison-legend {

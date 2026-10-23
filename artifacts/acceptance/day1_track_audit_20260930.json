@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-30T12:08:19.468291+00:00",
+  "source": {
+    "root": "D:\\project\\CNN-Cesium\\data",
+    "fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+    "bytes": 50170477,
+    "components": [
+      "annual typhoon indexes",
+      "best-track JSON files"
+    ],
+    "gridded_meteorology_files": 0
+  },
+  "coverage": {
+    "year_files": 81,
+    "year_min": 1945,
+    "year_max": 2025,
+    "annual_index_rows": 1937,
+    "typhoon_files": 1937,
+    "valid_tracks": 1935,
+    "point_count": 73388,
+    "invalid_coordinate_points": 0,
+    "duplicate_timestamps": 0,
+    "non_monotonic_steps": 0
+  },
+  "field_missing": {
+    "time": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "lng": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "lat": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "speed": {
+      "count": 15,
+      "fraction": 0.00020439
+    },
+    "power": {
+      "count": 15,
+      "fraction": 0.00020439
+    },
+    "pressure": {
+      "count": 2083,
+      "fraction": 0.02838339
+    },
+    "move_dir": {
+      "count": 49646,
+      "fraction": 0.67648662
+    },
+    "move_speed": {
+      "count": 49921,
+      "fraction": 0.68023383
+    },
+    "radius7": {
+      "count": 48040,
+      "fraction": 0.65460293
+    },
+    "radius10": {
+      "count": 52488,
+      "fraction": 0.7152123
+    }
+  },
+  "interval_hours": {
+    "0.0003": 1,
+    "0.3333": 1,
+    "0.5": 16,
+    "0.6667": 1,
+    "1.0": 14169,
+    "2.0": 121,
+    "3.0": 8498,
+    "4.0": 6,
+    "5.0": 6,
+    "6.0": 48591,
+    "8.0": 2,
+    "9.0": 7,
+    "12.0": 19,
+    "15.0": 1,
+    "18.0": 5,
+    "24.0": 2,
+    "36.0": 5,
+    "42.0": 2
+  },
+  "index_consistency": {
+    "index_ids_without_track_file": [],
+    "track_files_without_index_row": [],
+    "duplicate_track_ids": [],
+    "filename_id_mismatches": []
+  },
+  "errors": {
+    "invalid_track_files": [
+      {
+        "file": "196118.json",
+        "reason": "no track object"
+      },
+      {
+        "file": "197319.json",
+        "reason": "no track object"
+      }
+    ],
+    "invalid_year_files": []
+  },
+  "splits": {
+    "time_holdout_year_ranges": {
+      "train": [
+        1945,
+        2016
+      ],
+      "validation": [
+        2017,
+        2019
+      ],
+      "test": [
+        2020,
+        2025
+      ]
+    },
+    "time_holdout_track_counts": {
+      "train": 1687,
+      "validation": 94,
+      "test": 154,
+      "outside_range": 0
+    },
+    "random_track_split": {
+      "seed": 2026,
+      "fractions": {
+        "train": 0.7,
+        "validation": 0.15,
+        "test": 0.15
+      },
+      "counts": {
+        "train": 1354,
+        "validation": 290,
+        "test": 291
+      }
+    }
+  },
+  "preprocessing_policy": {
+    "input_steps": 4,
+    "input_features": [
+      "lng",
+      "lat",
+      "speed",
+      "power",
+      "delta_lng",
+      "delta_lat"
+    ],
+    "target_steps": 6,
+    "target_interval_hours": 6,
+    "normalization": "fit on training storms only",
+    "time_resampling": "not applied by this audit command"
+  }
+}

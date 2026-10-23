@@ -1,7 +1,7 @@
 """Stable request and response models shared by the API endpoints."""
 
 from datetime import datetime, timedelta, timezone
-from typing import List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field, validator
 
@@ -182,6 +182,24 @@ class HealthResponse(BaseModel):
     service: str
     data: DataStatus
     model: ModelStatus
+
+
+class AssistantRequest(BaseModel):
+    question: str = Field(..., min_length=1, max_length=800)
+    context: Dict[str, Any] = Field(default_factory=dict)
+
+
+class AssistantCitation(BaseModel):
+    title: str
+    source: str
+    excerpt: str
+
+
+class AssistantResponse(BaseModel):
+    answer: str
+    mode: str
+    citations: List[AssistantCitation] = Field(default_factory=list)
+    suggested_questions: List[str] = Field(default_factory=list)
 
 
 ExportLegendId = Literal[

@@ -114,6 +114,7 @@ export interface HealthResponse {
     exists: boolean
     size_bytes: number
     model_version: string | null
+    model_type: string | null
     device: string | null
     checkpoint_sha256: string | null
     reason: string | null

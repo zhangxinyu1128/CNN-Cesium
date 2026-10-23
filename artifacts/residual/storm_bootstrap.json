@@ -1,0 +1,894 @@
+{
+  "dataset_fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+  "split_file_sha256": "2836e1da45f6de2dc2081cdb8c92eccf2042a483215cb83c9e5831d8736ac00e",
+  "test_window_count": 1670,
+  "test_storm_count": 114,
+  "bootstrap": {
+    "unit": "storm",
+    "iterations": 10000,
+    "confidence_level": 0.95,
+    "seed": 2026,
+    "estimand": "equal-weighted mean per-storm path-MAE improvement over constant velocity"
+  },
+  "intensity_stratification": {
+    "feature": "input power at the forecast origin",
+    "method": "low/middle/high tertiles of each training storm's median input power; thresholds are train-only",
+    "training_storm_power_tertile_thresholds": [
+      10.0,
+      12.0
+    ],
+    "labels_are_official_categories": false
+  },
+  "seeds": {
+    "2026": {
+      "best_epoch": 41,
+      "storm_count": 114,
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "storm_weighted_cnn_mae_km": 45.66346992729854,
+          "storm_weighted_baseline_mae_km": 47.57238516264735,
+          "mean_paired_improvement_km": 1.9089152353487957,
+          "paired_improvement_ci95_km": [
+            1.2213844185675595,
+            2.6205157975572555
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 12,
+          "storm_weighted_cnn_mae_km": 88.38473241951762,
+          "storm_weighted_baseline_mae_km": 96.31410276063113,
+          "mean_paired_improvement_km": 7.929370341113524,
+          "paired_improvement_ci95_km": [
+            5.604529153963926,
+            10.346112947297948
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 18,
+          "storm_weighted_cnn_mae_km": 136.30590542350603,
+          "storm_weighted_baseline_mae_km": 152.24475858204622,
+          "mean_paired_improvement_km": 15.9388531585402,
+          "paired_improvement_ci95_km": [
+            11.152453944160941,
+            20.894355188961793
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 24,
+          "storm_weighted_cnn_mae_km": 187.53555157287144,
+          "storm_weighted_baseline_mae_km": 214.32333280542008,
+          "mean_paired_improvement_km": 26.787781232548618,
+          "paired_improvement_ci95_km": [
+            19.265904894399082,
+            34.69794960404143
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 30,
+          "storm_weighted_cnn_mae_km": 246.22170605896972,
+          "storm_weighted_baseline_mae_km": 286.6032983576964,
+          "mean_paired_improvement_km": 40.381592298726765,
+          "paired_improvement_ci95_km": [
+            29.093317427648227,
+            52.325912200007885
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 36,
+          "storm_weighted_cnn_mae_km": 314.43604528225796,
+          "storm_weighted_baseline_mae_km": 370.57521629325385,
+          "mean_paired_improvement_km": 56.13917101099587,
+          "paired_improvement_ci95_km": [
+            39.84917027846686,
+            73.38564849578394
+          ],
+          "ci_excludes_zero": true
+        }
+      ],
+      "power_tertiles": {
+        "low": {
+          "sample_count": 784,
+          "storm_count": 103,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 48.136913764328646,
+              "storm_weighted_baseline_mae_km": 50.51803731211527,
+              "mean_paired_improvement_km": 2.3811235477866224,
+              "paired_improvement_ci95_km": [
+                1.409451685840758,
+                3.3853340650192374
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 93.44656750449246,
+              "storm_weighted_baseline_mae_km": 101.86786786700397,
+              "mean_paired_improvement_km": 8.421300362511532,
+              "paired_improvement_ci95_km": [
+                5.439579256538721,
+                11.44115958775583
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 142.18833034258913,
+              "storm_weighted_baseline_mae_km": 158.93598560910803,
+              "mean_paired_improvement_km": 16.747655266518926,
+              "paired_improvement_ci95_km": [
+                11.0155932025493,
+                22.64259598981996
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 192.127632120937,
+              "storm_weighted_baseline_mae_km": 220.70382253729244,
+              "mean_paired_improvement_km": 28.576190416355377,
+              "paired_improvement_ci95_km": [
+                19.47015328643936,
+                37.66662012871636
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 249.88585300868485,
+              "storm_weighted_baseline_mae_km": 292.02895023423196,
+              "mean_paired_improvement_km": 42.14309722554709,
+              "paired_improvement_ci95_km": [
+                28.928630748614587,
+                56.08676353885768
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 316.2260358431437,
+              "storm_weighted_baseline_mae_km": 373.0836716557614,
+              "mean_paired_improvement_km": 56.85763581261767,
+              "paired_improvement_ci95_km": [
+                38.60678413038931,
+                75.25763038908035
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        },
+        "medium": {
+          "sample_count": 305,
+          "storm_count": 75,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 42.312045519786885,
+              "storm_weighted_baseline_mae_km": 44.3351071603692,
+              "mean_paired_improvement_km": 2.0230616405823154,
+              "paired_improvement_ci95_km": [
+                0.8190432764641425,
+                3.3514017842228876
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 80.22733249260327,
+              "storm_weighted_baseline_mae_km": 88.05127719025917,
+              "mean_paired_improvement_km": 7.823944697655887,
+              "paired_improvement_ci95_km": [
+                3.9799984652228098,
+                12.218451043027999
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 124.50907670178982,
+              "storm_weighted_baseline_mae_km": 138.7813289819522,
+              "mean_paired_improvement_km": 14.272252280162435,
+              "paired_improvement_ci95_km": [
+                5.511726045296351,
+                24.65011226331122
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 178.33301577012298,
+              "storm_weighted_baseline_mae_km": 199.08720237427357,
+              "mean_paired_improvement_km": 20.754186604150565,
+              "paired_improvement_ci95_km": [
+                7.074061287467189,
+                37.39548902982239
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 239.79545143521344,
+              "storm_weighted_baseline_mae_km": 268.0175459500139,
+              "mean_paired_improvement_km": 28.222094514800506,
+              "paired_improvement_ci95_km": [
+                8.845450218209846,
+                51.01709546291919
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 307.9544145821963,
+              "storm_weighted_baseline_mae_km": 347.10524967254594,
+              "mean_paired_improvement_km": 39.15083509034978,
+              "paired_improvement_ci95_km": [
+                12.750814315365368,
+                69.48604893974483
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        },
+        "high": {
+          "sample_count": 581,
+          "storm_count": 55,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 37.71106195789013,
+              "storm_weighted_baseline_mae_km": 38.754386195120176,
+              "mean_paired_improvement_km": 1.0433242372300366,
+              "paired_improvement_ci95_km": [
+                0.14193764568267409,
+                1.9853651129462204
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 76.66116346007665,
+              "storm_weighted_baseline_mae_km": 81.16396151106903,
+              "mean_paired_improvement_km": 4.502798050992404,
+              "paired_improvement_ci95_km": [
+                1.0467471594998543,
+                7.5529829666547155
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 119.00615265369551,
+              "storm_weighted_baseline_mae_km": 129.53521708882508,
+              "mean_paired_improvement_km": 10.529064435129587,
+              "paired_improvement_ci95_km": [
+                3.5023993685191486,
+                17.086969062475635
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 164.8536352798481,
+              "storm_weighted_baseline_mae_km": 186.36157022090026,
+              "mean_paired_improvement_km": 21.507934941052117,
+              "paired_improvement_ci95_km": [
+                9.519405491115368,
+                32.608175313687276
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 218.6472153922068,
+              "storm_weighted_baseline_mae_km": 254.24360273307607,
+              "mean_paired_improvement_km": 35.596387340869185,
+              "paired_improvement_ci95_km": [
+                17.277420421248785,
+                54.195933147208606
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 278.2589077357287,
+              "storm_weighted_baseline_mae_km": 331.3866759687251,
+              "mean_paired_improvement_km": 53.1277682329964,
+              "paired_improvement_ci95_km": [
+                26.895810882842255,
+                80.29040581589142
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        }
+      }
+    },
+    "2027": {
+      "best_epoch": 59,
+      "storm_count": 114,
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "storm_weighted_cnn_mae_km": 45.257774923641996,
+          "storm_weighted_baseline_mae_km": 47.57238516264735,
+          "mean_paired_improvement_km": 2.3146102390053533,
+          "paired_improvement_ci95_km": [
+            1.5051496222624148,
+            3.1641173327222627
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 12,
+          "storm_weighted_cnn_mae_km": 87.46731001011628,
+          "storm_weighted_baseline_mae_km": 96.31410276063113,
+          "mean_paired_improvement_km": 8.846792750514858,
+          "paired_improvement_ci95_km": [
+            6.146505424428109,
+            11.76465582083886
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 18,
+          "storm_weighted_cnn_mae_km": 134.31183941080047,
+          "storm_weighted_baseline_mae_km": 152.24475858204622,
+          "mean_paired_improvement_km": 17.93291917124577,
+          "paired_improvement_ci95_km": [
+            12.380613184895308,
+            23.739369735279897
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 24,
+          "storm_weighted_cnn_mae_km": 185.39178191182307,
+          "storm_weighted_baseline_mae_km": 214.32333280542008,
+          "mean_paired_improvement_km": 28.931550893596953,
+          "paired_improvement_ci95_km": [
+            19.484348706146616,
+            38.48342666835593
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 30,
+          "storm_weighted_cnn_mae_km": 243.72921903439155,
+          "storm_weighted_baseline_mae_km": 286.6032983576964,
+          "mean_paired_improvement_km": 42.87407932330491,
+          "paired_improvement_ci95_km": [
+            27.96300364305789,
+            57.54860516477793
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 36,
+          "storm_weighted_cnn_mae_km": 311.88140522034604,
+          "storm_weighted_baseline_mae_km": 370.57521629325385,
+          "mean_paired_improvement_km": 58.69381107290774,
+          "paired_improvement_ci95_km": [
+            38.03084292175034,
+            79.1592807980164
+          ],
+          "ci_excludes_zero": true
+        }
+      ],
+      "power_tertiles": {
+        "low": {
+          "sample_count": 784,
+          "storm_count": 103,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 47.781132945511416,
+              "storm_weighted_baseline_mae_km": 50.51803731211527,
+              "mean_paired_improvement_km": 2.73690436660384,
+              "paired_improvement_ci95_km": [
+                1.6950232318542275,
+                3.8392263119433245
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 92.26747190213399,
+              "storm_weighted_baseline_mae_km": 101.86786786700397,
+              "mean_paired_improvement_km": 9.600395964870014,
+              "paired_improvement_ci95_km": [
+                6.233067370282195,
+                13.096178630043871
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 139.75268335107978,
+              "storm_weighted_baseline_mae_km": 158.93598560910803,
+              "mean_paired_improvement_km": 19.183302258028256,
+              "paired_improvement_ci95_km": [
+                12.459836701838409,
+                25.975359842168434
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 189.46745780317573,
+              "storm_weighted_baseline_mae_km": 220.70382253729244,
+              "mean_paired_improvement_km": 31.236364734116737,
+              "paired_improvement_ci95_km": [
+                20.091111042446112,
+                42.85195775778864
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 246.67952083338326,
+              "storm_weighted_baseline_mae_km": 292.02895023423196,
+              "mean_paired_improvement_km": 45.34942940084876,
+              "paired_improvement_ci95_km": [
+                27.872552161703116,
+                62.221694323134386
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 313.2083010780242,
+              "storm_weighted_baseline_mae_km": 373.0836716557614,
+              "mean_paired_improvement_km": 59.875370577737165,
+              "paired_improvement_ci95_km": [
+                36.665194590636155,
+                83.40345751860822
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        },
+        "medium": {
+          "sample_count": 305,
+          "storm_count": 75,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 41.821847996316734,
+              "storm_weighted_baseline_mae_km": 44.3351071603692,
+              "mean_paired_improvement_km": 2.513259164052467,
+              "paired_improvement_ci95_km": [
+                1.44515046038891,
+                3.648422351317488
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 80.9739056216299,
+              "storm_weighted_baseline_mae_km": 88.05127719025917,
+              "mean_paired_improvement_km": 7.077371568629259,
+              "paired_improvement_ci95_km": [
+                3.4152019953699932,
+                10.807599038404662
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 125.75482644830973,
+              "storm_weighted_baseline_mae_km": 138.7813289819522,
+              "mean_paired_improvement_km": 13.026502533642525,
+              "paired_improvement_ci95_km": [
+                5.756641681398575,
+                21.032648918109633
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 178.97971665426363,
+              "storm_weighted_baseline_mae_km": 199.08720237427357,
+              "mean_paired_improvement_km": 20.107485720009933,
+              "paired_improvement_ci95_km": [
+                7.63489794979469,
+                34.08248912544194
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 240.08193978674925,
+              "storm_weighted_baseline_mae_km": 268.0175459500139,
+              "mean_paired_improvement_km": 27.935606163264755,
+              "paired_improvement_ci95_km": [
+                9.043103203171801,
+                49.18659097956647
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 308.5684499855925,
+              "storm_weighted_baseline_mae_km": 347.10524967254594,
+              "mean_paired_improvement_km": 38.536799686953586,
+              "paired_improvement_ci95_km": [
+                11.832868908914826,
+                67.84557730532259
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        },
+        "high": {
+          "sample_count": 581,
+          "storm_count": 55,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 37.68735965821859,
+              "storm_weighted_baseline_mae_km": 38.754386195120176,
+              "mean_paired_improvement_km": 1.06702653690158,
+              "paired_improvement_ci95_km": [
+                -0.03636641755972965,
+                2.1833011176045654
+              ],
+              "ci_excludes_zero": false
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 77.1400402297877,
+              "storm_weighted_baseline_mae_km": 81.16396151106903,
+              "mean_paired_improvement_km": 4.023921281281344,
+              "paired_improvement_ci95_km": [
+                0.7108552732167991,
+                6.998385076994828
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 119.10667983708656,
+              "storm_weighted_baseline_mae_km": 129.53521708882508,
+              "mean_paired_improvement_km": 10.428537251738529,
+              "paired_improvement_ci95_km": [
+                3.629619997220231,
+                16.764089104278895
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 165.3531423989419,
+              "storm_weighted_baseline_mae_km": 186.36157022090026,
+              "mean_paired_improvement_km": 21.008427821958357,
+              "paired_improvement_ci95_km": [
+                9.571600039345174,
+                32.212744180947716
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 219.68921159063348,
+              "storm_weighted_baseline_mae_km": 254.24360273307607,
+              "mean_paired_improvement_km": 34.55439114244252,
+              "paired_improvement_ci95_km": [
+                16.735643992071438,
+                52.22422665714386
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 278.4807843667822,
+              "storm_weighted_baseline_mae_km": 331.3866759687251,
+              "mean_paired_improvement_km": 52.905891601942855,
+              "paired_improvement_ci95_km": [
+                27.8054016859547,
+                79.04665117302986
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        }
+      }
+    },
+    "2028": {
+      "best_epoch": 57,
+      "storm_count": 114,
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "storm_weighted_cnn_mae_km": 45.11434889072079,
+          "storm_weighted_baseline_mae_km": 47.57238516264735,
+          "mean_paired_improvement_km": 2.458036271926552,
+          "paired_improvement_ci95_km": [
+            1.720117528919321,
+            3.224779961818044
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 12,
+          "storm_weighted_cnn_mae_km": 87.26371644887011,
+          "storm_weighted_baseline_mae_km": 96.31410276063113,
+          "mean_paired_improvement_km": 9.050386311761034,
+          "paired_improvement_ci95_km": [
+            6.741328892906212,
+            11.485459925031991
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 18,
+          "storm_weighted_cnn_mae_km": 135.7119061037234,
+          "storm_weighted_baseline_mae_km": 152.24475858204622,
+          "mean_paired_improvement_km": 16.532852478322823,
+          "paired_improvement_ci95_km": [
+            12.133557089544485,
+            21.248270983028828
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 24,
+          "storm_weighted_cnn_mae_km": 186.6242919205425,
+          "storm_weighted_baseline_mae_km": 214.32333280542008,
+          "mean_paired_improvement_km": 27.699040884877547,
+          "paired_improvement_ci95_km": [
+            20.674799448970393,
+            35.32741433877741
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 30,
+          "storm_weighted_cnn_mae_km": 244.65618417795622,
+          "storm_weighted_baseline_mae_km": 286.6032983576964,
+          "mean_paired_improvement_km": 41.947114179740254,
+          "paired_improvement_ci95_km": [
+            30.89616879487773,
+            53.52335711540669
+          ],
+          "ci_excludes_zero": true
+        },
+        {
+          "lead_hours": 36,
+          "storm_weighted_cnn_mae_km": 312.99590948077946,
+          "storm_weighted_baseline_mae_km": 370.57521629325385,
+          "mean_paired_improvement_km": 57.57930681247421,
+          "paired_improvement_ci95_km": [
+            41.51846096933269,
+            73.93756282698098
+          ],
+          "ci_excludes_zero": true
+        }
+      ],
+      "power_tertiles": {
+        "low": {
+          "sample_count": 784,
+          "storm_count": 103,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 47.55529877916383,
+              "storm_weighted_baseline_mae_km": 50.51803731211527,
+              "mean_paired_improvement_km": 2.9627385329514255,
+              "paired_improvement_ci95_km": [
+                1.9533569205871961,
+                3.9852528604988393
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 91.98428031799193,
+              "storm_weighted_baseline_mae_km": 101.86786786700397,
+              "mean_paired_improvement_km": 9.88358754901205,
+              "paired_improvement_ci95_km": [
+                7.034409239256641,
+                12.765692786282019
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 140.9774386699097,
+              "storm_weighted_baseline_mae_km": 158.93598560910803,
+              "mean_paired_improvement_km": 17.958546939198328,
+              "paired_improvement_ci95_km": [
+                12.615653726459497,
+                23.63302468184409
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 190.30708866796792,
+              "storm_weighted_baseline_mae_km": 220.70382253729244,
+              "mean_paired_improvement_km": 30.396733869324446,
+              "paired_improvement_ci95_km": [
+                21.793963699533716,
+                39.13263608592009
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 247.87107020454422,
+              "storm_weighted_baseline_mae_km": 292.02895023423196,
+              "mean_paired_improvement_km": 44.1578800296878,
+              "paired_improvement_ci95_km": [
+                31.164914685264296,
+                57.6120084232721
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 314.3169801585866,
+              "storm_weighted_baseline_mae_km": 373.0836716557614,
+              "mean_paired_improvement_km": 58.76669149717473,
+              "paired_improvement_ci95_km": [
+                40.468628007257614,
+                76.19457422966991
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        },
+        "medium": {
+          "sample_count": 305,
+          "storm_count": 75,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 41.80387709516487,
+              "storm_weighted_baseline_mae_km": 44.3351071603692,
+              "mean_paired_improvement_km": 2.5312300652043342,
+              "paired_improvement_ci95_km": [
+                1.3176690004953513,
+                3.76579718194212
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 79.7797661897702,
+              "storm_weighted_baseline_mae_km": 88.05127719025917,
+              "mean_paired_improvement_km": 8.271511000488953,
+              "paired_improvement_ci95_km": [
+                4.767261673393176,
+                12.198852257732268
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 124.18214779630837,
+              "storm_weighted_baseline_mae_km": 138.7813289819522,
+              "mean_paired_improvement_km": 14.599181185643864,
+              "paired_improvement_ci95_km": [
+                6.880013022910706,
+                24.246371081645357
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 177.71166632970244,
+              "storm_weighted_baseline_mae_km": 199.08720237427357,
+              "mean_paired_improvement_km": 21.375536044571092,
+              "paired_improvement_ci95_km": [
+                8.876764037679,
+                36.49460159583336
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 238.27758739388256,
+              "storm_weighted_baseline_mae_km": 268.0175459500139,
+              "mean_paired_improvement_km": 29.739958556131405,
+              "paired_improvement_ci95_km": [
+                11.036656750911137,
+                52.12357445749438
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 304.69110458364645,
+              "storm_weighted_baseline_mae_km": 347.10524967254594,
+              "mean_paired_improvement_km": 42.41414508889962,
+              "paired_improvement_ci95_km": [
+                17.54054666162838,
+                72.45150235436756
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        },
+        "high": {
+          "sample_count": 581,
+          "storm_count": 55,
+          "by_horizon": [
+            {
+              "lead_hours": 6,
+              "storm_weighted_cnn_mae_km": 37.541902042543526,
+              "storm_weighted_baseline_mae_km": 38.754386195120176,
+              "mean_paired_improvement_km": 1.2124841525766488,
+              "paired_improvement_ci95_km": [
+                0.2837494072041289,
+                2.2461001426070752
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 12,
+              "storm_weighted_cnn_mae_km": 76.18057615395604,
+              "storm_weighted_baseline_mae_km": 81.16396151106903,
+              "mean_paired_improvement_km": 4.9833853571130104,
+              "paired_improvement_ci95_km": [
+                1.5279968157741428,
+                8.385897065470262
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 18,
+              "storm_weighted_cnn_mae_km": 118.73338624506316,
+              "storm_weighted_baseline_mae_km": 129.53521708882508,
+              "mean_paired_improvement_km": 10.801830843761888,
+              "paired_improvement_ci95_km": [
+                2.8788498763590202,
+                18.49239393422473
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 24,
+              "storm_weighted_cnn_mae_km": 163.5116928949962,
+              "storm_weighted_baseline_mae_km": 186.36157022090026,
+              "mean_paired_improvement_km": 22.849877325904032,
+              "paired_improvement_ci95_km": [
+                10.507198749761072,
+                35.19801427019323
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 30,
+              "storm_weighted_cnn_mae_km": 215.85138396099055,
+              "storm_weighted_baseline_mae_km": 254.24360273307607,
+              "mean_paired_improvement_km": 38.39221877208548,
+              "paired_improvement_ci95_km": [
+                19.959347525746853,
+                56.75303259548654
+              ],
+              "ci_excludes_zero": true
+            },
+            {
+              "lead_hours": 36,
+              "storm_weighted_cnn_mae_km": 274.87394900741185,
+              "storm_weighted_baseline_mae_km": 331.3866759687251,
+              "mean_paired_improvement_km": 56.512726961313234,
+              "paired_improvement_ci95_km": [
+                31.694991245892098,
+                82.27256316534368
+              ],
+              "ci_excludes_zero": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

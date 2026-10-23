@@ -1,0 +1,56 @@
+2026-09-27 20:10:31,741 INFO device=cpu train=33761 validation=926 test=1670
+2026-09-27 20:10:33,288 INFO epoch=1 train_loss=0.627623 validation_loss=-0.065059
+2026-09-27 20:10:34,798 INFO epoch=2 train_loss=0.043855 validation_loss=-0.316718
+2026-09-27 20:10:36,317 INFO epoch=3 train_loss=-0.208154 validation_loss=-0.597365
+2026-09-27 20:10:37,917 INFO epoch=4 train_loss=-0.419954 validation_loss=-0.817928
+2026-09-27 20:10:39,517 INFO epoch=5 train_loss=-0.612566 validation_loss=-1.020692
+2026-09-27 20:10:41,081 INFO epoch=6 train_loss=-0.790533 validation_loss=-1.223878
+2026-09-27 20:10:42,712 INFO epoch=7 train_loss=-0.957985 validation_loss=-1.420410
+2026-09-27 20:10:44,345 INFO epoch=8 train_loss=-1.105067 validation_loss=-1.595535
+2026-09-27 20:10:45,996 INFO epoch=9 train_loss=-1.235726 validation_loss=-1.796376
+2026-09-27 20:10:47,618 INFO epoch=10 train_loss=-1.365733 validation_loss=-1.934625
+2026-09-27 20:10:49,259 INFO epoch=11 train_loss=-1.461945 validation_loss=-2.026521
+2026-09-27 20:10:50,861 INFO epoch=12 train_loss=-1.543659 validation_loss=-2.133141
+2026-09-27 20:10:52,379 INFO epoch=13 train_loss=-1.635031 validation_loss=-2.322517
+2026-09-27 20:10:53,996 INFO epoch=14 train_loss=-1.724344 validation_loss=-2.417772
+2026-09-27 20:10:55,615 INFO epoch=15 train_loss=-1.790538 validation_loss=-2.501341
+2026-09-27 20:10:57,161 INFO epoch=16 train_loss=-1.840831 validation_loss=-2.623894
+2026-09-27 20:10:58,784 INFO epoch=17 train_loss=-1.890646 validation_loss=-2.625929
+2026-09-27 20:11:00,385 INFO epoch=18 train_loss=-1.949003 validation_loss=-2.769260
+2026-09-27 20:11:01,775 INFO epoch=19 train_loss=-1.962960 validation_loss=-2.834240
+2026-09-27 20:11:03,142 INFO epoch=20 train_loss=-2.017038 validation_loss=-2.909139
+2026-09-27 20:11:04,483 INFO epoch=21 train_loss=-2.035387 validation_loss=-2.951984
+2026-09-27 20:11:05,913 INFO epoch=22 train_loss=-2.065044 validation_loss=-2.931350
+2026-09-27 20:11:07,549 INFO epoch=23 train_loss=-2.051259 validation_loss=-3.016385
+2026-09-27 20:11:09,066 INFO epoch=24 train_loss=-2.068268 validation_loss=-3.090784
+2026-09-27 20:11:10,676 INFO epoch=25 train_loss=-2.119382 validation_loss=-3.080188
+2026-09-27 20:11:12,339 INFO epoch=26 train_loss=-2.092214 validation_loss=-3.073264
+2026-09-27 20:11:13,913 INFO epoch=27 train_loss=-2.124779 validation_loss=-3.125110
+2026-09-27 20:11:15,521 INFO epoch=28 train_loss=-2.146277 validation_loss=-3.170720
+2026-09-27 20:11:17,276 INFO epoch=29 train_loss=-2.156069 validation_loss=-3.165963
+2026-09-27 20:11:18,926 INFO epoch=30 train_loss=-2.158176 validation_loss=-3.158249
+2026-09-27 20:11:20,419 INFO epoch=31 train_loss=-2.151720 validation_loss=-3.212618
+2026-09-27 20:11:22,033 INFO epoch=32 train_loss=-2.160085 validation_loss=-3.160280
+2026-09-27 20:11:23,669 INFO epoch=33 train_loss=-2.178667 validation_loss=-3.220716
+2026-09-27 20:11:25,240 INFO epoch=34 train_loss=-2.136980 validation_loss=-3.197454
+2026-09-27 20:11:26,852 INFO epoch=35 train_loss=-2.178051 validation_loss=-3.193015
+2026-09-27 20:11:28,473 INFO epoch=36 train_loss=-2.161502 validation_loss=-3.262604
+2026-09-27 20:11:30,134 INFO epoch=37 train_loss=-2.164912 validation_loss=-3.226850
+2026-09-27 20:11:31,706 INFO epoch=38 train_loss=-2.172604 validation_loss=-3.170790
+2026-09-27 20:11:33,334 INFO epoch=39 train_loss=-2.184827 validation_loss=-3.261032
+2026-09-27 20:11:35,019 INFO epoch=40 train_loss=-2.165552 validation_loss=-3.184851
+2026-09-27 20:11:36,600 INFO epoch=41 train_loss=-2.184272 validation_loss=-3.180908
+2026-09-27 20:11:38,229 INFO epoch=42 train_loss=-2.192072 validation_loss=-3.242983
+2026-09-27 20:11:39,906 INFO epoch=43 train_loss=-2.173458 validation_loss=-3.235318
+2026-09-27 20:11:41,589 INFO epoch=44 train_loss=-2.208322 validation_loss=-3.196551
+2026-09-27 20:11:43,184 INFO epoch=45 train_loss=-2.221748 validation_loss=-3.167974
+2026-09-27 20:11:44,858 INFO epoch=46 train_loss=-2.159896 validation_loss=-3.256527
+2026-09-27 20:11:44,858 INFO early stopping after epoch 46
+2026-09-27 20:11:44,934 INFO best_epoch=36 best_validation_loss=-3.262604
+2026-09-27 20:11:44,934 INFO checkpoint_sha256=c398cdfd756c9b1b95852de6c5a08a14c109d668c1b6d60af03d9ad6191386b5
+2026-09-27 20:11:44,934 INFO cnn lead=6h path_mae=150.25km path_rmse=171.97km wind_mae=2.69m/s
+2026-09-27 20:11:44,934 INFO cnn lead=12h path_mae=138.06km path_rmse=158.84km wind_mae=3.66m/s
+2026-09-27 20:11:44,934 INFO cnn lead=18h path_mae=159.26km path_rmse=186.26km wind_mae=4.69m/s
+2026-09-27 20:11:44,934 INFO cnn lead=24h path_mae=204.59km path_rmse=241.36km wind_mae=5.57m/s
+2026-09-27 20:11:44,934 INFO cnn lead=30h path_mae=265.35km path_rmse=311.83km wind_mae=6.26m/s
+2026-09-27 20:11:44,935 INFO cnn lead=36h path_mae=334.98km path_rmse=392.32km wind_mae=6.94m/s

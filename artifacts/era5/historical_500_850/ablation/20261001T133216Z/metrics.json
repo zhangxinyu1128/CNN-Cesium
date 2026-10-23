@@ -1,0 +1,611 @@
+{
+  "experiment": "controlled_era5_500_850_ablation",
+  "run_id": "20261001T133216Z",
+  "device": "cpu",
+  "seed": 2027,
+  "epochs_max": 40,
+  "patience": 8,
+  "features": {
+    "track_only": [
+      "track_6_features"
+    ],
+    "fusion_500_850": [
+      "track_6_features",
+      "u500",
+      "v500",
+      "u850",
+      "v850",
+      "era5_age_hours"
+    ],
+    "fusion_500_only": [
+      "track_6_features",
+      "u500",
+      "v500",
+      "era5_age_hours"
+    ],
+    "fusion_850_only": [
+      "track_6_features",
+      "u850",
+      "v850",
+      "era5_age_hours"
+    ]
+  },
+  "paired_counts": {
+    "train": 22757,
+    "validation": 687,
+    "test": 950
+  },
+  "paired_storms": {
+    "train": 1054,
+    "validation": 48,
+    "test": 66
+  },
+  "dataset_fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+  "split_file_sha256": "2836e1da45f6de2dc2081cdb8c92eccf2042a483215cb83c9e5831d8736ac00e",
+  "test_baselines": {
+    "persistence": {
+      "sample_count": 950,
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "path_mae_km": 111.46585126849752,
+          "path_rmse_km": 128.9928629850422,
+          "path_median_km": 104.25887473001976,
+          "wind_mae_ms": 1.9,
+          "wind_rmse_ms": 3.0927759630944394,
+          "longitude_mae_deg": 0.8259999999999998,
+          "latitude_mae_deg": 0.5017894736842106
+        },
+        {
+          "lead_hours": 12,
+          "path_mae_km": 222.35030727740025,
+          "path_rmse_km": 256.1121685656557,
+          "path_median_km": 207.33586035984652,
+          "wind_mae_ms": 3.7294736842105265,
+          "wind_rmse_ms": 5.409445929405146,
+          "longitude_mae_deg": 1.6535789473684201,
+          "latitude_mae_deg": 0.9953684210526316
+        },
+        {
+          "lead_hours": 18,
+          "path_mae_km": 334.7651608946201,
+          "path_rmse_km": 385.23854075723324,
+          "path_median_km": 317.3561930582496,
+          "wind_mae_ms": 5.443157894736842,
+          "wind_rmse_ms": 7.497999733262199,
+          "longitude_mae_deg": 2.490736842105262,
+          "latitude_mae_deg": 1.498842105263158
+        },
+        {
+          "lead_hours": 24,
+          "path_mae_km": 448.15166777582743,
+          "path_rmse_km": 515.5795503149484,
+          "path_median_km": 426.16903344240086,
+          "wind_mae_ms": 6.88,
+          "wind_rmse_ms": 9.314165781782409,
+          "longitude_mae_deg": 3.3406315789473684,
+          "latitude_mae_deg": 2.010421052631579
+        },
+        {
+          "lead_hours": 30,
+          "path_mae_km": 562.6185927208932,
+          "path_rmse_km": 647.0799329668502,
+          "path_median_km": 536.5562368092154,
+          "wind_mae_ms": 8.153684210526317,
+          "wind_rmse_ms": 10.95627673984187,
+          "longitude_mae_deg": 4.203368421052631,
+          "latitude_mae_deg": 2.5344210526315787
+        },
+        {
+          "lead_hours": 36,
+          "path_mae_km": 678.597854554657,
+          "path_rmse_km": 781.0926275684814,
+          "path_median_km": 644.1158397370715,
+          "wind_mae_ms": 9.351578947368422,
+          "wind_rmse_ms": 12.458605142842563,
+          "longitude_mae_deg": 5.093473684210526,
+          "latitude_mae_deg": 3.0669473684210526
+        }
+      ]
+    },
+    "constant_velocity": {
+      "sample_count": 950,
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "path_mae_km": 44.916353509315094,
+          "path_rmse_km": 54.861567747679985,
+          "path_median_km": 39.058779570089825,
+          "wind_mae_ms": 1.9,
+          "wind_rmse_ms": 3.0927759630944394,
+          "longitude_mae_deg": 0.2978947368421067,
+          "latitude_mae_deg": 0.23989473684210552
+        },
+        {
+          "lead_hours": 12,
+          "path_mae_km": 93.6705381641346,
+          "path_rmse_km": 112.79646464802649,
+          "path_median_km": 80.36084298287898,
+          "wind_mae_ms": 3.7294736842105265,
+          "wind_rmse_ms": 5.409445929405146,
+          "longitude_mae_deg": 0.6264210526315795,
+          "latitude_mae_deg": 0.4978947368421054
+        },
+        {
+          "lead_hours": 18,
+          "path_mae_km": 151.53652743722304,
+          "path_rmse_km": 181.7931398687737,
+          "path_median_km": 129.74032792158454,
+          "wind_mae_ms": 5.443157894736842,
+          "wind_rmse_ms": 7.497999733262199,
+          "longitude_mae_deg": 1.0274736842105276,
+          "latitude_mae_deg": 0.807684210526316
+        },
+        {
+          "lead_hours": 24,
+          "path_mae_km": 217.2555536752723,
+          "path_rmse_km": 260.04715437066255,
+          "path_median_km": 187.20249243726312,
+          "wind_mae_ms": 6.88,
+          "wind_rmse_ms": 9.314165781782409,
+          "longitude_mae_deg": 1.499578947368422,
+          "latitude_mae_deg": 1.1453684210526316
+        },
+        {
+          "lead_hours": 30,
+          "path_mae_km": 292.25471137703175,
+          "path_rmse_km": 348.4281169045315,
+          "path_median_km": 248.30384213631794,
+          "wind_mae_ms": 8.153684210526317,
+          "wind_rmse_ms": 10.95627673984187,
+          "longitude_mae_deg": 2.039052631578946,
+          "latitude_mae_deg": 1.533157894736842
+        },
+        {
+          "lead_hours": 36,
+          "path_mae_km": 377.1544663153567,
+          "path_rmse_km": 449.0686274432067,
+          "path_median_km": 318.7867513347779,
+          "wind_mae_ms": 9.351578947368422,
+          "wind_rmse_ms": 12.458605142842563,
+          "longitude_mae_deg": 2.662105263157896,
+          "latitude_mae_deg": 1.9650526315789476
+        }
+      ]
+    }
+  },
+  "variants": {
+    "track_only": {
+      "test_metrics": {
+        "sample_count": 950,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 129.65687962443656,
+            "path_rmse_km": 150.0052692913589,
+            "path_median_km": 117.64298663726282,
+            "wind_mae_ms": 2.4654153970563275,
+            "wind_rmse_ms": 3.1961371331968276,
+            "longitude_mae_deg": 0.9700921113216808,
+            "latitude_mae_deg": 0.5828147561012065
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 124.82291594909533,
+            "path_rmse_km": 146.50720928994528,
+            "path_median_km": 110.80977707426823,
+            "wind_mae_ms": 3.418147106026758,
+            "wind_rmse_ms": 4.501576349341437,
+            "longitude_mae_deg": 0.8879521393501981,
+            "latitude_mae_deg": 0.6188202901164318
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 157.51642711901118,
+            "path_rmse_km": 187.7790973925961,
+            "path_median_km": 134.30355517896956,
+            "wind_mae_ms": 4.288117164796671,
+            "wind_rmse_ms": 5.649538076421295,
+            "longitude_mae_deg": 1.1021837214188073,
+            "latitude_mae_deg": 0.8133922584302394
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 212.3956435653168,
+            "path_rmse_km": 253.90446976547628,
+            "path_median_km": 181.3432663224682,
+            "wind_mae_ms": 5.0116686053705735,
+            "wind_rmse_ms": 6.585797209280066,
+            "longitude_mae_deg": 1.5150327360011164,
+            "latitude_mae_deg": 1.0979136603728255
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 279.1514355178962,
+            "path_rmse_km": 331.05181868627255,
+            "path_median_km": 239.67371676503728,
+            "wind_mae_ms": 5.643483427675149,
+            "wind_rmse_ms": 7.376998088023898,
+            "longitude_mae_deg": 2.0311189188692755,
+            "latitude_mae_deg": 1.43165959548354
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 352.10319699672107,
+            "path_rmse_km": 415.8899008496033,
+            "path_median_km": 304.8902876492246,
+            "wind_mae_ms": 6.22948952341526,
+            "wind_rmse_ms": 8.107009056171048,
+            "longitude_mae_deg": 2.622669459020148,
+            "latitude_mae_deg": 1.7697363427528
+          }
+        ]
+      },
+      "best_validation_loss": -3.365920305252075,
+      "best_epoch": 40,
+      "training_seconds": 40.94,
+      "weather_scaler": null
+    },
+    "fusion_500_850": {
+      "test_metrics": {
+        "sample_count": 950,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 200.51666692086636,
+            "path_rmse_km": 232.82052734896882,
+            "path_median_km": 179.18952624127874,
+            "wind_mae_ms": 2.7659691959798924,
+            "wind_rmse_ms": 3.5363710903169414,
+            "longitude_mae_deg": 1.5682927895295344,
+            "latitude_mae_deg": 0.8212598834776118
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 194.99093882998991,
+            "path_rmse_km": 223.73139936861938,
+            "path_median_km": 183.3508250063362,
+            "wind_mae_ms": 3.6556619505052654,
+            "wind_rmse_ms": 4.777648876936017,
+            "longitude_mae_deg": 1.5242692042721582,
+            "latitude_mae_deg": 0.8163868005339564
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 218.48379890460149,
+            "path_rmse_km": 249.00374212769984,
+            "path_median_km": 206.4769869110858,
+            "wind_mae_ms": 4.636821699563609,
+            "wind_rmse_ms": 6.066713865232037,
+            "longitude_mae_deg": 1.6914976522723904,
+            "latitude_mae_deg": 0.9522293440229689
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 263.8380901426952,
+            "path_rmse_km": 302.3923136256735,
+            "path_median_km": 242.5596689668215,
+            "wind_mae_ms": 5.476343014647852,
+            "wind_rmse_ms": 7.142601542428616,
+            "longitude_mae_deg": 2.0379512142109624,
+            "latitude_mae_deg": 1.181289238709517
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 322.9786480490186,
+            "path_rmse_km": 372.1649769871181,
+            "path_median_km": 292.5671044618697,
+            "wind_mae_ms": 6.0777132144708865,
+            "wind_rmse_ms": 7.967694636816932,
+            "longitude_mae_deg": 2.509123099490185,
+            "latitude_mae_deg": 1.4678009287167348
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 393.7832924514482,
+            "path_rmse_km": 453.330565724759,
+            "path_median_km": 360.24225270718176,
+            "wind_mae_ms": 6.5580660523073115,
+            "wind_rmse_ms": 8.644261029964252,
+            "longitude_mae_deg": 3.0955630307027158,
+            "latitude_mae_deg": 1.7837815370807772
+          }
+        ]
+      },
+      "best_validation_loss": -3.4818837642669678,
+      "best_epoch": 39,
+      "training_seconds": 41.72,
+      "weather_scaler": {
+        "mean": [
+          3.5502588748931885,
+          6.9044671058654785,
+          5.557922840118408,
+          7.607909202575684,
+          1.954695224761963
+        ],
+        "std": [
+          10.483305931091309,
+          10.97532844543457,
+          10.947301864624023,
+          12.595657348632812,
+          0.3301367461681366
+        ]
+      }
+    },
+    "fusion_500_only": {
+      "test_metrics": {
+        "sample_count": 950,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 156.9760597384636,
+            "path_rmse_km": 182.59755064753355,
+            "path_median_km": 139.5835157807089,
+            "wind_mae_ms": 2.9551278318668235,
+            "wind_rmse_ms": 3.974669777086188,
+            "longitude_mae_deg": 1.1304408338832042,
+            "latitude_mae_deg": 0.7508118720166405
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 152.18510137014266,
+            "path_rmse_km": 178.45668568029353,
+            "path_median_km": 134.77907363391975,
+            "wind_mae_ms": 3.9671326883943863,
+            "wind_rmse_ms": 5.2756385818511,
+            "longitude_mae_deg": 1.056604131749734,
+            "latitude_mae_deg": 0.7727868218125155
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 180.1054230904016,
+            "path_rmse_km": 212.82845287562213,
+            "path_median_km": 152.97396198343742,
+            "wind_mae_ms": 4.981930937200094,
+            "wind_rmse_ms": 6.555587630685459,
+            "longitude_mae_deg": 1.2683810423000554,
+            "latitude_mae_deg": 0.929080744189833
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 229.35072635413124,
+            "path_rmse_km": 274.2159767791868,
+            "path_median_km": 193.2662397307776,
+            "wind_mae_ms": 5.73871026320298,
+            "wind_rmse_ms": 7.544335349420703,
+            "longitude_mae_deg": 1.6587182548740529,
+            "latitude_mae_deg": 1.162776902435686
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 294.88015742739515,
+            "path_rmse_km": 350.1768234197767,
+            "path_median_km": 248.77420629606314,
+            "wind_mae_ms": 6.289275256771695,
+            "wind_rmse_ms": 8.358902270265572,
+            "longitude_mae_deg": 2.1834968719852013,
+            "latitude_mae_deg": 1.4687165425326376
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 368.3284520049643,
+            "path_rmse_km": 435.4315495402471,
+            "path_median_km": 316.6593541118667,
+            "wind_mae_ms": 6.772785726319639,
+            "wind_rmse_ms": 9.014837300839138,
+            "longitude_mae_deg": 2.796271563234369,
+            "latitude_mae_deg": 1.7931244715587673
+          }
+        ]
+      },
+      "best_validation_loss": -3.3389229774475098,
+      "best_epoch": 37,
+      "training_seconds": 41.63,
+      "weather_scaler": {
+        "mean": [
+          3.5502588748931885,
+          6.9044671058654785,
+          1.954695224761963
+        ],
+        "std": [
+          10.483305931091309,
+          10.97532844543457,
+          0.3301367461681366
+        ]
+      }
+    },
+    "fusion_850_only": {
+      "test_metrics": {
+        "sample_count": 950,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 158.36897075304066,
+            "path_rmse_km": 186.0184414718073,
+            "path_median_km": 138.3172779073293,
+            "wind_mae_ms": 2.791050640502681,
+            "wind_rmse_ms": 3.5411752525205884,
+            "longitude_mae_deg": 1.1318326797701752,
+            "latitude_mae_deg": 0.7617717743373968
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 158.1276803005821,
+            "path_rmse_km": 184.25721122179516,
+            "path_median_km": 138.34336029340614,
+            "wind_mae_ms": 3.741946621599708,
+            "wind_rmse_ms": 4.879282341164769,
+            "longitude_mae_deg": 1.1186529078558738,
+            "latitude_mae_deg": 0.7912906894603575
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 188.63510869546533,
+            "path_rmse_km": 221.48674232459453,
+            "path_median_km": 166.73674086778988,
+            "wind_mae_ms": 4.765220380052313,
+            "wind_rmse_ms": 6.24760534259615,
+            "longitude_mae_deg": 1.3506578723895937,
+            "latitude_mae_deg": 0.9647514663548452
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 239.05648975730676,
+            "path_rmse_km": 284.5718115210309,
+            "path_median_km": 210.8770905465868,
+            "wind_mae_ms": 5.507017761766995,
+            "wind_rmse_ms": 7.282384455522565,
+            "longitude_mae_deg": 1.742268981775928,
+            "latitude_mae_deg": 1.234088797383286
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 303.709846959528,
+            "path_rmse_km": 361.6278930039903,
+            "path_median_km": 259.0677210869176,
+            "wind_mae_ms": 6.124175332260167,
+            "wind_rmse_ms": 8.173116812731902,
+            "longitude_mae_deg": 2.255708365489852,
+            "latitude_mae_deg": 1.5588579671077882
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 377.5931208032762,
+            "path_rmse_km": 447.42184368400217,
+            "path_median_km": 323.97006968432504,
+            "wind_mae_ms": 6.649381949744746,
+            "wind_rmse_ms": 8.903103529719246,
+            "longitude_mae_deg": 2.866980323516445,
+            "latitude_mae_deg": 1.902685429750029
+          }
+        ]
+      },
+      "best_validation_loss": -3.3545498847961426,
+      "best_epoch": 37,
+      "training_seconds": 41.19,
+      "weather_scaler": {
+        "mean": [
+          5.557922840118408,
+          7.607909202575684,
+          1.954695224761963
+        ],
+        "std": [
+          10.947301864624023,
+          12.595657348632812,
+          0.3301367461681366
+        ]
+      }
+    }
+  },
+  "improvements_vs_track_only": {
+    "track_only": [
+      {
+        "lead_hours": 6,
+        "path_mae_improvement_vs_track_only_pct": 0.0
+      },
+      {
+        "lead_hours": 12,
+        "path_mae_improvement_vs_track_only_pct": 0.0
+      },
+      {
+        "lead_hours": 18,
+        "path_mae_improvement_vs_track_only_pct": 0.0
+      },
+      {
+        "lead_hours": 24,
+        "path_mae_improvement_vs_track_only_pct": 0.0
+      },
+      {
+        "lead_hours": 30,
+        "path_mae_improvement_vs_track_only_pct": 0.0
+      },
+      {
+        "lead_hours": 36,
+        "path_mae_improvement_vs_track_only_pct": 0.0
+      }
+    ],
+    "fusion_500_850": [
+      {
+        "lead_hours": 6,
+        "path_mae_improvement_vs_track_only_pct": -54.651775903972
+      },
+      {
+        "lead_hours": 12,
+        "path_mae_improvement_vs_track_only_pct": -56.2140552056244
+      },
+      {
+        "lead_hours": 18,
+        "path_mae_improvement_vs_track_only_pct": -38.705405461950036
+      },
+      {
+        "lead_hours": 24,
+        "path_mae_improvement_vs_track_only_pct": -24.220104383430357
+      },
+      {
+        "lead_hours": 30,
+        "path_mae_improvement_vs_track_only_pct": -15.7001566013128
+      },
+      {
+        "lead_hours": 36,
+        "path_mae_improvement_vs_track_only_pct": -11.83746577998701
+      }
+    ],
+    "fusion_500_only": [
+      {
+        "lead_hours": 6,
+        "path_mae_improvement_vs_track_only_pct": -21.070366796701904
+      },
+      {
+        "lead_hours": 12,
+        "path_mae_improvement_vs_track_only_pct": -21.920802933498237
+      },
+      {
+        "lead_hours": 18,
+        "path_mae_improvement_vs_track_only_pct": -14.340723938794866
+      },
+      {
+        "lead_hours": 24,
+        "path_mae_improvement_vs_track_only_pct": -7.982782746483383
+      },
+      {
+        "lead_hours": 30,
+        "path_mae_improvement_vs_track_only_pct": -5.634476455518931
+      },
+      {
+        "lead_hours": 36,
+        "path_mae_improvement_vs_track_only_pct": -4.608096474737293
+      }
+    ],
+    "fusion_850_only": [
+      {
+        "lead_hours": 6,
+        "path_mae_improvement_vs_track_only_pct": -22.14467231647977
+      },
+      {
+        "lead_hours": 12,
+        "path_mae_improvement_vs_track_only_pct": -26.681610582682566
+      },
+      {
+        "lead_hours": 18,
+        "path_mae_improvement_vs_track_only_pct": -19.755832547511062
+      },
+      {
+        "lead_hours": 24,
+        "path_mae_improvement_vs_track_only_pct": -12.552444929874996
+      },
+      {
+        "lead_hours": 30,
+        "path_mae_improvement_vs_track_only_pct": -8.797522891497875
+      },
+      {
+        "lead_hours": 36,
+        "path_mae_improvement_vs_track_only_pct": -7.239333247744548
+      }
+    ]
+  },
+  "limitations": [
+    "Single random seed; repeat seeds before making a stability claim.",
+    "ERA5-paired subset only; test split includes matched years 2020, 2021, and 2025, not every frozen test storm.",
+    "Scores are conditional on available historical ERA5 files and the exact paired-window rule."
+  ]
+}

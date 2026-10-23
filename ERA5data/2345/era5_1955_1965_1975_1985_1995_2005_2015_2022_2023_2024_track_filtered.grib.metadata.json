@@ -1,0 +1,64 @@
+{
+  "selection_method": "For each CMA best-track observation, retain the surrounding 6-hour ERA5 synoptic times; retain one time when the observation is already synoptic.",
+  "source_file": "D:\\project\\CNN-Cesium\\ERA5data\\2345\\22-24.grib",
+  "output_file": "D:\\project\\CNN-Cesium\\ERA5data\\2345\\era5_1955_1965_1975_1985_1995_2005_2015_2022_2023_2024_track_filtered.grib",
+  "years": [
+    1955,
+    1965,
+    1975,
+    1985,
+    1995,
+    2005,
+    2015,
+    2022,
+    2023,
+    2024
+  ],
+  "track_observations": {
+    "1955": 766,
+    "1965": 961,
+    "1975": 576,
+    "1985": 831,
+    "1995": 607,
+    "2005": 1084,
+    "2015": 1538,
+    "2022": 1228,
+    "2023": 1231,
+    "2024": 1647
+  },
+  "matched_track_times": 4952,
+  "source_messages": 58416,
+  "output_messages": 19808,
+  "output_raw_grib_bytes": 2303868480,
+  "output_compressed_bytes": 2070518841,
+  "output_decompressed_sha256": "b331e747473cb9ba0f4b8d8dc18ae8ae696a1bf1e72eeba46396814e252089dd",
+  "output_compressed_sha256": "56b8c5dbfb5d847bfe8b03dfadb87093f37fa5388c6a49afeb54efd36315e1da",
+  "date_min_utc": "1955-01-01",
+  "date_max_utc": "2024-12-25",
+  "variables": [
+    "u",
+    "v"
+  ],
+  "pressure_levels_hPa": [
+    500,
+    850
+  ],
+  "time_utc": [
+    "00:00",
+    "06:00",
+    "12:00",
+    "18:00"
+  ],
+  "geographical_area": {
+    "north": 45.0,
+    "south": 0.0,
+    "west": 100.0,
+    "east": 180.0
+  },
+  "grid": {
+    "type": "regular_ll",
+    "Ni": 321,
+    "Nj": 181,
+    "resolution_degrees": 0.25
+  }
+}

@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AssistantPanel: typeof import('./../components/AssistantPanel.vue')['default']
     ExperimentComparisonChart: typeof import('./../components/ExperimentComparisonChart.vue')['default']
+    TyphoonAssistant: typeof import('./../components/TyphoonAssistant.vue')['default']
     TyphoonCharts: typeof import('./../components/TyphoonCharts.vue')['default']
     TyphoonGlobe: typeof import('./../components/TyphoonGlobe.vue')['default']
   }

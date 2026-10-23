@@ -1,0 +1,98 @@
+{
+  "experiment": "era5_700_850_fusion_pilot",
+  "status": "pipeline_smoke_test_only",
+  "weather_features": [
+    "u700",
+    "v700",
+    "u850",
+    "v850"
+  ],
+  "sampling": "nearest 0.25 degree grid point; exact UTC synoptic cycle; no extrapolation",
+  "paired_windows": 522,
+  "paired_storms": 31,
+  "train_windows": 394,
+  "validation_windows": 128,
+  "train_storms": 24,
+  "validation_storms": 7,
+  "dataset_fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+  "validation_metrics": {
+    "sample_count": 128,
+    "by_horizon": [
+      {
+        "lead_hours": 6,
+        "path_mae_km": 471.11351773326817,
+        "path_rmse_km": 556.0075583906226,
+        "path_median_km": 410.94810177055376,
+        "wind_mae_ms": 5.941554638440935,
+        "wind_rmse_ms": 8.345380286379262,
+        "longitude_mae_deg": 3.099723886552524,
+        "latitude_mae_deg": 2.617730097274328
+      },
+      {
+        "lead_hours": 12,
+        "path_mae_km": 494.0823807257416,
+        "path_rmse_km": 585.3832360183592,
+        "path_median_km": 444.84664671749897,
+        "wind_mae_ms": 6.502115377469814,
+        "wind_rmse_ms": 9.280786747342525,
+        "longitude_mae_deg": 3.3279207470824916,
+        "latitude_mae_deg": 2.6705820161844547
+      },
+      {
+        "lead_hours": 18,
+        "path_mae_km": 504.6978177652859,
+        "path_rmse_km": 594.6223135627334,
+        "path_median_km": 422.5314858782689,
+        "wind_mae_ms": 6.904456245947913,
+        "wind_rmse_ms": 10.065638160954148,
+        "longitude_mae_deg": 3.5771665565663993,
+        "latitude_mae_deg": 2.5062488556561977
+      },
+      {
+        "lead_hours": 24,
+        "path_mae_km": 533.4240394269259,
+        "path_rmse_km": 607.4578245066126,
+        "path_median_km": 453.4922408062309,
+        "wind_mae_ms": 7.056125817148203,
+        "wind_rmse_ms": 10.437865470647719,
+        "longitude_mae_deg": 3.8720527659995585,
+        "latitude_mae_deg": 2.5663641358001996
+      },
+      {
+        "lead_hours": 30,
+        "path_mae_km": 602.9731301243589,
+        "path_rmse_km": 677.1159055040915,
+        "path_median_km": 536.4729452838503,
+        "wind_mae_ms": 7.828198751167089,
+        "wind_rmse_ms": 11.29012760055599,
+        "longitude_mae_deg": 4.356982359800499,
+        "latitude_mae_deg": 2.924143901469405
+      },
+      {
+        "lead_hours": 36,
+        "path_mae_km": 652.3295721868597,
+        "path_rmse_km": 734.5450977321013,
+        "path_median_km": 572.8162609391416,
+        "wind_mae_ms": 8.101775278887361,
+        "wind_rmse_ms": 11.777631620192896,
+        "longitude_mae_deg": 5.278795784184718,
+        "latitude_mae_deg": 2.540534993776571
+      }
+    ]
+  },
+  "weather_scaler": {
+    "mean": [
+      -0.6067377924919128,
+      2.764768362045288,
+      -0.07842222601175308,
+      2.9889228343963623
+    ],
+    "std": [
+      6.676437854766846,
+      7.557909965515137,
+      7.041718006134033,
+      8.658849716186523
+    ]
+  },
+  "note": "2025 storms are in the frozen test split; do not use this pilot score as the final test benchmark."
+}

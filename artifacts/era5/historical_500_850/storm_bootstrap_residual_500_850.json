@@ -1,0 +1,270 @@
+{
+  "experiment": "storm_paired_bootstrap_era5_residual_ablation",
+  "iterations": 10000,
+  "bootstrap_seed": 2026,
+  "comparison": "track-only residual CNN versus 500/850 hPa fusion residual CNN",
+  "runs": [
+    {
+      "run_id": "20261001T134142Z",
+      "seed": 2026,
+      "test_windows": 950,
+      "test_storms": 66,
+      "bootstrap_unit": "typhoon; mean window MAE within each typhoon, then paired resampling",
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "mean_storm_weighted_mae_improvement_km": 1.4791152890879047,
+          "improvement_95ci_km": [
+            0.5432015499709101,
+            2.42816089083558
+          ],
+          "relative_improvement_pct": 3.302939284753454,
+          "relative_improvement_95ci_pct": [
+            1.206835911936184,
+            5.520540163606269
+          ]
+        },
+        {
+          "lead_hours": 12,
+          "mean_storm_weighted_mae_improvement_km": 3.8839954544293875,
+          "improvement_95ci_km": [
+            1.1191958356169567,
+            6.581519066572052
+          ],
+          "relative_improvement_pct": 4.342874466176594,
+          "relative_improvement_95ci_pct": [
+            1.270732541825708,
+            7.353751013149995
+          ]
+        },
+        {
+          "lead_hours": 18,
+          "mean_storm_weighted_mae_improvement_km": 4.107239005016402,
+          "improvement_95ci_km": [
+            -1.3970886851294466,
+            9.459321731508629
+          ],
+          "relative_improvement_pct": 2.9292891185551495,
+          "relative_improvement_95ci_pct": [
+            -1.0220959815571105,
+            6.65188966154367
+          ]
+        },
+        {
+          "lead_hours": 24,
+          "mean_storm_weighted_mae_improvement_km": 3.1231435192965527,
+          "improvement_95ci_km": [
+            -5.466089763322633,
+            11.808376236257638
+          ],
+          "relative_improvement_pct": 1.6262025425442659,
+          "relative_improvement_95ci_pct": [
+            -2.9373961857672004,
+            5.994564156391636
+          ]
+        },
+        {
+          "lead_hours": 30,
+          "mean_storm_weighted_mae_improvement_km": -0.91512657052827,
+          "improvement_95ci_km": [
+            -13.568254802462853,
+            11.945367314053824
+          ],
+          "relative_improvement_pct": -0.3652021795287398,
+          "relative_improvement_95ci_pct": [
+            -5.647254701183355,
+            4.612679363496388
+          ]
+        },
+        {
+          "lead_hours": 36,
+          "mean_storm_weighted_mae_improvement_km": -4.454506244603029,
+          "improvement_95ci_km": [
+            -21.601203132488312,
+            13.171618534503443
+          ],
+          "relative_improvement_pct": -1.3983026102455085,
+          "relative_improvement_95ci_pct": [
+            -7.092585681396362,
+            4.021281311530929
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "20261001T134343Z",
+      "seed": 2027,
+      "test_windows": 950,
+      "test_storms": 66,
+      "bootstrap_unit": "typhoon; mean window MAE within each typhoon, then paired resampling",
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "mean_storm_weighted_mae_improvement_km": 0.1879552758076644,
+          "improvement_95ci_km": [
+            -0.9684056649031538,
+            1.3104314103600063
+          ],
+          "relative_improvement_pct": 0.4238903825924219,
+          "relative_improvement_95ci_pct": [
+            -2.2186526083479285,
+            2.935929392620418
+          ]
+        },
+        {
+          "lead_hours": 12,
+          "mean_storm_weighted_mae_improvement_km": 0.904126271651859,
+          "improvement_95ci_km": [
+            -2.084429266725038,
+            3.8787549960374252
+          ],
+          "relative_improvement_pct": 1.0128252295508144,
+          "relative_improvement_95ci_pct": [
+            -2.373517010732547,
+            4.316048904986932
+          ]
+        },
+        {
+          "lead_hours": 18,
+          "mean_storm_weighted_mae_improvement_km": 2.9236544586087785,
+          "improvement_95ci_km": [
+            -2.566931250246139,
+            8.821067071745993
+          ],
+          "relative_improvement_pct": 2.0834016643016002,
+          "relative_improvement_95ci_pct": [
+            -1.8362448327250214,
+            6.238284175493991
+          ]
+        },
+        {
+          "lead_hours": 24,
+          "mean_storm_weighted_mae_improvement_km": 3.6852973622776277,
+          "improvement_95ci_km": [
+            -5.165982988875717,
+            13.426042652351832
+          ],
+          "relative_improvement_pct": 1.9071787425530184,
+          "relative_improvement_95ci_pct": [
+            -2.719049712622506,
+            6.863840599214006
+          ]
+        },
+        {
+          "lead_hours": 30,
+          "mean_storm_weighted_mae_improvement_km": 4.579772042617038,
+          "improvement_95ci_km": [
+            -8.833769230597682,
+            19.642445675944348
+          ],
+          "relative_improvement_pct": 1.8007369549867063,
+          "relative_improvement_95ci_pct": [
+            -3.596129440930343,
+            7.529191570437929
+          ]
+        },
+        {
+          "lead_hours": 36,
+          "mean_storm_weighted_mae_improvement_km": 4.122388907300128,
+          "improvement_95ci_km": [
+            -14.451769015751973,
+            24.770020481421913
+          ],
+          "relative_improvement_pct": 1.2684674988459061,
+          "relative_improvement_95ci_pct": [
+            -4.591076053276856,
+            7.406903731309929
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "20261001T134527Z",
+      "seed": 2028,
+      "test_windows": 950,
+      "test_storms": 66,
+      "bootstrap_unit": "typhoon; mean window MAE within each typhoon, then paired resampling",
+      "by_horizon": [
+        {
+          "lead_hours": 6,
+          "mean_storm_weighted_mae_improvement_km": 1.9666655251330942,
+          "improvement_95ci_km": [
+            1.0802172543528101,
+            2.9922954736735607
+          ],
+          "relative_improvement_pct": 4.352321359772272,
+          "relative_improvement_95ci_pct": [
+            2.3711059599128377,
+            6.737476594980206
+          ]
+        },
+        {
+          "lead_hours": 12,
+          "mean_storm_weighted_mae_improvement_km": 3.747439498915475,
+          "improvement_95ci_km": [
+            1.5247000333359289,
+            5.901416180793273
+          ],
+          "relative_improvement_pct": 4.146699059030352,
+          "relative_improvement_95ci_pct": [
+            1.7113437721233633,
+            6.516460324474254
+          ]
+        },
+        {
+          "lead_hours": 18,
+          "mean_storm_weighted_mae_improvement_km": 5.2731301011699925,
+          "improvement_95ci_km": [
+            0.5769527990919936,
+            9.840600550372036
+          ],
+          "relative_improvement_pct": 3.6960292186547448,
+          "relative_improvement_95ci_pct": [
+            0.41428348942669424,
+            6.8420657011729595
+          ]
+        },
+        {
+          "lead_hours": 24,
+          "mean_storm_weighted_mae_improvement_km": 5.651219783791043,
+          "improvement_95ci_km": [
+            -2.763541029202867,
+            13.839673068387178
+          ],
+          "relative_improvement_pct": 2.8675941427585308,
+          "relative_improvement_95ci_pct": [
+            -1.4244995002128937,
+            6.935498763759722
+          ]
+        },
+        {
+          "lead_hours": 30,
+          "mean_storm_weighted_mae_improvement_km": 4.288755464817343,
+          "improvement_95ci_km": [
+            -9.043922147480954,
+            17.047933778638374
+          ],
+          "relative_improvement_pct": 1.6471051755031259,
+          "relative_improvement_95ci_pct": [
+            -3.5279695771176915,
+            6.404932633936345
+          ]
+        },
+        {
+          "lead_hours": 36,
+          "mean_storm_weighted_mae_improvement_km": 5.7830621585065405,
+          "improvement_95ci_km": [
+            -12.887977884395157,
+            24.01149177024423
+          ],
+          "relative_improvement_pct": 1.7404067303895137,
+          "relative_improvement_95ci_pct": [
+            -3.989992885641527,
+            7.122793899807632
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "Intervals quantify storm-to-storm variation on this paired 2020/2021/2025 test subset, not year-to-year or basin-wide generalization."
+}

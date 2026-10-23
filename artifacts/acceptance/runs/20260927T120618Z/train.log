@@ -1,0 +1,10 @@
+2026-09-27 20:06:20,510 INFO device=cpu train=33761 validation=926 test=1670
+2026-09-27 20:06:21,605 INFO epoch=1 train_loss=1.332195 validation_loss=0.490938
+2026-09-27 20:06:21,688 INFO best_epoch=1 best_validation_loss=0.490938
+2026-09-27 20:06:21,688 INFO checkpoint_sha256=763c04dd527f23dcc7250bc529c482009cea27e8ab44db4aa3dc4734f7ffe723
+2026-09-27 20:06:21,688 INFO cnn lead=6h path_mae=865.90km path_rmse=1025.19km wind_mae=6.62m/s
+2026-09-27 20:06:21,688 INFO cnn lead=12h path_mae=767.26km path_rmse=885.98km wind_mae=6.86m/s
+2026-09-27 20:06:21,688 INFO cnn lead=18h path_mae=797.66km path_rmse=908.95km wind_mae=7.48m/s
+2026-09-27 20:06:21,689 INFO cnn lead=24h path_mae=741.78km path_rmse=862.85km wind_mae=8.34m/s
+2026-09-27 20:06:21,689 INFO cnn lead=30h path_mae=935.98km path_rmse=1080.81km wind_mae=9.15m/s
+2026-09-27 20:06:21,689 INFO cnn lead=36h path_mae=711.70km path_rmse=820.83km wind_mae=9.35m/s

@@ -3,6 +3,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import TyphoonGlobe from '@/components/TyphoonGlobe.vue'
 import TyphoonCharts from '@/components/TyphoonCharts.vue'
+import TyphoonAssistant from '@/components/TyphoonAssistant.vue'
 import {
   fetchExperimentSummary,
   fetchHealth,
@@ -118,6 +119,24 @@ const era5StatusLabel = computed(() => {
   if (era5.value.status !== 'ready') return '未匹配'
   return currentEra5.value ? '已同步' : '当前时刻缺测'
 })
+const assistantContext = computed(() => ({
+  selected_typhoon: selectedTyphoon.value
+    ? { tfbh: selectedTyphoon.value.tfbh, name: selectedTyphoon.value.name, ename: selectedTyphoon.value.ename }
+    : null,
+  current_point: currentPoint.value
+    ? { time: currentPoint.value.time, lng: currentPoint.value.lng, lat: currentPoint.value.lat, speed: currentPoint.value.speed, power: currentPoint.value.power }
+    : null,
+  forecast: selectedForecastPoint.value
+    ? { lead_hours: selectedForecastPoint.value.lead_hours, lng: selectedForecastPoint.value.lng, lat: selectedForecastPoint.value.lat, speed_ms: selectedForecastPoint.value.speed_ms, location_radius_90_km: selectedForecastPoint.value.location_radius_90_km }
+    : null,
+  era5: currentEra5.value
+    ? { status: era5StatusLabel.value, levels: currentEra5.value.levels }
+    : { status: era5StatusLabel.value, levels: {} },
+  selected_horizon: selectedLead.value,
+  model: health.value?.model
+    ? { status: health.value.model.status, model_type: health.value.model.model_type, model_version: health.value.model.model_version, device: health.value.model.device }
+    : null
+}))
 function canonicalTime(value?: string | null) {
   return value ? value.replace('Z', '').slice(0, 19) : ''
 }
@@ -812,5 +831,6 @@ onUnmounted(() => {
         重置
       </button>
     </footer>
+    <TyphoonAssistant :context="assistantContext" />
   </main>
 </template>

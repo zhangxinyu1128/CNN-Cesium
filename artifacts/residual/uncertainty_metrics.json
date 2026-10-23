@@ -1,0 +1,230 @@
+{
+  "model_version": "track-cnn-residual-v1-mc-dropout",
+  "dataset_fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
+  "checkpoint": "D:\\project\\CNN-Cesium\\artifacts\\residual\\checkpoints\\track_cnn_residual.pth",
+  "calibration": {
+    "method": "split conformal absolute residual quantile",
+    "calibration_split": "validation",
+    "target_coverage": 0.9,
+    "quantiles": [
+      [
+        0.6332355926664377,
+        0.5317408412966262,
+        3.8400386018729016
+      ],
+      [
+        1.2626814663028512,
+        1.0372188227378754,
+        5.803453077600002
+      ],
+      [
+        2.0519314045257175,
+        1.5803768836108505,
+        8.1510818065966
+      ],
+      [
+        2.9850096447304395,
+        2.2214234360779113,
+        9.513782721565267
+      ],
+      [
+        3.954469440513563,
+        2.9759782400245545,
+        10.75512161140896
+      ],
+      [
+        4.898513329554987,
+        3.6779299102988077,
+        11.96703812276775
+      ]
+    ],
+    "location_radius_km": [
+      85.64443756110916,
+      172.3605798278952,
+      265.3519696439899,
+      367.0477853096729,
+      471.5095453501579,
+      612.452198359887
+    ]
+  },
+  "uncalibrated_evaluation": {
+    "sample_count": 1670,
+    "mc_samples": 50,
+    "by_horizon": [
+      {
+        "lead_hours": 6,
+        "longitude_coverage_90": 0.1377245508982036,
+        "longitude_interval_width": 0.11944850607816469,
+        "latitude_coverage_90": 0.16526946107784432,
+        "latitude_interval_width": 0.1119478419142192,
+        "wind_coverage_90": 0.21736526946107784,
+        "wind_interval_width": 1.4303680932010112,
+        "joint_coverage_90": 0.008982035928143712,
+        "joint_interval_width_proxy": 0.16673189737445326,
+        "location_radius_90_km": 84.28464586108538,
+        "location_coverage_90": 0.9,
+        "median_prediction_wind_mae_ms": 2.0489828758049944
+      },
+      {
+        "lead_hours": 12,
+        "longitude_coverage_90": 0.17664670658682635,
+        "longitude_interval_width": 0.32263065240566213,
+        "latitude_coverage_90": 0.20479041916167665,
+        "latitude_interval_width": 0.2837283888169886,
+        "wind_coverage_90": 0.2497005988023952,
+        "wind_interval_width": 2.605502786072194,
+        "joint_coverage_90": 0.01437125748502994,
+        "joint_interval_width_proxy": 0.4373839747249316,
+        "location_radius_90_km": 159.36241515841186,
+        "location_coverage_90": 0.9,
+        "median_prediction_wind_mae_ms": 3.372222685247327
+      },
+      {
+        "lead_hours": 18,
+        "longitude_coverage_90": 0.2149700598802395,
+        "longitude_interval_width": 0.6313485174156124,
+        "latitude_coverage_90": 0.23053892215568864,
+        "latitude_interval_width": 0.49555680385768347,
+        "wind_coverage_90": 0.2616766467065868,
+        "wind_interval_width": 3.5475537138478797,
+        "joint_coverage_90": 0.018562874251497007,
+        "joint_interval_width_proxy": 0.8162055553904245,
+        "location_radius_90_km": 247.8772015857694,
+        "location_coverage_90": 0.9,
+        "median_prediction_wind_mae_ms": 4.435883390742199
+      },
+      {
+        "lead_hours": 24,
+        "longitude_coverage_90": 0.23592814371257484,
+        "longitude_interval_width": 1.0041462070187497,
+        "latitude_coverage_90": 0.2497005988023952,
+        "latitude_interval_width": 0.7355383147931372,
+        "wind_coverage_90": 0.2772455089820359,
+        "wind_interval_width": 4.431650226996828,
+        "joint_coverage_90": 0.023952095808383235,
+        "joint_interval_width_proxy": 1.2647159275144826,
+        "location_radius_90_km": 343.6346158274506,
+        "location_coverage_90": 0.9,
+        "median_prediction_wind_mae_ms": 5.292677324671218
+      },
+      {
+        "lead_hours": 30,
+        "longitude_coverage_90": 0.2473053892215569,
+        "longitude_interval_width": 1.4388362848665783,
+        "latitude_coverage_90": 0.25389221556886227,
+        "latitude_interval_width": 0.9986016030288205,
+        "wind_coverage_90": 0.2898203592814371,
+        "wind_interval_width": 5.348604884936804,
+        "joint_coverage_90": 0.026347305389221556,
+        "joint_interval_width_proxy": 1.778152414979908,
+        "location_radius_90_km": 449.9579554459789,
+        "location_coverage_90": 0.9,
+        "median_prediction_wind_mae_ms": 6.010910377661065
+      },
+      {
+        "lead_hours": 36,
+        "longitude_coverage_90": 0.2622754491017964,
+        "longitude_interval_width": 1.93235596351282,
+        "latitude_coverage_90": 0.262874251497006,
+        "latitude_interval_width": 1.2756365250894763,
+        "wind_coverage_90": 0.30419161676646705,
+        "wind_interval_width": 6.416145713797992,
+        "joint_coverage_90": 0.029341317365269463,
+        "joint_interval_width_proxy": 2.349033815278183,
+        "location_radius_90_km": 570.4720870512642,
+        "location_coverage_90": 0.9,
+        "median_prediction_wind_mae_ms": 6.667678274123323
+      }
+    ]
+  },
+  "evaluation": {
+    "sample_count": 1670,
+    "mc_samples": 50,
+    "by_horizon": [
+      {
+        "lead_hours": 6,
+        "longitude_coverage_90": 0.8952095808383234,
+        "longitude_interval_width": 1.2664711853328754,
+        "latitude_coverage_90": 0.9119760479041916,
+        "latitude_interval_width": 1.0634816825932525,
+        "wind_coverage_90": 0.8568862275449102,
+        "wind_interval_width": 7.680077203745806,
+        "joint_coverage_90": 0.7023952095808383,
+        "joint_interval_width_proxy": 1.653766172253452,
+        "location_radius_90_km": 85.64443756110916,
+        "location_coverage_90": 0.9047904191616767,
+        "median_prediction_wind_mae_ms": 2.0489828758049944
+      },
+      {
+        "lead_hours": 12,
+        "longitude_coverage_90": 0.9,
+        "longitude_interval_width": 2.5253629326057023,
+        "latitude_coverage_90": 0.9149700598802395,
+        "latitude_interval_width": 2.0744376454757507,
+        "wind_coverage_90": 0.8305389221556886,
+        "wind_interval_width": 11.606906155200004,
+        "joint_coverage_90": 0.6910179640718563,
+        "joint_interval_width_proxy": 3.2681415952106243,
+        "location_radius_90_km": 172.3605798278952,
+        "location_coverage_90": 0.9203592814371258,
+        "median_prediction_wind_mae_ms": 3.372222685247327
+      },
+      {
+        "lead_hours": 18,
+        "longitude_coverage_90": 0.9089820359281438,
+        "longitude_interval_width": 4.103862809051435,
+        "latitude_coverage_90": 0.9131736526946108,
+        "latitude_interval_width": 3.1607537672217005,
+        "wind_coverage_90": 0.8508982035928143,
+        "wind_interval_width": 16.302163613193205,
+        "joint_coverage_90": 0.7179640718562874,
+        "joint_interval_width_proxy": 5.179966634305834,
+        "location_radius_90_km": 265.3519696439899,
+        "location_coverage_90": 0.9161676646706587,
+        "median_prediction_wind_mae_ms": 4.435883390742199
+      },
+      {
+        "lead_hours": 24,
+        "longitude_coverage_90": 0.9197604790419162,
+        "longitude_interval_width": 5.970019289460879,
+        "latitude_coverage_90": 0.9245508982035928,
+        "latitude_interval_width": 4.442846872155824,
+        "wind_coverage_90": 0.837125748502994,
+        "wind_interval_width": 19.02756544313053,
+        "joint_coverage_90": 0.7161676646706587,
+        "joint_interval_width_proxy": 7.441775234845496,
+        "location_radius_90_km": 367.0477853096729,
+        "location_coverage_90": 0.9155688622754491,
+        "median_prediction_wind_mae_ms": 5.292677324671218
+      },
+      {
+        "lead_hours": 30,
+        "longitude_coverage_90": 0.9119760479041916,
+        "longitude_interval_width": 7.908938881027126,
+        "latitude_coverage_90": 0.9293413173652695,
+        "latitude_interval_width": 5.951956480049109,
+        "wind_coverage_90": 0.8359281437125748,
+        "wind_interval_width": 21.510243222817913,
+        "joint_coverage_90": 0.718562874251497,
+        "joint_interval_width_proxy": 9.898338252667529,
+        "location_radius_90_km": 471.5095453501579,
+        "location_coverage_90": 0.9137724550898204,
+        "median_prediction_wind_mae_ms": 6.010910377661065
+      },
+      {
+        "lead_hours": 36,
+        "longitude_coverage_90": 0.895808383233533,
+        "longitude_interval_width": 9.797026659109974,
+        "latitude_coverage_90": 0.9281437125748503,
+        "latitude_interval_width": 7.355859820597616,
+        "wind_coverage_90": 0.8365269461077844,
+        "wind_interval_width": 23.9340762455355,
+        "joint_coverage_90": 0.704191616766467,
+        "joint_interval_width_proxy": 12.251138929078959,
+        "location_radius_90_km": 612.452198359887,
+        "location_coverage_90": 0.9233532934131736,
+        "median_prediction_wind_mae_ms": 6.667678274123323
+      }
+    ]
+  }
+}

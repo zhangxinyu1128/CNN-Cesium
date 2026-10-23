@@ -1,4 +1,6 @@
 import type {
+  AssistantAnswer,
+  AssistantContext,
   HealthResponse,
   Era5Response,
   ExportInfoId,
@@ -101,4 +103,22 @@ export function predictTyphoon(typhoonId: string, history: PredictionHistoryPoin
       horizons_hours: [6, 12, 18, 24, 30, 36]
     })
   })
+}
+
+export function queryAssistant(query: string, context: AssistantContext) {
+  const controller = new AbortController()
+  const timer = window.setTimeout(() => controller.abort(), 3000)
+  return request<AssistantAnswer>('/api/assistant/query', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, context }),
+    signal: controller.signal
+  })
+    .catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        throw new Error('请求超时')
+      }
+      throw error
+    })
+    .finally(() => window.clearTimeout(timer))
 }

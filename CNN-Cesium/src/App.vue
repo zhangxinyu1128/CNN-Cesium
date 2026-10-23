@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import WorkspaceApp from './App.workspace.vue'
+import AssistantPanel from '@/components/AssistantPanel.vue'
 import ExperimentComparisonChart from '@/components/ExperimentComparisonChart.vue'
 import TyphoonCharts from '@/components/TyphoonCharts.vue'
 import {
@@ -20,6 +21,7 @@ import {
 } from '@/services/typhoonApi'
 import { buildPredictionWindow } from '@/services/predictionWindow'
 import type {
+  AssistantContext,
   Era5Point,
   Era5Response,
   ExportInfoId,
@@ -40,6 +42,7 @@ const selectedYear = ref(2025)
 const typhoons = ref<TyphoonIndexItem[]>([])
 const selectedId = ref('202501')
 const selectedTyphoon = ref<TyphoonDetail | null>(null)
+const assistantOpen = ref(false)
 const currentIndex = ref(0)
 const playing = ref(false)
 const health = ref<HealthResponse | null>(null)
@@ -182,6 +185,39 @@ const legacyDblClickRows = new WeakSet<HTMLTableRowElement>()
 const selectedPoint = computed(
   () => prediction.value?.predictions.find((point) => point.lead_hours === selectedLead.value) ?? null
 )
+const assistantContext = computed<AssistantContext>(() => {
+  const point = selectedPoint.value
+  const region = point?.uncertainty_region
+  const wind = forecastEra5Point.value?.levels['850']
+  return {
+    typhoon_id: selectedTyphoon.value?.tfbh,
+    typhoon_name: selectedTyphoon.value?.name || selectedTyphoon.value?.ename,
+    lead_hours: selectedLead.value,
+    forecast_position: point ? { lng: point.lng, lat: point.lat } : undefined,
+    speed_ms: point?.speed_ms ?? undefined,
+    location_radius_90_km:
+      point?.location_radius_90_km ??
+      experimentSummary.value?.uncertainty?.by_horizon?.find((item) => item.lead_hours === selectedLead.value)?.location_radius_90_km ??
+      undefined,
+    uncertainty_region: region
+      ? {
+          semi_major_axis_km: region.semi_major_axis_km,
+          semi_minor_axis_km: region.semi_minor_axis_km,
+          coverage: region.coverage
+        }
+      : undefined,
+    era5: wind
+      ? {
+          level: 850,
+          u: wind.u,
+          v: wind.v,
+          speed_ms: wind.speed_ms,
+          direction_deg: wind.direction_deg,
+          shear: forecastEra5Point.value?.shear_500_850_ms ?? undefined
+        }
+      : undefined
+  }
+})
 const historicalWindRadius = computed(() => {
   const point = [...(selectedTyphoon.value?.points ?? [])].reverse().find(
     (item) => (item.radius7 ?? 0) > 0 || (item.radius10 ?? 0) > 0
@@ -1594,6 +1630,7 @@ onMounted(async () => {
         <button type="button" :class="{ active: showPanel && panelMode === 'environment' }" title="打开 ERA5 环境场面板" @click="openPanel('environment')">↗ <span>环境风场</span></button>
         <button type="button" :class="{ active: showPanel && panelMode === 'risk' }" title="打开风险研判面板" @click="openPanel('risk')">△ <span>风险研判</span></button>
         <button type="button" :class="{ active: showPanel && panelMode === 'export' }" title="打开导出面板" @click="openPanel('export')">⇩ <span>导出</span></button>
+        <button type="button" :class="{ active: assistantOpen }" title="打开 AI 研判助手" @click="assistantOpen = !assistantOpen">✦ <span>AI 研判</span></button>
       </nav>
     </header>
 
@@ -1880,6 +1917,12 @@ onMounted(async () => {
       <button class="legacy-reset-button" type="button" :disabled="!selectedTyphoon.points.length" @click="resetTimeline">重置</button>
     </footer>
   </main>
+  <AssistantPanel
+    v-if="assistantOpen"
+    :open="assistantOpen"
+    :context="assistantContext"
+    @close="assistantOpen = false"
+  />
 </template>
 
 <style scoped>

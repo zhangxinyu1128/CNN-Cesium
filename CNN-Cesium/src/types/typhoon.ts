@@ -265,3 +265,38 @@ export interface ExperimentSummary {
   }
   limitations?: string[]
 }
+
+export interface AssistantContext {
+  typhoon_id?: string
+  typhoon_name?: string
+  lead_hours?: number
+  forecast_position?: { lng?: number; lat?: number }
+  speed_ms?: number
+  location_radius_90_km?: number
+  uncertainty_region?: {
+    semi_major_axis_km?: number
+    semi_minor_axis_km?: number
+    coverage?: number
+  }
+  era5?: {
+    level?: number
+    u?: number
+    v?: number
+    speed_ms?: number
+    direction_deg?: number
+    shear?: number
+  }
+}
+
+export interface AssistantSource {
+  path: string
+  section?: string
+}
+
+export interface AssistantAnswer {
+  answer: string
+  status: 'matched' | 'dynamic' | 'fallback'
+  sources: AssistantSource[]
+  matched_card_ids: string[]
+  caveats: string[]
+}

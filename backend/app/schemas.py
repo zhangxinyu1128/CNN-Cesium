@@ -203,3 +203,74 @@ class ExportSettings(BaseModel):
     @validator("visible_legend_ids")
     def remove_duplicate_legends(cls, value: List[ExportLegendId]) -> List[ExportLegendId]:
         return list(dict.fromkeys(value))
+
+
+class AssistantForecastPosition(BaseModel):
+    lng: Optional[float] = None
+    lat: Optional[float] = None
+
+    class Config:
+        extra = "allow"
+
+
+class AssistantUncertaintyRegion(BaseModel):
+    semi_major_axis_km: Optional[float] = None
+    semi_minor_axis_km: Optional[float] = None
+    coverage: Optional[float] = None
+
+    class Config:
+        extra = "allow"
+
+
+class AssistantEra5(BaseModel):
+    level: Optional[float] = None
+    u: Optional[float] = None
+    v: Optional[float] = None
+    speed_ms: Optional[float] = None
+    direction_deg: Optional[float] = None
+    shear: Optional[float] = None
+
+    class Config:
+        extra = "allow"
+
+
+class AssistantContext(BaseModel):
+    typhoon_id: Optional[str] = None
+    typhoon_name: Optional[str] = None
+    lead_hours: Optional[float] = None
+    forecast_position: Optional[AssistantForecastPosition] = None
+    speed_ms: Optional[float] = None
+    location_radius_90_km: Optional[float] = None
+    uncertainty_region: Optional[AssistantUncertaintyRegion] = None
+    era5: Optional[AssistantEra5] = None
+
+    class Config:
+        extra = "allow"
+
+
+class AssistantQueryRequest(BaseModel):
+    query: str
+    context: AssistantContext = Field(default_factory=AssistantContext)
+
+    @validator("query")
+    def validate_query(cls, value: str) -> str:
+        stripped = value.strip()
+        if not (1 <= len(stripped) <= 200):
+            raise ValueError("query must be between 1 and 200 characters after trimming")
+        return stripped
+
+
+class AssistantSource(BaseModel):
+    path: str
+    section: Optional[str] = None
+
+    class Config:
+        extra = "allow"
+
+
+class AssistantAnswer(BaseModel):
+    answer: str
+    status: Literal["matched", "dynamic", "fallback"]
+    sources: List[AssistantSource] = Field(default_factory=list)
+    matched_card_ids: List[str] = Field(default_factory=list)
+    caveats: List[str] = Field(default_factory=list)

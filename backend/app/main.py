@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 
 from .schemas import (
+    AssistantAnswer,
+    AssistantQueryRequest,
     HealthResponse,
     ExportSettings,
     PredictionRequest,
@@ -22,6 +24,7 @@ from .schemas import (
 from .services.data import DataRepository
 from .services.era5 import Era5Repository
 from .services.model import ModelService
+from .services.knowledge import AssistantService
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -65,6 +68,7 @@ model_service = ModelService(
     PREDICTION_UNCERTAINTY_PATH,
     JOINT_UNCERTAINTY_PATH,
 )
+assistant_service = AssistantService(PROJECT_ROOT / "backend/app/knowledge/cards.json")
 
 app = FastAPI(
     title="Tropical Cyclone Intelligence API",
@@ -529,6 +533,11 @@ def predict(request: PredictionRequest) -> dict:
     except RuntimeError as error:
         raise HTTPException(status_code=503, detail=str(error)) from error
     return {**result, "typhoon_id": request.typhoon_id}
+
+
+@app.post("/api/assistant/query", response_model=AssistantAnswer)
+def assistant_query(request: AssistantQueryRequest) -> dict:
+    return assistant_service.query(request.query, request.context)
 
 
 if __name__ == "__main__":

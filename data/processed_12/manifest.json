@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-19T01:31:57.855455+00:00",
+  "source": {
+    "root": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\data",
+    "fingerprint_sha256": "bf0d81871daf8c7b82824314aff36288359aad752867589334c474109c97c0ee",
+    "bytes": 52410338,
+    "components": [
+      "annual typhoon indexes",
+      "best-track JSON files"
+    ],
+    "gridded_meteorology_files": 0
+  },
+  "coverage": {
+    "year_files": 81,
+    "year_min": 1945,
+    "year_max": 2025,
+    "annual_index_rows": 1937,
+    "typhoon_files": 1937,
+    "valid_tracks": 1935,
+    "point_count": 73388,
+    "invalid_coordinate_points": 0,
+    "duplicate_timestamps": 0,
+    "non_monotonic_steps": 0
+  },
+  "field_missing": {
+    "time": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "lng": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "lat": {
+      "count": 0,
+      "fraction": 0.0
+    },
+    "speed": {
+      "count": 15,
+      "fraction": 0.00020439
+    },
+    "power": {
+      "count": 15,
+      "fraction": 0.00020439
+    },
+    "pressure": {
+      "count": 2083,
+      "fraction": 0.02838339
+    },
+    "move_dir": {
+      "count": 49646,
+      "fraction": 0.67648662
+    },
+    "move_speed": {
+      "count": 49921,
+      "fraction": 0.68023383
+    },
+    "radius7": {
+      "count": 48040,
+      "fraction": 0.65460293
+    },
+    "radius10": {
+      "count": 52488,
+      "fraction": 0.7152123
+    }
+  },
+  "interval_hours": {
+    "0.0003": 1,
+    "0.3333": 1,
+    "0.5": 16,
+    "0.6667": 1,
+    "1.0": 14169,
+    "2.0": 121,
+    "3.0": 8498,
+    "4.0": 6,
+    "5.0": 6,
+    "6.0": 48591,
+    "8.0": 2,
+    "9.0": 7,
+    "12.0": 19,
+    "15.0": 1,
+    "18.0": 5,
+    "24.0": 2,
+    "36.0": 5,
+    "42.0": 2
+  },
+  "index_consistency": {
+    "index_ids_without_track_file": [],
+    "track_files_without_index_row": [],
+    "duplicate_track_ids": [],
+    "filename_id_mismatches": []
+  },
+  "errors": {
+    "invalid_track_files": [
+      {
+        "file": "196118.json",
+        "reason": "no track object"
+      },
+      {
+        "file": "197319.json",
+        "reason": "no track object"
+      }
+    ],
+    "invalid_year_files": []
+  },
+  "splits": {
+    "time_holdout_year_ranges": {
+      "train": [
+        1945,
+        2016
+      ],
+      "validation": [
+        2017,
+        2019
+      ],
+      "test": [
+        2020,
+        2025
+      ]
+    },
+    "time_holdout_track_counts": {
+      "train": 1687,
+      "validation": 94,
+      "test": 154,
+      "outside_range": 0
+    },
+    "random_track_split": {
+      "seed": 2026,
+      "fractions": {
+        "train": 0.7,
+        "validation": 0.15,
+        "test": 0.15
+      },
+      "counts": {
+        "train": 1354,
+        "validation": 290,
+        "test": 291
+      }
+    }
+  },
+  "preprocessing_policy": {
+    "input_steps": 4,
+    "input_features": [
+      "east_km",
+      "north_km",
+      "speed",
+      "power",
+      "acceleration_ms_per_hour",
+      "turn_rate_rad_per_hour",
+      "heading_sin",
+      "heading_cos"
+    ],
+    "coordinate_system": "local_motion_v1",
+    "target_steps": 6,
+    "target_features": [
+      "east_km",
+      "north_km",
+      "speed"
+    ],
+    "target_interval_hours": 6,
+    "normalization": "fit on training storms only",
+    "time_resampling": "linear interpolation to a six-hour cadence within segments; segments split when a source gap exceeds the configured limit"
+  },
+  "preprocessing": {
+    "input_steps": 12,
+    "input_features": [
+      "east_km",
+      "north_km",
+      "speed",
+      "power",
+      "acceleration_ms_per_hour",
+      "turn_rate_rad_per_hour",
+      "heading_sin",
+      "heading_cos"
+    ],
+    "coordinate_system": "local_motion_v1",
+    "target_steps": 6,
+    "target_features": [
+      "east_km",
+      "north_km",
+      "speed"
+    ],
+    "target_interval_hours": 6,
+    "maximum_interpolation_gap_hours": 9.0,
+    "interpolation": "linear for speed, power and latitude; shortest-arc linear for longitude",
+    "normalization": "input statistics fit on unique resampled training points; target statistics fit on training-window targets only",
+    "empty_and_invalid_tracks": 2,
+    "invalid_points_skipped": 0,
+    "duplicate_points_removed": 0,
+    "source_segments": 1959,
+    "usable_segments": 1959,
+    "segments_too_short": 525,
+    "unusable_resampled_points": 5,
+    "resampled_points": 57107,
+    "valid_tracks": 1935,
+    "normalizer": {
+      "coordinate_system": "local_motion_v1",
+      "feature_names": [
+        "east_km",
+        "north_km",
+        "speed",
+        "power",
+        "acceleration_ms_per_hour",
+        "turn_rate_rad_per_hour",
+        "heading_sin",
+        "heading_cos"
+      ],
+      "mean": [
+        -28.12940713228236,
+        58.807718850409096,
+        27.244801604653627,
+        9.663660425610855,
+        0.007859291355276408,
+        0.003031576258134529,
+        -0.35069783185538017,
+        0.4488990646072152
+      ],
+      "std": [
+        116.06234310206504,
+        68.62958650955564,
+        15.576084372400597,
+        3.932950383631522,
+        0.6432416212294014,
+        0.0721193406664613,
+        0.6947284087622807,
+        0.4391504281966855
+      ],
+      "target_names": [
+        "east_km",
+        "north_km",
+        "speed"
+      ],
+      "target_mean": [
+        -31.750537768109954,
+        234.1383269366911,
+        32.755930838847746
+      ],
+      "target_std": [
+        428.5134269937988,
+        282.45318029839905,
+        16.591951881589427
+      ]
+    },
+    "split_track_counts": {
+      "train": 1317,
+      "validation": 43,
+      "test": 73
+    },
+    "split_sample_counts": {
+      "train": 22013,
+      "validation": 475,
+      "test": 914
+    },
+    "sample_files": [
+      {
+        "file": "train.jsonl",
+        "samples": 22013,
+        "bytes": 64691248,
+        "sha256": "7ea9326724990c5641095798df88605c5a05bc5c51b10b4f57e1d47236f679c4"
+      },
+      {
+        "file": "validation.jsonl",
+        "samples": 475,
+        "bytes": 1394873,
+        "sha256": "489c9760839538a240f69a8f689a77e7d12894a6a0fe79e044bc85e167713891"
+      },
+      {
+        "file": "test.jsonl",
+        "samples": 914,
+        "bytes": 2691415,
+        "sha256": "a6c54adaae6ee6d724c1cb29e5fa6226aeac7b3530833d7aba921f579b66870e"
+      }
+    ],
+    "source_track_splits": {
+      "train": [
+        1945,
+        2016
+      ],
+      "validation": [
+        2017,
+        2019
+      ],
+      "test": [
+        2020,
+        2025
+      ]
+    },
+    "split_file": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\data\\splits\\storm_splits_multiscale.json",
+    "split_file_sha256": "5cade578626b043132d7e35015bfc0b593e8f98db2debd4e9f7ed73961e3fb09",
+    "split_file_storm_counts": {
+      "train": 1687,
+      "validation": 94,
+      "test": 154
+    },
+    "created_at_utc": "2026-10-19T01:32:05.298530+00:00"
+  }
+}

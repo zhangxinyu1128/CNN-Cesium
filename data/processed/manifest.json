@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "created_at_utc": "2026-09-27T12:06:10.462233+00:00",
+  "created_at_utc": "2026-10-18T11:21:15.307576+00:00",
   "source": {
-    "root": "D:\\project\\CNN-Cesium\\data",
-    "fingerprint_sha256": "68fa166de12c638807258b67091c1bc996ba8c75a600ffdad013ece731a2cf9e",
-    "bytes": 50170477,
+    "root": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\data",
+    "fingerprint_sha256": "bf0d81871daf8c7b82824314aff36288359aad752867589334c474109c97c0ee",
+    "bytes": 52410338,
     "components": [
       "annual typhoon indexes",
       "best-track JSON files"
@@ -142,14 +142,22 @@
   "preprocessing_policy": {
     "input_steps": 4,
     "input_features": [
-      "lng",
-      "lat",
+      "east_km",
+      "north_km",
       "speed",
       "power",
-      "delta_lng",
-      "delta_lat"
+      "acceleration_ms_per_hour",
+      "turn_rate_rad_per_hour",
+      "heading_sin",
+      "heading_cos"
     ],
+    "coordinate_system": "local_motion_v1",
     "target_steps": 6,
+    "target_features": [
+      "east_km",
+      "north_km",
+      "speed"
+    ],
     "target_interval_hours": 6,
     "normalization": "fit on training storms only",
     "time_resampling": "linear interpolation to a six-hour cadence within segments; segments split when a source gap exceeds the configured limit"
@@ -157,23 +165,26 @@
   "preprocessing": {
     "input_steps": 4,
     "input_features": [
-      "lng",
-      "lat",
+      "east_km",
+      "north_km",
       "speed",
       "power",
-      "delta_lng",
-      "delta_lat"
+      "acceleration_ms_per_hour",
+      "turn_rate_rad_per_hour",
+      "heading_sin",
+      "heading_cos"
     ],
+    "coordinate_system": "local_motion_v1",
     "target_steps": 6,
     "target_features": [
-      "lng",
-      "lat",
+      "east_km",
+      "north_km",
       "speed"
     ],
     "target_interval_hours": 6,
     "maximum_interpolation_gap_hours": 9.0,
     "interpolation": "linear for speed, power and latitude; shortest-arc linear for longitude",
-    "normalization": "population mean and standard deviation fit on unique resampled training points only",
+    "normalization": "input statistics fit on unique resampled training points; target statistics fit on training-window targets only",
     "empty_and_invalid_tracks": 2,
     "invalid_points_skipped": 0,
     "duplicate_points_removed": 0,
@@ -184,34 +195,51 @@
     "resampled_points": 57107,
     "valid_tracks": 1935,
     "normalizer": {
+      "coordinate_system": "local_motion_v1",
       "feature_names": [
-        "lng",
-        "lat",
+        "east_km",
+        "north_km",
         "speed",
         "power",
-        "delta_lng",
-        "delta_lat"
+        "acceleration_ms_per_hour",
+        "turn_rate_rad_per_hour",
+        "heading_sin",
+        "heading_cos"
       ],
       "mean": [
-        133.36255672934223,
-        20.966611842105266,
+        -28.12940713228236,
+        58.807718850409096,
         27.244801604653627,
         9.663660425610855,
-        -0.2164404118301797,
-        0.5238208578470345
+        0.007859291355276408,
+        0.003031576258134529,
+        -0.35069783185538017,
+        0.4488990646072152
       ],
       "std": [
-        15.197561591977497,
-        8.851879252451754,
+        116.06234310206504,
+        68.62958650955564,
         15.576084372400597,
         3.932950383631522,
-        1.2237390550773408,
-        0.6129548035494448
+        0.6432416212294014,
+        0.0721193406664613,
+        0.6947284087622807,
+        0.4391504281966855
       ],
-      "target_feature_indexes": [
-        0,
-        1,
-        2
+      "target_names": [
+        "east_km",
+        "north_km",
+        "speed"
+      ],
+      "target_mean": [
+        -98.56543265435866,
+        215.44559700388402,
+        31.67980065756346
+      ],
+      "target_std": [
+        400.68636146523477,
+        258.6816791744738,
+        15.759722811147904
       ]
     },
     "split_track_counts": {
@@ -228,20 +256,20 @@
       {
         "file": "train.jsonl",
         "samples": 33761,
-        "bytes": 43108018,
-        "sha256": "bb7e685eaf0e00173a30830892cbb5ec90b699cf6278113f3d6c8a1c41dd6428"
+        "bytes": 49845154,
+        "sha256": "db29b355d468efb0f1eebb00b1fb6c3a99b0476f5f37c106274b785f18e37f1d"
       },
       {
         "file": "validation.jsonl",
         "samples": 926,
-        "bytes": 1182853,
-        "sha256": "911b993b35c599040aebf0e9268e8b16265f75934de23004949e052ab0c9c6ea"
+        "bytes": 1367801,
+        "sha256": "47f01d6de6b318255bd4c1937095c44d4b85dee7bd7ecfa628900eb79ee5fcaf"
       },
       {
         "file": "test.jsonl",
         "samples": 1670,
-        "bytes": 2143744,
-        "sha256": "f0222bd28b1cf4dc22535d64ded03e37995393288b9be0b059af73ef3f100531"
+        "bytes": 2477862,
+        "sha256": "b57502f71d75744ae47c0be11acd3b3e10e3493f94af0219db79839019e2a429"
       }
     ],
     "source_track_splits": {
@@ -258,13 +286,13 @@
         2025
       ]
     },
-    "split_file": "D:\\project\\CNN-Cesium\\data\\splits\\storm_splits.json",
-    "split_file_sha256": "2836e1da45f6de2dc2081cdb8c92eccf2042a483215cb83c9e5831d8736ac00e",
+    "split_file": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\data\\splits\\storm_splits_multiscale.json",
+    "split_file_sha256": "5cade578626b043132d7e35015bfc0b593e8f98db2debd4e9f7ed73961e3fb09",
     "split_file_storm_counts": {
       "train": 1687,
       "validation": 94,
       "test": 154
     },
-    "created_at_utc": "2026-09-27T12:06:15.344323+00:00"
+    "created_at_utc": "2026-10-18T11:21:24.479524+00:00"
   }
 }

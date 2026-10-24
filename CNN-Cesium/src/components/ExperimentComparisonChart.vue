@@ -18,7 +18,28 @@ const props = defineProps<{
 
 const chartEl = ref<HTMLDivElement | null>(null)
 const chart = ref<ECharts | null>(null)
-const colors = ['#67e8d0', '#f7c873', '#ff806f', '#76a9fa', '#c084fc', '#fda4af']
+const fallbackColors = ['#67e8d0', '#f7c873', '#ff806f', '#76a9fa', '#c084fc', '#fda4af']
+type ModelStyle = {
+  color: string
+  symbol: 'circle' | 'rect' | 'triangle' | 'diamond'
+  lineType: 'solid' | 'dashed' | 'dotted'
+  z: number
+}
+const modelStyles: Record<string, ModelStyle> = {
+  track_cnn_baseline: { color: '#3ddc84', symbol: 'circle', lineType: 'solid', z: 1 },
+  innovation_physics_multiscale: { color: '#76a9fa', symbol: 'diamond', lineType: 'solid', z: 2 },
+  multiscale_local_motion: { color: '#ff806f', symbol: 'triangle', lineType: 'dashed', z: 3 },
+  track_cnn_residual: { color: '#ffd166', symbol: 'rect', lineType: 'dotted', z: 4 }
+}
+
+function styleFor(model: ExperimentModelSummary, index: number): ModelStyle {
+  return modelStyles[model.key] ?? {
+    color: fallbackColors[index % fallbackColors.length],
+    symbol: 'circle',
+    lineType: 'solid',
+    z: index + 1
+  }
+}
 
 function render() {
   if (!chartEl.value || !props.models.length) return
@@ -28,7 +49,7 @@ function render() {
   const metricLabel = props.metric === 'rmse' ? '路径 RMSE / km' : '路径 MAE / km'
   const option: EChartsOption = {
     animation: false,
-    grid: { left: 42, right: 12, top: 30, bottom: 34 },
+    grid: { left: 42, right: 12, top: 18, bottom: 34 },
     tooltip: {
       trigger: 'axis',
       valueFormatter: (value: unknown) => typeof value === 'number' ? `${value.toFixed(1)} km` : '--'
@@ -48,23 +69,28 @@ function render() {
       axisLabel: { color: '#87a9ad', fontSize: 10 },
       splitLine: { lineStyle: { color: 'rgba(143, 207, 205, 0.1)' } }
     },
-    series: props.models.map((model, index) => ({
-      type: 'line',
-      name: model.name,
-      smooth: 0.18,
-      showSymbol: true,
-      symbolSize: 5,
-      data: horizons.map((hour) => model.by_horizon.find((item) => item.lead_hours === hour)?.[metricKey] ?? null),
-      lineStyle: { width: model.key === 'fusion_500_850' ? 3 : 2, color: colors[index % colors.length] },
-      itemStyle: { color: colors[index % colors.length] },
-      markLine: index === 0 ? {
-        silent: true,
-        symbol: 'none',
-        data: [{ xAxis: `${props.horizon}h` }],
-        lineStyle: { color: '#f7c873', type: 'dashed', width: 1 },
-        label: { color: '#f7c873', formatter: `${props.horizon}h` }
-      } : undefined
-    }))
+    series: [...props.models]
+      .map((model, index) => ({ model, style: styleFor(model, index) }))
+      .sort((left, right) => left.style.z - right.style.z)
+      .map(({ model, style }, index) => ({
+        type: 'line',
+        name: model.name,
+        smooth: 0.18,
+        showSymbol: true,
+        symbol: style.symbol,
+        symbolSize: 8,
+        data: horizons.map((hour) => model.by_horizon.find((item) => item.lead_hours === hour)?.[metricKey] ?? null),
+        lineStyle: { width: 2.5, type: style.lineType, color: style.color },
+        itemStyle: { color: style.color },
+        z: style.z,
+        markLine: index === 0 ? {
+          silent: true,
+          symbol: 'none',
+          data: [{ xAxis: `${props.horizon}h` }],
+          lineStyle: { color: '#f7c873', type: 'dashed', width: 1 },
+          label: { color: '#f7c873', formatter: `${props.horizon}h` }
+        } : undefined
+      }))
   }
   chart.value!.setOption(option, true)
 }
@@ -91,7 +117,7 @@ onBeforeUnmount(() => {
     <div ref="chartEl" class="experiment-comparison-chart" :aria-label="`不同模型路径${metric === 'rmse' ? '均方根误差' : '平均绝对误差'}对比图`"></div>
     <div class="experiment-comparison-legend" aria-label="模型图例">
       <span v-for="(model, index) in models" :key="model.key" class="experiment-comparison-legend-item">
-        <i class="experiment-comparison-legend-line" :style="{ backgroundColor: colors[index % colors.length] }"></i>
+        <i class="experiment-comparison-legend-line" :style="{ borderTop: `2px ${styleFor(model, index).lineType} ${styleFor(model, index).color}` }"></i>
         <span>{{ model.name }}</span>
       </span>
     </div>
@@ -106,7 +132,6 @@ onBeforeUnmount(() => {
 .experiment-comparison-chart {
   width: 100%;
   height: 190px;
-  margin-top: 12px;
 }
 
 .experiment-comparison-legend {
@@ -131,8 +156,8 @@ onBeforeUnmount(() => {
 .experiment-comparison-legend-line {
   display: inline-block;
   width: 16px;
-  height: 3px;
+  height: 0;
   margin-right: 5px;
-  border-radius: 2px;
+  background: transparent;
 }
 </style>

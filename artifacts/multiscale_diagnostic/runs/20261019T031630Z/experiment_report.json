@@ -1,0 +1,123 @@
+{
+  "experiment": "12-step local-motion multi-scale residual CNN",
+  "status": "experimental_offline_holdout",
+  "online_model_changed": false,
+  "dataset_fingerprint_sha256": "bf0d81871daf8c7b82824314aff36288359aad752867589334c474109c97c0ee",
+  "split_file_sha256": "5cade578626b043132d7e35015bfc0b593e8f98db2debd4e9f7ed73961e3fb09",
+  "split_counts": {
+    "train": 22013,
+    "validation": 475,
+    "test": 914
+  },
+  "input_steps": 12,
+  "history_hours": 72,
+  "target_leads_hours": [
+    6,
+    12,
+    18,
+    24,
+    30,
+    36
+  ],
+  "device": "cuda",
+  "runs": [
+    {
+      "variant": "multiscale",
+      "seed": 2026,
+      "best_validation_loss": 0.20841526985168457,
+      "epochs_trained": 1,
+      "parameter_count": 50659,
+      "train_wall_seconds": 9.775476699999999,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 51.87813810639364,
+            "path_rmse_km": 61.05972724412061
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 86.61936719782742,
+            "path_rmse_km": 105.49537137878563
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 137.7446749765231,
+            "path_rmse_km": 167.63406497546868
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 198.20402387744707,
+            "path_rmse_km": 239.4553892573743
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 263.2521337736638,
+            "path_rmse_km": 315.59713208940116
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 343.2006062556305,
+            "path_rmse_km": 411.1375396070232
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 236,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 146.83961486491455,
+            "window_coverage": 0.9835886214442013,
+            "storm_coverage": 0.821917808219178,
+            "mean_band_width_km": 293.6792297298291
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 226.737908386063,
+            "window_coverage": 0.9584245076586433,
+            "storm_coverage": 0.726027397260274,
+            "mean_band_width_km": 453.475816772126
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 425.2517649828115,
+            "window_coverage": 0.9824945295404814,
+            "storm_coverage": 0.8493150684931506,
+            "mean_band_width_km": 850.503529965623
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 661.2791679174409,
+            "window_coverage": 0.9901531728665208,
+            "storm_coverage": 0.9178082191780822,
+            "mean_band_width_km": 1322.5583358348817
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 1018.0824914944396,
+            "window_coverage": 0.9978118161925602,
+            "storm_coverage": 0.9726027397260274,
+            "mean_band_width_km": 2036.1649829888793
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 1297.383211602269,
+            "window_coverage": 0.9978118161925602,
+            "storm_coverage": 0.9726027397260274,
+            "mean_band_width_km": 2594.766423204538
+          }
+        ]
+      },
+      "direct_quantile_coverage": null,
+      "inference_latency_ms_per_sample": 7.938316999999984,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale_diagnostic\\runs\\20261019T031630Z\\checkpoints\\multiscale-seed-2026.pth"
+    }
+  ],
+  "parameter_count": 50659,
+  "note": "Frozen storm holdout used for final metrics; calibration uses a storm-disjoint half of validation storms."
+}

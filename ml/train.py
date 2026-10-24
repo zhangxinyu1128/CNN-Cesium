@@ -26,6 +26,7 @@ class WindowDataset(Dataset):
         self.targets: List[List[List[float]]] = []
         self.raw_targets: List[List[List[float]]] = []
         self.track_ids: List[str] = []
+        self.origins: List[Dict[str, float]] = []
         with path.open("r", encoding="utf-8") as handle:
             for line in handle:
                 record = json.loads(line)
@@ -33,6 +34,7 @@ class WindowDataset(Dataset):
                 self.targets.append(record["y"])
                 self.raw_targets.append(record["target_raw"])
                 self.track_ids.append(record["typhoon_id"])
+                self.origins.append(record.get("origin"))
         if not self.features:
             raise ValueError("dataset is empty: " + str(path))
         self.features_tensor = torch.tensor(self.features, dtype=torch.float32)
@@ -217,6 +219,8 @@ def train(args: argparse.Namespace) -> Dict[str, Any]:
     if "preprocessing" not in manifest:
         raise ValueError("run `python -m ml.prepare_dataset` before training")
     scaler = manifest["preprocessing"]["normalizer"]
+    if scaler.get("coordinate_system") == "local_motion_v1":
+        raise ValueError("local-motion datasets require `python -m ml.train_residual`; the geographic baseline trainer cannot decode east/north targets")
     train_data = WindowDataset(processed_root / "train.jsonl")
     validation_data = WindowDataset(processed_root / "validation.jsonl")
     test_data = WindowDataset(processed_root / "test.jsonl")

@@ -19,9 +19,9 @@ KNOWLEDGE_CARDS: List[Dict[str, Any]] = [
         "source": "backend/app/services/model.py；/api/predict",
         "keywords": ["在线", "接口", "当前模型", "cnn", "模型版本", "实时", "era5", "风场输入"],
         "excerpt": (
-            "当前在线 /api/predict 使用纯轨迹一维 CNN（track-cnn-1d-v1），输入 5 个连续历史观测点，"
-            "输出未来 6、12、18、24、30、36 小时的台风位置和风速。在线接口没有把 ERA5 风场作为模型输入；"
-            "页面展示的 ERA5 是沿轨环境背景。"
+            "当前默认在线 /api/predict 使用 12 步局地运动坐标、多尺度因果残差 CNN 和物理约束训练权重，"
+            "请求包含 13 个连续六小时观测点（前置点用于计算运动特征），输出未来 6、12、18、24、30、36 小时位置和风速。"
+            "在线接口没有把 ERA5 风场作为模型输入；页面展示的 ERA5 是沿轨环境背景。"
         ),
     },
     {
@@ -44,12 +44,11 @@ KNOWLEDGE_CARDS: List[Dict[str, Any]] = [
     },
     {
         "title": "误差范围与共形校准",
-        "source": "artifacts/reports/track_api_uncertainty_20261008.json",
+        "source": "artifacts/reports/track_api_uncertainty_multiscale_physics_2028.json",
         "keywords": ["不确定度", "误差范围", "90%", "覆盖率", "共形", "半径", "椭圆", "概率", "风险"],
         "excerpt": (
-            "在线轨迹 CNN 使用台风分组的 split-conformal 历史校准，目标覆盖率为 90%，不是实时灾害概率。"
-            "测试窗口覆盖率约为 98%—100%；整场台风覆盖率在 18、24、36 小时低于 90% 目标，说明跨台风稳定性仍需提升。"
-            "圆形位置半径大致从 6 小时 484 km 增至 36 小时 1034 km。"
+            "当前多尺度物理约束模型的位置半径来自验证集台风分组 split-conformal 校准，目标覆盖率为 90%，不是实时灾害概率。"
+            "独立测试的整场台风覆盖率仍有时效低于 90%；圆形半径大致从 6 小时 153 km 增至 36 小时 1,146 km。"
         ),
     },
     {
@@ -76,7 +75,8 @@ KNOWLEDGE_CARDS: List[Dict[str, Any]] = [
         "source": "项目方案：轨迹先验 + 环境场实验 + 证据约束问答",
         "keywords": ["技术路线", "创新点", "深度学习", "残差", "先验", "解释性", "可解释"],
         "excerpt": (
-            "模型侧以匀速移动作为初步轨迹先验，由一维 CNN 学习残差；实验侧比较纯轨迹与 ERA5 500/850 hPa 融合；"
+            "模型侧以局地东-北位移和匀速移动作为先验，由多尺度因果残差 CNN 学习修正，并以物理损失约束运动；"
+            "ERA5 500/850 hPa 融合仍是独立历史实验，不是当前在线输入；"
             "应用侧由研判助手把数值预测、不确定度和环境背景组织成可追问、可引用的解释。三部分分别对应预测、验证和交互解释。"
         ),
     },
@@ -153,7 +153,7 @@ def _compact_context(context: Dict[str, Any]) -> Dict[str, Any]:
     if isinstance(model, dict):
         result["model"] = {
             key: model.get(key)
-            for key in ("status", "model_type", "model_version", "device")
+            for key in ("status", "model_type", "model_version", "coordinate_system", "input_steps", "device")
             if model.get(key) is not None
         }
     for key in ("selected_horizon",):
@@ -202,10 +202,11 @@ def _local_answer(question: str, context: Dict[str, Any], cards: List[Dict[str, 
     lines: List[str] = []
     if any(token in normalised for token in ("era5", "风场输入", "在线模型", "当前模型")):
         lines.append(
-            "当前在线接口仍使用纯轨迹一维 CNN，ERA5 500/850 hPa 没有作为 /api/predict 的输入。"
+            "当前默认在线接口使用局地东-北运动坐标、多尺度因果残差 CNN 和物理约束训练；"
+            "需要 13 个连续六小时观测点，包含 72 小时模型历史及一个前置观测。"
         )
         lines.append(
-            "ERA5 500/850 融合模型属于历史实验对照；页面中的 ERA5 风矢量用于环境背景和结果解释。"
+            "ERA5 500/850 hPa 没有作为 /api/predict 的输入；页面中的 ERA5 风矢量用于环境背景和结果解释。"
         )
     elif any(token in normalised for token in ("创新", "ai+", "助手", "问答", "智能")):
         lines.append(
@@ -217,8 +218,8 @@ def _local_answer(question: str, context: Dict[str, Any], cards: List[Dict[str, 
         )
     elif any(token in normalised for token in ("误差", "24小时", "24 小时", "准确", "效果")):
         lines.append(
-            "历史 ERA5 融合实验的 24 小时路径 MAE 三随机种子均值约为 179.85 km；"
-            "这不是当前在线纯轨迹 CNN 的在线接口成绩。"
+            "当前默认物理约束多尺度模型在 914 个留出台风窗口上的 24 小时路径 MAE 约为 185.2 km。"
+            "对照显示它优于旧基线；与原残差 CNN 的差异未达到统计显著，不能声称已证实更优。"
         )
         lines.append(
             "在线结果应同时查看页面给出的预测位置和 90% 历史校准范围，不能把范围当成灾害概率。"
@@ -258,7 +259,7 @@ def _deepseek_answer(question: str, context: Dict[str, Any], cards: List[Dict[st
     )
     system = (
         "你是台风研判智能助手。只根据提供的证据和页面上下文回答，使用简洁中文。"
-        "必须严格区分在线纯轨迹一维CNN与ERA5历史融合实验，不能编造卫星、多模式或实时预警能力。"
+        "必须区分在线局地运动多尺度物理约束CNN与ERA5历史融合实验，不能编造卫星、多模式或实时预警能力。"
         "回答末尾用[1]这类标记引用证据；如果证据不足，明确说无法从当前项目数据判断。"
     )
     prompt = (

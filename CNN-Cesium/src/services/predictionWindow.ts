@@ -48,7 +48,9 @@ export type PredictionWindowResult =
 
 export function buildPredictionWindow(
   points: TyphoonPoint[],
-  currentIndex: number
+  currentIndex: number,
+  inputSteps = 4,
+  requireContextSpeed = false
 ): PredictionWindowResult {
   const available = points
     .slice(0, currentIndex + 1)
@@ -63,8 +65,11 @@ export function buildPredictionWindow(
   const firstTime = available[0].time
   const currentTime = available[available.length - 1].time
   const gridSteps = Math.floor((currentTime - firstTime) / STEP_MS)
-  if (gridSteps < 4) {
-    return { ok: false, reason: '至少需要连续 30 小时数据来构造 5 个六小时观测点。' }
+  if (gridSteps < inputSteps) {
+    return {
+      ok: false,
+      reason: `至少需要连续 ${inputSteps * 6} 小时数据来构造 ${inputSteps + 1} 个六小时观测点。`
+    }
   }
 
   const originTime = firstTime + gridSteps * STEP_MS
@@ -72,15 +77,21 @@ export function buildPredictionWindow(
     return { ok: false, reason: '当前时刻与最后一个六小时观测点相隔超过 9 小时。' }
   }
   const history: PredictionHistoryPoint[] = []
-  for (let offset = -4; offset <= 0; offset += 1) {
+  for (let offset = -inputSteps; offset <= 0; offset += 1) {
     const targetTime = originTime + offset * STEP_MS
     const values = {} as Record<Feature, number | null>
     for (const feature of FEATURES) values[feature] = sampleAt(available, targetTime, feature)
     if (values.lng === null || values.lat === null) {
       return { ok: false, reason: '最近 30 小时轨迹存在超过 9 小时的数据缺口。' }
     }
-    if (offset > -4 && (values.speed === null || values.power === null)) {
-      return { ok: false, reason: '最近四个六小时观测缺少风速或风力，无法执行模型推理。' }
+    const isInputPoint = offset > -inputSteps
+    const missingInputFeature = values.speed === null || (isInputPoint && values.power === null)
+    const missingContextSpeed = requireContextSpeed && offset === -inputSteps && values.speed === null
+    if (missingInputFeature || missingContextSpeed) {
+      return {
+        ok: false,
+        reason: `最近 ${inputSteps} 个六小时输入观测缺少风速或风力，无法执行模型推理。`
+      }
     }
     const item: PredictionHistoryPoint = {
       time: new Date(targetTime).toISOString(),

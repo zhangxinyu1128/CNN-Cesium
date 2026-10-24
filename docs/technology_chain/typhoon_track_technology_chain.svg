@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 297 210">
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#58758C"/></marker></defs>
+<rect width="297" height="210" fill="#F7FAFD"/>
+<path d="M12 43H285" stroke="#D7E3EC" stroke-width="0.35"/>
+<text x="148.5" y="16.0" text-anchor="middle" font-size="15pt" font-weight="700" fill="#18324A"><tspan x="148.5" dy="0">当前台风路径预测总体技术链路</tspan></text>
+<text x="148.5" y="28.0" text-anchor="middle" font-size="9.5pt" font-weight="400" fill="#547084"><tspan x="148.5" dy="0">在线模型：multiscale-residual-physics-12step-seed2028-v1  ·  输入 13 个连续六小时观测  ·  输出 6–36 h</tspan></text>
+<rect x="10" y="56" width="37" height="30" rx="3" fill="#E8F2FC" stroke="#2B73B6" stroke-width="0.8"/>
+<text x="28.5" y="66.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="28.5" dy="0">历史台风观测</tspan><tspan x="28.5" dy="1.35em">经度 · 纬度</tspan><tspan x="28.5" dy="1.35em">风速/气压/强度</tspan></text>
+<path d="M47 71.0 H48.5" fill="none" stroke="#58758C" stroke-width="0.8" marker-end="url(#arrow)"/>
+<rect x="50" y="56" width="37" height="30" rx="3" fill="#E8F2FC" stroke="#2B73B6" stroke-width="0.8"/>
+<text x="68.5" y="66.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="68.5" dy="0">质控与时间对齐</tspan><tspan x="68.5" dy="1.35em">缺测 · 异常检查</tspan><tspan x="68.5" dy="1.35em">6 h 重采样 · 排序</tspan></text>
+<path d="M87 71.0 H88.5" fill="none" stroke="#58758C" stroke-width="0.8" marker-end="url(#arrow)"/>
+<rect x="90" y="56" width="37" height="30" rx="3" fill="#E8F2FC" stroke="#2B73B6" stroke-width="0.8"/>
+<text x="108.5" y="63.5" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="108.5" dy="0">局地运动特征</tspan><tspan x="108.5" dy="1.35em">东向/北向位移</tspan><tspan x="108.5" dy="1.35em">速度 · 加速度</tspan><tspan x="108.5" dy="1.35em">转向率/航向编码</tspan></text>
+<path d="M127 71.0 H128.5" fill="none" stroke="#58758C" stroke-width="0.8" marker-end="url(#arrow)"/>
+<rect x="130" y="56" width="37" height="30" rx="3" fill="#E8F2FC" stroke="#2B73B6" stroke-width="0.8"/>
+<text x="148.5" y="66.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="148.5" dy="0">局地运动先验</tspan><tspan x="148.5" dy="1.35em">匀速外推</tspan><tspan x="148.5" dy="1.35em">ΔE · ΔN 基线</tspan></text>
+<path d="M167 71.0 H168.5" fill="none" stroke="#58758C" stroke-width="0.8" marker-end="url(#arrow)"/>
+<rect x="170" y="56" width="37" height="30" rx="3" fill="#EAF7F1" stroke="#238A62" stroke-width="0.8"/>
+<text x="188.5" y="61.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="188.5" dy="0">物理约束多尺度</tspan><tspan x="188.5" dy="1.35em">残差 CNN</tspan><tspan x="188.5" dy="1.35em">多尺度因果卷积</tspan><tspan x="188.5" dy="1.35em">时间注意力</tspan><tspan x="188.5" dy="1.35em">物理约束损失</tspan></text>
+<path d="M207 71.0 H208.5" fill="none" stroke="#58758C" stroke-width="0.8" marker-end="url(#arrow)"/>
+<rect x="210" y="56" width="37" height="30" rx="3" fill="#E8F2FC" stroke="#2B73B6" stroke-width="0.8"/>
+<text x="228.5" y="66.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="228.5" dy="0">未来位移与风速</tspan><tspan x="228.5" dy="1.35em">预测 ΔE · ΔN</tspan><tspan x="228.5" dy="1.35em">分时效预测输出</tspan></text>
+<path d="M247 71.0 H248.5" fill="none" stroke="#58758C" stroke-width="0.8" marker-end="url(#arrow)"/>
+<rect x="250" y="56" width="37" height="30" rx="3" fill="#E8F2FC" stroke="#2B73B6" stroke-width="0.8"/>
+<text x="268.5" y="66.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="268.5" dy="0">地理坐标重建</tspan><tspan x="268.5" dy="1.35em">东—北位移→经纬度</tspan><tspan x="268.5" dy="1.35em">路径 · 风速 · 校准范围</tspan></text>
+<rect x="20" y="122" width="112" height="31" rx="3" fill="#FFF4E4" stroke="#C8842B" stroke-width="0.8"/>
+<text x="76.0" y="132.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="76.0" dy="0">ERA5 500 / 850 hPa 环境参照</tspan><tspan x="76.0" dy="1.35em">沿轨风场匹配 · 环境背景</tspan><tspan x="76.0" dy="1.35em">历史融合实验 / 消融验证</tspan></text>
+<path d="M132 137 H196 V86" fill="none" stroke="#C8842B" stroke-width="0.7" stroke-dasharray="3 2" marker-end="url(#arrow)"/>
+<rect x="145" y="122" width="132" height="31" rx="3" fill="#F0ECFA" stroke="#7655A7" stroke-width="0.8"/>
+<text x="211.0" y="132.0" text-anchor="middle" font-size="10.5pt" font-weight="400" fill="#18324A"><tspan x="211.0" dy="0">验证台风分组历史误差校准</tspan><tspan x="211.0" dy="1.35em">split-conformal 位置半径</tspan><tspan x="211.0" dy="1.35em">目标覆盖率 90% · 结果解释</tspan></text>
+<path d="M196 122 V86" fill="none" stroke="#7655A7" stroke-width="0.7" stroke-dasharray="3 2" marker-end="url(#arrow)"/>
+<text x="148.5" y="171.0" text-anchor="middle" font-size="8.5pt" font-weight="400" fill="#547084"><tspan x="148.5" dy="0">支撑信息不改变在线输入契约：ERA5 用于环境背景/离线实验，历史校准用于不确定性范围显示。</tspan></text>
+<rect x="20" y="181" width="257" height="15" rx="2" fill="#FFFFFF" stroke="#D7E3EC" stroke-width="0.5"/>
+<text x="148.5" y="190.0" text-anchor="middle" font-size="10.5pt" font-weight="700" fill="#18324A"><tspan x="148.5" dy="0">核心输出：未来 6、12、18、24、30、36 小时台风路径、风速及历史校准范围</tspan></text>
+</svg>

@@ -10,6 +10,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
+try:
+    from ml.features.local_motion import FEATURE_NAMES, TARGET_NAMES
+except ModuleNotFoundError:  # Support `python ml/data_audit.py` from the project root.
+    from features.local_motion import FEATURE_NAMES, TARGET_NAMES
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 FIELDS = ("time", "lng", "lat", "speed", "power", "pressure", "move_dir", "move_speed", "radius7", "radius10")
@@ -254,8 +259,10 @@ def audit(data_root: Path, seed: int) -> Dict[str, Any]:
         },
         "preprocessing_policy": {
             "input_steps": 4,
-            "input_features": ["lng", "lat", "speed", "power", "delta_lng", "delta_lat"],
+            "input_features": list(FEATURE_NAMES),
+            "coordinate_system": "local_motion_v1",
             "target_steps": 6,
+            "target_features": list(TARGET_NAMES),
             "target_interval_hours": 6,
             "normalization": "fit on training storms only",
             "time_resampling": "not applied by this audit command",

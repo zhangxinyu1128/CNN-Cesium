@@ -11,8 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 
 from .schemas import (
-    AssistantAnswer,
-    AssistantQueryRequest,
+    AssistantRequest,
+    AssistantResponse,
     HealthResponse,
     ExportSettings,
     PredictionRequest,
@@ -24,14 +24,17 @@ from .schemas import (
 from .services.data import DataRepository
 from .services.era5 import Era5Repository
 from .services.model import ModelService
-from .services.knowledge import AssistantService
-from .services.llm import DeepSeekClient
+from .services.assistant import answer_question
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.getenv("TC_DATA_ROOT", str(PROJECT_ROOT / "data")))
+DEFAULT_CHECKPOINT_PATH = PROJECT_ROOT / "artifacts" / "checkpoints" / "track_cnn_physics_multiscale.pth"
 CHECKPOINT_PATH = Path(
-    os.getenv("TC_MODEL_PATH", str(PROJECT_ROOT / "artifacts" / "checkpoints" / "track_cnn_baseline.pth"))
+    os.getenv(
+        "TC_MODEL_PATH",
+        str(DEFAULT_CHECKPOINT_PATH),
+    )
 )
 MODEL_VERSION = os.getenv("TC_MODEL_VERSION") or None
 ERA5_ROOT = Path(os.getenv("TC_ERA5_ROOT", str(PROJECT_ROOT / "artifacts" / "era5")))
@@ -48,10 +51,22 @@ OFFICIAL_COMPARISON_PATH = (
     / "official_comparison"
     / "official_comparison.json"
 )
-PREDICTION_UNCERTAINTY_PATH = Path(os.getenv(
-    "TC_PREDICTION_UNCERTAINTY_PATH",
-    str(PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261008.json"),
-))
+FAIR_TRAJECTORY_COMPARISON_PATH = (
+    PROJECT_ROOT
+    / "artifacts"
+    / "multiscale"
+    / "runs"
+    / "20261019T031709Z"
+    / "fair_comparison_914.json"
+)
+DEFAULT_UNCERTAINTY_PATH = (
+    PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_multiscale_physics_2028.json"
+    if CHECKPOINT_PATH.resolve() == DEFAULT_CHECKPOINT_PATH.resolve()
+    else PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261008.json"
+)
+PREDICTION_UNCERTAINTY_PATH = Path(
+    os.getenv("TC_PREDICTION_UNCERTAINTY_PATH", str(DEFAULT_UNCERTAINTY_PATH))
+)
 JOINT_UNCERTAINTY_PATH = Path(os.getenv(
     "TC_JOINT_UNCERTAINTY_PATH",
     str(PROJECT_ROOT / "artifacts" / "reports" / "stage4_extensions_20261008.json"),
@@ -69,8 +84,6 @@ model_service = ModelService(
     PREDICTION_UNCERTAINTY_PATH,
     JOINT_UNCERTAINTY_PATH,
 )
-assistant_service = AssistantService(PROJECT_ROOT / "backend/app/knowledge/cards.json")
-deepseek_client = DeepSeekClient()
 
 app = FastAPI(
     title="Tropical Cyclone Intelligence API",
@@ -107,6 +120,12 @@ def health() -> dict:
         "data": data,
         "model": model,
     }
+
+
+@app.post("/api/assistant/ask", response_model=AssistantResponse)
+def ask_assistant(request: AssistantRequest) -> dict:
+    """Answer a project question using local evidence and optional DeepSeek wording."""
+    return answer_question(request.question, request.context)
 
 
 @app.get("/api/export-settings", response_model=ExportSettings)
@@ -363,25 +382,177 @@ def _track_uncertainty_summary() -> Dict[str, Any]:
         return {"status": "unavailable", "reason": "在线轨迹 CNN 的历史校准文件不存在"}
     calibration = raw.get("calibration", {})
     evaluation = raw.get("evaluation", {})
+    by_horizon = evaluation.get("by_horizon", [])
+    if not by_horizon:
+        radii = calibration.get("location_radius_km", [])
+        ellipses = calibration.get("location_ellipse_90", [])
+        by_horizon = [
+            {
+                "lead_hours": (index + 1) * 6,
+                "location_radius_90_km": radius,
+                **({"ellipse_90": ellipses[index]} if index < len(ellipses) else {}),
+            }
+            for index, radius in enumerate(radii)
+            if isinstance(radius, (int, float)) and math.isfinite(radius) and radius > 0
+        ]
     return {
         "status": "ready",
-        "model_key": "track_only",
+        "model_key": "innovation_physics_multiscale"
+        if raw.get("model_type") == "multiscale_residual"
+        or str(raw.get("model_version", "")).startswith("multiscale-")
+        else "track_only",
         "model_version": raw.get("model_version"),
         "method": calibration.get("method"),
         "target_coverage": calibration.get("target_coverage"),
         "calibration_storms": calibration.get("storm_count"),
         "evaluation_storms": evaluation.get("storm_count"),
         "evaluation_windows": evaluation.get("window_count"),
-        "by_horizon": evaluation.get("by_horizon", []),
+        "by_horizon": by_horizon,
         "source": str(PREDICTION_UNCERTAINTY_PATH),
         "interpretation": raw.get("interpretation"),
+    }
+
+
+def _fair_trajectory_summary() -> Dict[str, Any]:
+    raw = _read_json(FAIR_TRAJECTORY_COMPARISON_PATH)
+    raw_models = raw.get("models", {})
+    if not raw_models:
+        return {
+            "status": "unavailable",
+            "reason": "局地运动模型的公平测试结果文件不存在",
+            "models": [],
+        }
+
+    specifications = (
+        ("track_cnn_baseline", "Track CNN 基线", "baseline", "地理坐标轨迹特征", ("track_cnn_baseline",)),
+        ("track_cnn_residual", "Residual CNN", "residual", "地理坐标轨迹特征 + 残差预测", ("track_cnn_residual",)),
+        (
+            "multiscale_local_motion",
+            "局地运动 + 多尺度 CNN",
+            "multiscale",
+            "72 小时局地东-北运动特征 + 多尺度因果残差卷积",
+            tuple("multiscale-seed-{}".format(seed) for seed in (2026, 2027, 2028)),
+        ),
+        (
+            "innovation_physics_multiscale",
+            "创新方案：局地运动 + 多尺度 + 物理约束",
+            "innovation",
+            "72 小时局地东-北运动特征 + 多尺度因果残差 CNN + 物理约束损失",
+            tuple("physics-seed-{}".format(seed) for seed in (2026, 2027, 2028)),
+        ),
+    )
+    metric_fields = (
+        "path_mae_km",
+        "path_rmse_km",
+        "path_median_km",
+        "wind_mae_ms",
+        "wind_rmse_ms",
+        "longitude_mae_deg",
+        "latitude_mae_deg",
+    )
+    models: List[Dict[str, Any]] = []
+    for key, name, kind, feature_set, source_keys in specifications:
+        runs = [raw_models[source_key] for source_key in source_keys if isinstance(raw_models.get(source_key), dict)]
+        if not runs:
+            continue
+        horizon_rows = [
+            {
+                int(item["lead_hours"]): item
+                for item in run.get("by_horizon", [])
+                if isinstance(item, dict) and isinstance(item.get("lead_hours"), int)
+            }
+            for run in runs
+        ]
+        common_horizons = sorted(set.intersection(*(set(rows) for rows in horizon_rows))) if horizon_rows else []
+        by_horizon: List[Dict[str, Any]] = []
+        for lead_hours in common_horizons:
+            output: Dict[str, Any] = {"lead_hours": lead_hours}
+            for field in metric_fields:
+                values = [
+                    float(rows[lead_hours][field])
+                    for rows in horizon_rows
+                    if isinstance(rows[lead_hours].get(field), (int, float))
+                    and math.isfinite(float(rows[lead_hours][field]))
+                ]
+                if values:
+                    summary = _mean_and_std(values)
+                    output[field] = summary["mean"]
+                    if len(values) > 1:
+                        output["{}_std".format(field)] = summary["std"]
+            output["run_count"] = len(runs)
+            by_horizon.append(output)
+        if not by_horizon:
+            continue
+        seeds = [int(source_key.rsplit("-", 1)[-1]) for source_key in source_keys if source_key in raw_models and "-seed-" in source_key]
+        models.append({
+            "key": key,
+            "name": name,
+            "kind": kind,
+            "feature_set": feature_set,
+            "seed_count": len(runs),
+            "seeds": seeds,
+            "sample_count": min(
+                int(run.get("sample_count", raw.get("sample_count", 0)) or 0)
+                for run in runs
+            ),
+            "by_horizon": by_horizon,
+        })
+
+    bootstrap = raw.get("paired_storm_bootstrap", {})
+    bootstrap_comparisons = bootstrap.get("comparisons", {})
+
+    def comparison_points(key: str) -> List[Dict[str, Any]]:
+        points: List[Dict[str, Any]] = []
+        for item in bootstrap_comparisons.get(key, []):
+            if not isinstance(item, dict):
+                continue
+            interval = item.get("paired_storm_bootstrap_95ci_km")
+            difference = item.get("candidate_minus_reference_mae_km")
+            if (
+                not isinstance(interval, list)
+                or len(interval) != 2
+                or not isinstance(difference, (int, float))
+            ):
+                continue
+            points.append({
+                "lead_hours": item.get("lead_hours"),
+                "candidate_minus_reference_mae_km": float(difference),
+                "paired_storm_bootstrap_95ci_km": [float(interval[0]), float(interval[1])],
+                "bootstrap_probability_of_improvement": item.get("bootstrap_probability_of_improvement"),
+                "statistically_lower_at_95pct": bool(item.get("statistically_lower_at_95pct")),
+            })
+        return points
+
+    status = model_service.status()
+    return {
+        "status": "ready" if models else "unavailable",
+        "reason": None if models else "公平测试结果中没有可用的模型指标",
+        "source": str(FAIR_TRAJECTORY_COMPARISON_PATH),
+        "dataset": raw.get("dataset"),
+        "sample_count": raw.get("sample_count"),
+        "storm_count": raw.get("storm_count"),
+        "models": models,
+        "online_model_version": status.get("model_version"),
+        "statistics": {
+            "method": bootstrap.get("method"),
+            "resamples": bootstrap.get("resamples"),
+            "confidence_level": bootstrap.get("confidence_level"),
+            "innovation_vs_track_cnn_baseline": comparison_points("physics_three_seed_mean_vs_track_cnn_baseline"),
+            "innovation_vs_track_cnn_residual": comparison_points("physics_three_seed_mean_vs_track_cnn_residual"),
+        },
+        "limitations": [
+            "各轨迹模型在同一份冻结测试窗口上评估；创新方案使用 72 小时历史输入，旧模型沿用原地理坐标输入。",
+            "创新方案指标为 2026、2027、2028 三个训练种子的均值 ± 标准差；在线服务当前使用 seed 2028 权重。",
+            "相较旧 Track CNN 的改善不能单独归因于物理损失或多尺度卷积；相较 Residual CNN 的差异需要按时效解读。",
+        ],
     }
 
 
 def _experiment_summary() -> Dict[str, Any]:
     metrics = _read_json(EXPERIMENT_METRICS_PATH)
     all_runs = _experiment_runs("ablation_layers") + _experiment_runs("ablation")
-    if not metrics and not all_runs:
+    trajectory_comparison = _fair_trajectory_summary()
+    if not metrics and not all_runs and trajectory_comparison.get("status") != "ready":
         return {"status": "unavailable", "reason": "experiment metrics file not found", "models": []}
 
     models: List[Dict[str, Any]] = []
@@ -455,7 +626,7 @@ def _experiment_summary() -> Dict[str, Any]:
         "当前保存的指标没有 ADE/FDE、强台风/转向/登陆分组结果，因此界面不展示这些未验证字段。",
         "当前实验只覆盖 6/12/18/24/30/36 小时；没有 48/72 小时实验结果。",
         "JTWC 官方预报对比当前仅覆盖 2025 年和 12/24/36 小时；模型与官方结果只能在同一批配对样本上比较，不能外推为多年结论。",
-        "当前没有独立的物理约束消融结果；残差 CNN 中的匀速运动先验不作为单独实验行展示。",
+        "局地运动多尺度模型使用 914 个窗口/73 个台风的独立冻结测试集，与 ERA5 消融实验的 1661 个窗口分开展示。",
     ])
     unique_limitations = list(dict.fromkeys(limitations))
     return {
@@ -489,9 +660,11 @@ def _experiment_summary() -> Dict[str, Any]:
             "track_points": manifest.get("coverage", {}).get("point_count"),
             "fingerprint_sha256": source.get("fingerprint_sha256", reference_metrics.get("dataset_fingerprint_sha256")),
         },
+        "trajectory_comparison": trajectory_comparison,
         "physics_constraint": {
-            "status": "unavailable",
-            "reason": "没有独立物理约束实验结果，未加入模型对比图",
+            "status": trajectory_comparison.get("status", "unavailable"),
+            "reason": trajectory_comparison.get("reason"),
+            "source": trajectory_comparison.get("source"),
         },
         "limitations": unique_limitations,
     }
@@ -535,59 +708,6 @@ def predict(request: PredictionRequest) -> dict:
     except RuntimeError as error:
         raise HTTPException(status_code=503, detail=str(error)) from error
     return {**result, "typhoon_id": request.typhoon_id}
-
-
-SYSTEM_PROMPT = (
-    "你是一个专业气象助手，必须严格基于提供的知识卡片回答。"
-    "如果卡片中没有相关信息，请直接回复\"知识库中暂未收录该信息\"，"
-    "绝对不允许使用你自己的先验知识进行推测。"
-)
-
-
-def _assistant_llm_answer(request: AssistantQueryRequest) -> dict:
-    ret = assistant_service.retrieve(request.query, request.context)
-    
-
-    user_parts = []
-    if ret["cards"]:
-        user_parts.append("知识卡片：")
-        for card in ret["cards"]:
-            source_paths = [
-                str(source.get("path", ""))
-                for source in card.get("sources", [])
-                if isinstance(source, dict) and source.get("path") is not None
-            ]
-            line = f"- [{card.get('id')}] {card.get('title')}：{card.get('answer')}"
-            if source_paths:
-                line += f"（来源：{'、'.join(source_paths)}）"
-            user_parts.append(line)
-    if ret["context_summary"]:
-        user_parts.append("实时上下文：" + ret["context_summary"])
-    user_parts.append("用户问题：" + request.query)
-
-    answer = deepseek_client.chat([
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": "\n".join(user_parts)},
-    ])
-
-    matched_card_ids = [str(card.get("id")) for card in ret["cards"] if card.get("id") is not None]
-    return {
-        "answer": answer,
-        "status": "matched",
-        "sources": ret["sources"],
-        "matched_card_ids": matched_card_ids,
-        "caveats": ret["caveats"],
-    }
-
-
-@app.post("/api/assistant/query", response_model=AssistantAnswer)
-def assistant_query(request: AssistantQueryRequest) -> dict:
-    if not deepseek_client.enabled:
-        return assistant_service.query(request.query, request.context)
-    try:
-        return _assistant_llm_answer(request)
-    except Exception:
-        return assistant_service.query(request.query, request.context)
 
 
 if __name__ == "__main__":

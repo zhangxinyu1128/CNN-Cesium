@@ -17,22 +17,77 @@
     </script>
     <style>
       /* The main page embeds this legacy screen below its own title. */
-      html.main-screen-embedded .layout-main .list-panel .widget-panel {
-        top: 10vh !important;
+      html.main-screen-embedded .layout .layout-footer {
+        display: none !important;
+      }
+
+      html.main-screen-embedded .layout-main .widget-panel:has(.list-panel) {
+        top: 4px !important;
         left: 4px !important;
-        width: min(20vw, 420px) !important;
-        height: min(60vh, 700px) !important;
+        width: min(18vw, 400px) !important;
+        height: calc(68vh - 4px) !important;
+        bottom: auto !important;
         transform: none !important;
         transform-origin: top left;
       }
 
-      html.main-screen-embedded .layout-main .list-panel .widget-panel .widget-panel-main {
-        max-height: calc(100% - 35px) !important;
+      html.main-screen-embedded .layout-main .widget-panel:has(.list-panel) .widget-panel-main {
+        height: calc(100% - 35px) !important;
+        max-height: none !important;
         overflow: hidden;
       }
 
-      html.main-screen-embedded .layout-main .list-panel .el-table {
-        height: min(42vh, 500px) !important;
+      html.main-screen-embedded .layout-main .widget-panel:has(.list-panel) .el-table {
+        height: 100% !important;
+      }
+
+      html.main-screen-embedded .layout-main .widget-panel:has(#map-container) {
+        top: auto !important;
+        bottom: 4px !important;
+        left: 4px !important;
+        width: min(18vw, 400px) !important;
+        height: calc(32vh - 4px) !important;
+      }
+
+      html.main-screen-embedded .layout-main .widget-panel:has(#map-container) .widget-panel-main {
+        height: calc(100% - 35px) !important;
+      }
+
+      /* The template demo charts are placeholders; real curves live in the analysis panel. */
+      html.main-screen-embedded .layout-main .widget-panel[style*="top: 15vh"],
+      html.main-screen-embedded .layout-main .widget-panel[style*="top: 48vh"] {
+        display: none !important;
+      }
+
+      /* The intensity legend is rendered in the history table header instead. */
+      html.main-screen-embedded .typhoon-legend {
+        display: none !important;
+      }
+
+      /* The embedded screen is read from a distance; enlarge the typhoon list text. */
+      html.main-screen-embedded .widget-panel-title {
+        font-size: 21px !important;
+      }
+
+      html.main-screen-embedded .el-table {
+        font-size: 16px !important;
+      }
+
+      html.main-screen-embedded .el-table th.el-table__cell,
+      html.main-screen-embedded .el-table td.el-table__cell {
+        font-size: 16px !important;
+      }
+
+      html.main-screen-embedded .el-table .cell {
+        line-height: 24px !important;
+      }
+
+      html.main-screen-embedded .widget-panel .el-select__wrapper {
+        font-size: 15px !important;
+      }
+
+      html.main-screen-embedded .el-select-dropdown__item {
+        font-size: 15px !important;
       }
     </style>
     <script>

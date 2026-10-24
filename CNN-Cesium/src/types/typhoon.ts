@@ -73,6 +73,8 @@ export interface PredictionPoint {
   speed_ms: number | null
   p05: { lng: number; lat: number } | null
   p95: { lng: number; lat: number } | null
+  p10?: { lng: number; lat: number } | null
+  p90?: { lng: number; lat: number } | null
   location_radius_90_km?: number | null
   uncertainty_region?: PredictionRegion | null
   speed_interval_source?: PredictionSpeedInterval | null
@@ -80,6 +82,8 @@ export interface PredictionPoint {
 
 export interface PredictionResponse {
   model_version: string
+  model_type?: string | null
+  coordinate_system?: string | null
   generated_at: string
   typhoon_id: string | null
   input_window: number
@@ -115,6 +119,9 @@ export interface HealthResponse {
     size_bytes: number
     model_version: string | null
     model_type: string | null
+    coordinate_system: string | null
+    input_steps: number | null
+    history_points: number | null
     device: string | null
     checkpoint_sha256: string | null
     reason: string | null
@@ -173,6 +180,33 @@ export interface ExperimentModelSummary {
   by_horizon: ExperimentMetricPoint[]
 }
 
+export interface ExperimentBootstrapPoint {
+  lead_hours: number
+  candidate_minus_reference_mae_km: number
+  paired_storm_bootstrap_95ci_km: [number, number]
+  bootstrap_probability_of_improvement?: number
+  statistically_lower_at_95pct: boolean
+}
+
+export interface TrajectoryComparisonSummary {
+  status: string
+  reason?: string | null
+  source?: string
+  dataset?: string
+  sample_count?: number
+  storm_count?: number
+  online_model_version?: string | null
+  models: ExperimentModelSummary[]
+  statistics?: {
+    method?: string
+    resamples?: number
+    confidence_level?: number
+    innovation_vs_track_cnn_baseline?: ExperimentBootstrapPoint[]
+    innovation_vs_track_cnn_residual?: ExperimentBootstrapPoint[]
+  }
+  limitations?: string[]
+}
+
 export interface ExperimentSummary {
   status: string
   source?: string
@@ -183,8 +217,10 @@ export interface ExperimentSummary {
   available_horizons?: number[]
   levels_hpa?: number[]
   models: ExperimentModelSummary[]
+  trajectory_comparison?: TrajectoryComparisonSummary
   uncertainty: {
     status: string
+    reason?: string
     model_key?: string
     model_version?: string
     method?: string
@@ -196,20 +232,20 @@ export interface ExperimentSummary {
     interpretation?: string
     by_horizon?: Array<{
       lead_hours: number
-      location_coverage_90: number
-      location_radius_90_km: number
-      joint_coverage_90: number
+      location_coverage_90?: number
+      location_radius_90_km?: number
+      joint_coverage_90?: number
       location_storm_coverage_90?: number
       median_error_km?: number
       ellipse_90?: {
         geometry: string
-        location_coverage_90: number
-        location_storm_coverage_90: number
-        semi_major_axis_km: number
-        semi_minor_axis_km: number
-        bearing_deg: number
-        area_km2: number
-        mean_error_km: number
+        location_coverage_90?: number
+        location_storm_coverage_90?: number
+        semi_major_axis_km?: number
+        semi_minor_axis_km?: number
+        bearing_deg?: number
+        area_km2?: number
+        mean_error_km?: number
       }
       energy_score_km?: number
     }>
@@ -263,41 +299,7 @@ export interface ExperimentSummary {
   physics_constraint?: {
     status: string
     reason?: string
+    source?: string
   }
   limitations?: string[]
-}
-
-export interface AssistantContext {
-  typhoon_id?: string
-  typhoon_name?: string
-  lead_hours?: number
-  forecast_position?: { lng?: number; lat?: number }
-  speed_ms?: number
-  location_radius_90_km?: number
-  uncertainty_region?: {
-    semi_major_axis_km?: number
-    semi_minor_axis_km?: number
-    coverage?: number
-  }
-  era5?: {
-    level?: number
-    u?: number
-    v?: number
-    speed_ms?: number
-    direction_deg?: number
-    shear?: number
-  }
-}
-
-export interface AssistantSource {
-  path: string
-  section?: string
-}
-
-export interface AssistantAnswer {
-  answer: string
-  status: 'matched' | 'dynamic' | 'fallback'
-  sources: AssistantSource[]
-  matched_card_ids: string[]
-  caveats: string[]
 }

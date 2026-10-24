@@ -5,6 +5,7 @@ backend/.pytest_cache/
 artifacts/runs/
 data/processed/*.jsonl
 data/processed/*.tmp
+data/processed_12/*.jsonl
 data/era5/
 ERA5data/*.grib
 ERA5data/**/*.grib

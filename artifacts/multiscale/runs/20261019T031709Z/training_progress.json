@@ -1,0 +1,9 @@
+{
+  "status": "training",
+  "variant": "quantile",
+  "seed": 2028,
+  "epoch": 30,
+  "epochs": 40,
+  "best_validation_loss": 0.12525682151317596,
+  "stale_epochs": 6
+}

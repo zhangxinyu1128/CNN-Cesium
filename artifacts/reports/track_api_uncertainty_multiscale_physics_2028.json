@@ -1,0 +1,20 @@
+{
+  "model_version": "multiscale-residual-physics-12step-seed2028-v1",
+  "checkpoint_sha256": "981de8f07a95ee683bacb60a7b69c10feeb9e80750a038bab3d46552504b8f10",
+  "dataset_fingerprint_sha256": "bf0d81871daf8c7b82824314aff36288359aad752867589334c474109c97c0ee",
+  "calibration": {
+    "method": "storm-max split conformal radius calibrated on validation storms",
+    "target_coverage": 0.9,
+    "storm_count": 22,
+    "location_radius_km": [
+      153.36158137343907,
+      275.0294876822982,
+      452.670444605174,
+      653.9485649016274,
+      875.5200940357416,
+      1146.4340759187953
+    ],
+    "location_ellipse_90": []
+  },
+  "interpretation": "Validation-storm split conformal location radii for the 12-step physics-constrained multi-scale checkpoint. Historical coverage is not a real-time forecast guarantee or disaster probability."
+}

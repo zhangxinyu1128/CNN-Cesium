@@ -1,0 +1,984 @@
+{
+  "experiment": "12-step local-motion multi-scale residual CNN",
+  "status": "experimental_offline_holdout",
+  "online_model_changed": false,
+  "dataset_fingerprint_sha256": "bf0d81871daf8c7b82824314aff36288359aad752867589334c474109c97c0ee",
+  "split_file_sha256": "5cade578626b043132d7e35015bfc0b593e8f98db2debd4e9f7ed73961e3fb09",
+  "split_counts": {
+    "train": 22013,
+    "validation": 475,
+    "test": 914
+  },
+  "input_steps": 12,
+  "history_hours": 72,
+  "target_leads_hours": [
+    6,
+    12,
+    18,
+    24,
+    30,
+    36
+  ],
+  "device": "cuda",
+  "runs": [
+    {
+      "variant": "multiscale",
+      "seed": 2026,
+      "best_validation_loss": 0.16896268725395203,
+      "epochs_trained": 26,
+      "parameter_count": 50659,
+      "train_wall_seconds": 30.873739499999996,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 43.300712280449964,
+            "path_rmse_km": 52.84912293858478
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 83.84095212603425,
+            "path_rmse_km": 101.4867016438144
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 131.49271193218877,
+            "path_rmse_km": 159.61540111306832
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 185.24811389567614,
+            "path_rmse_km": 225.1462868226761
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 246.5001698078148,
+            "path_rmse_km": 296.52437424085576
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 315.78335581618626,
+            "path_rmse_km": 378.7572739186609
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 236,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 123.9020756842263,
+            "window_coverage": 0.9792122538293216,
+            "storm_coverage": 0.8082191780821918,
+            "mean_band_width_km": 247.8041513684526
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 216.86820541084018,
+            "window_coverage": 0.9693654266958425,
+            "storm_coverage": 0.7808219178082192,
+            "mean_band_width_km": 433.73641082168035
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 406.8926484125899,
+            "window_coverage": 0.9835886214442013,
+            "storm_coverage": 0.8767123287671232,
+            "mean_band_width_km": 813.7852968251798
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 561.5510670825196,
+            "window_coverage": 0.9857768052516411,
+            "storm_coverage": 0.8767123287671232,
+            "mean_band_width_km": 1123.1021341650392
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 945.2525236768867,
+            "window_coverage": 0.9956236323851203,
+            "storm_coverage": 0.9726027397260274,
+            "mean_band_width_km": 1890.5050473537733
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 1196.5736817398167,
+            "window_coverage": 0.9967177242888403,
+            "storm_coverage": 0.9726027397260274,
+            "mean_band_width_km": 2393.1473634796334
+          }
+        ]
+      },
+      "direct_quantile_coverage": null,
+      "inference_latency_ms_per_sample": 2.5821649999999607,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\multiscale-seed-2026.pth"
+    },
+    {
+      "variant": "multiscale",
+      "seed": 2027,
+      "best_validation_loss": 0.16417451202869415,
+      "epochs_trained": 23,
+      "parameter_count": 50659,
+      "train_wall_seconds": 38.5970283,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 42.655562192510615,
+            "path_rmse_km": 52.53787763700798
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 82.47717022841907,
+            "path_rmse_km": 100.83164030586957
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 130.8611917380102,
+            "path_rmse_km": 159.27334096728202
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 183.95404003855361,
+            "path_rmse_km": 223.29891648146832
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 244.73591739833284,
+            "path_rmse_km": 294.74280513529783
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 313.3683518940281,
+            "path_rmse_km": 375.7862811259497
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 166,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 124.40347353111812,
+            "window_coverage": 0.975929978118162,
+            "storm_coverage": 0.8082191780821918,
+            "mean_band_width_km": 248.80694706223625
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 214.088044607934,
+            "window_coverage": 0.9649890590809628,
+            "storm_coverage": 0.7534246575342466,
+            "mean_band_width_km": 428.176089215868
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 411.5622714803305,
+            "window_coverage": 0.9824945295404814,
+            "storm_coverage": 0.8767123287671232,
+            "mean_band_width_km": 823.124542960661
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 558.8514237387362,
+            "window_coverage": 0.9803063457330415,
+            "storm_coverage": 0.8493150684931506,
+            "mean_band_width_km": 1117.7028474774725
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 672.1686213410854,
+            "window_coverage": 0.9748358862144421,
+            "storm_coverage": 0.821917808219178,
+            "mean_band_width_km": 1344.3372426821709
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 846.0153344964828,
+            "window_coverage": 0.9715536105032823,
+            "storm_coverage": 0.821917808219178,
+            "mean_band_width_km": 1692.0306689929655
+          }
+        ]
+      },
+      "direct_quantile_coverage": null,
+      "inference_latency_ms_per_sample": 8.985500000000002,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\multiscale-seed-2027.pth"
+    },
+    {
+      "variant": "multiscale",
+      "seed": 2028,
+      "best_validation_loss": 0.11845944076776505,
+      "epochs_trained": 37,
+      "parameter_count": 50659,
+      "train_wall_seconds": 33.5302427,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 41.86525699643323,
+            "path_rmse_km": 51.45681418771113
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 81.79200595289025,
+            "path_rmse_km": 99.72617235892616
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 130.49530788275314,
+            "path_rmse_km": 158.1408648269953
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 185.2143214614565,
+            "path_rmse_km": 223.3430166151714
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 245.10910650700063,
+            "path_rmse_km": 294.00559666942155
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 314.39224080621307,
+            "path_rmse_km": 375.58072771295605
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 234,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 161.3565318061504,
+            "window_coverage": 0.9923413566739606,
+            "storm_coverage": 0.9178082191780822,
+            "mean_band_width_km": 322.7130636123008
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 253.55479320094304,
+            "window_coverage": 0.9824945295404814,
+            "storm_coverage": 0.863013698630137,
+            "mean_band_width_km": 507.1095864018861
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 439.3604794903241,
+            "window_coverage": 0.9934354485776805,
+            "storm_coverage": 0.9315068493150684,
+            "mean_band_width_km": 878.7209589806482
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 715.87243400968,
+            "window_coverage": 0.9956236323851203,
+            "storm_coverage": 0.958904109589041,
+            "mean_band_width_km": 1431.74486801936
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 859.2714236236022,
+            "window_coverage": 0.9945295404814004,
+            "storm_coverage": 0.958904109589041,
+            "mean_band_width_km": 1718.5428472472045
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 1156.3186006531764,
+            "window_coverage": 0.9967177242888403,
+            "storm_coverage": 0.9726027397260274,
+            "mean_band_width_km": 2312.637201306353
+          }
+        ]
+      },
+      "direct_quantile_coverage": null,
+      "inference_latency_ms_per_sample": 2.7006280000000515,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\multiscale-seed-2028.pth"
+    },
+    {
+      "variant": "physics",
+      "seed": 2026,
+      "best_validation_loss": 0.17202439904212952,
+      "epochs_trained": 40,
+      "parameter_count": 50659,
+      "train_wall_seconds": 26.986852000000013,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 42.07121026965661,
+            "path_rmse_km": 51.61002927242088
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 82.1639882726543,
+            "path_rmse_km": 99.73359590071227
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 129.4098715253481,
+            "path_rmse_km": 156.88649956470965
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 183.0496692580326,
+            "path_rmse_km": 221.56038574696626
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 244.3988785244437,
+            "path_rmse_km": 293.26428838425346
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 313.7362285309482,
+            "path_rmse_km": 374.91679695983606
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 236,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 129.01419524130517,
+            "window_coverage": 0.9803063457330415,
+            "storm_coverage": 0.8356164383561644,
+            "mean_band_width_km": 258.02839048261035
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 207.6656704638364,
+            "window_coverage": 0.9649890590809628,
+            "storm_coverage": 0.726027397260274,
+            "mean_band_width_km": 415.3313409276728
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 436.22765944564156,
+            "window_coverage": 0.9901531728665208,
+            "storm_coverage": 0.9178082191780822,
+            "mean_band_width_km": 872.4553188912831
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 579.8024871359132,
+            "window_coverage": 0.9879649890590809,
+            "storm_coverage": 0.9041095890410958,
+            "mean_band_width_km": 1159.6049742718264
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 941.4282592675436,
+            "window_coverage": 0.9956236323851203,
+            "storm_coverage": 0.958904109589041,
+            "mean_band_width_km": 1882.8565185350872
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 1206.9513762295323,
+            "window_coverage": 0.9978118161925602,
+            "storm_coverage": 0.9863013698630136,
+            "mean_band_width_km": 2413.9027524590647
+          }
+        ]
+      },
+      "direct_quantile_coverage": null,
+      "inference_latency_ms_per_sample": 3.673966000000064,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\physics-seed-2026.pth"
+    },
+    {
+      "variant": "physics",
+      "seed": 2027,
+      "best_validation_loss": 0.17292892932891846,
+      "epochs_trained": 23,
+      "parameter_count": 50659,
+      "train_wall_seconds": 15.503330500000004,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 42.24796715204337,
+            "path_rmse_km": 52.17820763975434
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 82.5021562939037,
+            "path_rmse_km": 100.82909712916427
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 130.69254268166753,
+            "path_rmse_km": 159.1860657105995
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 183.83990065750663,
+            "path_rmse_km": 223.3686168302565
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 244.872767907112,
+            "path_rmse_km": 294.633328360618
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 314.27675999920586,
+            "path_rmse_km": 376.765657906184
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 166,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 116.80066601834345,
+            "window_coverage": 0.9748358862144421,
+            "storm_coverage": 0.7945205479452054,
+            "mean_band_width_km": 233.6013320366869
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 217.03345420700552,
+            "window_coverage": 0.9693654266958425,
+            "storm_coverage": 0.7671232876712328,
+            "mean_band_width_km": 434.06690841401104
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 412.8072275202545,
+            "window_coverage": 0.986870897155361,
+            "storm_coverage": 0.9041095890410958,
+            "mean_band_width_km": 825.614455040509
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 552.73996336522,
+            "window_coverage": 0.9814004376367614,
+            "storm_coverage": 0.863013698630137,
+            "mean_band_width_km": 1105.47992673044
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 666.1229424153858,
+            "window_coverage": 0.9748358862144421,
+            "storm_coverage": 0.821917808219178,
+            "mean_band_width_km": 1332.2458848307715
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 833.3615608919478,
+            "window_coverage": 0.9715536105032823,
+            "storm_coverage": 0.821917808219178,
+            "mean_band_width_km": 1666.7231217838955
+          }
+        ]
+      },
+      "direct_quantile_coverage": null,
+      "inference_latency_ms_per_sample": 3.1860919999999737,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\physics-seed-2027.pth"
+    },
+    {
+      "variant": "physics",
+      "seed": 2028,
+      "best_validation_loss": 0.12697623670101166,
+      "epochs_trained": 40,
+      "parameter_count": 50659,
+      "train_wall_seconds": 26.811660400000022,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 41.76168152192279,
+            "path_rmse_km": 51.46704355470139
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 82.3720886605145,
+            "path_rmse_km": 100.1214156269613
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 130.58127545086472,
+            "path_rmse_km": 158.46291595533557
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 185.18086998879207,
+            "path_rmse_km": 224.1366756375077
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 246.05136589848283,
+            "path_rmse_km": 295.8843721071423
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 315.55897649641423,
+            "path_rmse_km": 377.8497989510215
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 234,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 153.36158137343907,
+            "window_coverage": 0.9890590809628009,
+            "storm_coverage": 0.8767123287671232,
+            "mean_band_width_km": 306.72316274687813
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 275.0294876822982,
+            "window_coverage": 0.9846827133479212,
+            "storm_coverage": 0.863013698630137,
+            "mean_band_width_km": 550.0589753645964
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 452.670444605174,
+            "window_coverage": 0.9934354485776805,
+            "storm_coverage": 0.9315068493150684,
+            "mean_band_width_km": 905.340889210348
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 653.9485649016274,
+            "window_coverage": 0.9934354485776805,
+            "storm_coverage": 0.9452054794520548,
+            "mean_band_width_km": 1307.8971298032548
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 875.5200940357416,
+            "window_coverage": 0.9934354485776805,
+            "storm_coverage": 0.9452054794520548,
+            "mean_band_width_km": 1751.0401880714833
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 1146.4340759187953,
+            "window_coverage": 0.9967177242888403,
+            "storm_coverage": 0.9726027397260274,
+            "mean_band_width_km": 2292.8681518375906
+          }
+        ]
+      },
+      "direct_quantile_coverage": null,
+      "inference_latency_ms_per_sample": 3.220440999999994,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\physics-seed-2028.pth"
+    },
+    {
+      "variant": "quantile",
+      "seed": 2026,
+      "best_validation_loss": 0.15101909637451172,
+      "epochs_trained": 28,
+      "parameter_count": 51835,
+      "train_wall_seconds": 23.434733300000005,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 42.08576827101147,
+            "path_rmse_km": 51.75299170806103
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 83.66377167138947,
+            "path_rmse_km": 101.65651365840677
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 132.2603464984111,
+            "path_rmse_km": 160.57367625257692
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 187.84954546960748,
+            "path_rmse_km": 227.06638839934303
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 249.45042142469322,
+            "path_rmse_km": 300.547814227661
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 318.31083451432835,
+            "path_rmse_km": 381.75984234105704
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 236,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 128.9489049746378,
+            "window_coverage": 0.9824945295404814,
+            "storm_coverage": 0.8356164383561644,
+            "mean_band_width_km": 257.8978099492756
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 231.55538087672787,
+            "window_coverage": 0.9726477024070022,
+            "storm_coverage": 0.8082191780821918,
+            "mean_band_width_km": 463.11076175345573
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 442.6849094037895,
+            "window_coverage": 0.9912472647702407,
+            "storm_coverage": 0.9041095890410958,
+            "mean_band_width_km": 885.369818807579
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 652.9180971359709,
+            "window_coverage": 0.9956236323851203,
+            "storm_coverage": 0.958904109589041,
+            "mean_band_width_km": 1305.8361942719418
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 898.0314754825174,
+            "window_coverage": 0.9956236323851203,
+            "storm_coverage": 0.958904109589041,
+            "mean_band_width_km": 1796.0629509650348
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 1181.5597957054688,
+            "window_coverage": 0.9978118161925602,
+            "storm_coverage": 0.9863013698630136,
+            "mean_band_width_km": 2363.1195914109376
+          }
+        ]
+      },
+      "direct_quantile_coverage": [
+        {
+          "lead_hours": 6,
+          "east_north_component_coverage": 0.6936542669584245,
+          "east_north_mean_width_km": 69.03368041343901
+        },
+        {
+          "lead_hours": 12,
+          "east_north_component_coverage": 0.7270240700218819,
+          "east_north_mean_width_km": 144.09202281765934
+        },
+        {
+          "lead_hours": 18,
+          "east_north_component_coverage": 0.725929978118162,
+          "east_north_mean_width_km": 232.45970548034893
+        },
+        {
+          "lead_hours": 24,
+          "east_north_component_coverage": 0.7407002188183808,
+          "east_north_mean_width_km": 333.12143091761857
+        },
+        {
+          "lead_hours": 30,
+          "east_north_component_coverage": 0.7357768052516411,
+          "east_north_mean_width_km": 453.3189875525402
+        },
+        {
+          "lead_hours": 36,
+          "east_north_component_coverage": 0.7352297592997812,
+          "east_north_mean_width_km": 583.1590903663123
+        }
+      ],
+      "inference_latency_ms_per_sample": 6.065011999999967,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\quantile-seed-2026.pth"
+    },
+    {
+      "variant": "quantile",
+      "seed": 2027,
+      "best_validation_loss": 0.14943256974220276,
+      "epochs_trained": 30,
+      "parameter_count": 51835,
+      "train_wall_seconds": 26.3720371,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 42.26918978344136,
+            "path_rmse_km": 52.001153695561015
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 83.44082354178084,
+            "path_rmse_km": 101.85602081684031
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 131.0423414872797,
+            "path_rmse_km": 160.06881265057518
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 185.12510793345325,
+            "path_rmse_km": 224.8316755796001
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 245.89683443187607,
+            "path_rmse_km": 296.975253432944
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 316.5937811454303,
+            "path_rmse_km": 380.423633003635
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 166,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 114.30979038365746,
+            "window_coverage": 0.9704595185995624,
+            "storm_coverage": 0.7534246575342466,
+            "mean_band_width_km": 228.61958076731491
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 222.28656230876769,
+            "window_coverage": 0.9693654266958425,
+            "storm_coverage": 0.7671232876712328,
+            "mean_band_width_km": 444.57312461753537
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 420.00340309539405,
+            "window_coverage": 0.9879649890590809,
+            "storm_coverage": 0.8904109589041096,
+            "mean_band_width_km": 840.0068061907881
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 543.0560398244742,
+            "window_coverage": 0.9814004376367614,
+            "storm_coverage": 0.8493150684931506,
+            "mean_band_width_km": 1086.1120796489483
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 661.8818484727614,
+            "window_coverage": 0.9748358862144421,
+            "storm_coverage": 0.8082191780821918,
+            "mean_band_width_km": 1323.7636969455227
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 831.8177326284181,
+            "window_coverage": 0.9671772428884027,
+            "storm_coverage": 0.7945205479452054,
+            "mean_band_width_km": 1663.6354652568361
+          }
+        ]
+      },
+      "direct_quantile_coverage": [
+        {
+          "lead_hours": 6,
+          "east_north_component_coverage": 0.7095185995623632,
+          "east_north_mean_width_km": 68.83870821093801
+        },
+        {
+          "lead_hours": 12,
+          "east_north_component_coverage": 0.7264770240700219,
+          "east_north_mean_width_km": 147.00321992875547
+        },
+        {
+          "lead_hours": 18,
+          "east_north_component_coverage": 0.7335886214442013,
+          "east_north_mean_width_km": 230.21253407242503
+        },
+        {
+          "lead_hours": 24,
+          "east_north_component_coverage": 0.7204595185995624,
+          "east_north_mean_width_km": 323.36305728634613
+        },
+        {
+          "lead_hours": 30,
+          "east_north_component_coverage": 0.7417943107221007,
+          "east_north_mean_width_km": 445.3548276606097
+        },
+        {
+          "lead_hours": 36,
+          "east_north_component_coverage": 0.7385120350109409,
+          "east_north_mean_width_km": 570.5240525442545
+        }
+      ],
+      "inference_latency_ms_per_sample": 5.850125999999989,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\quantile-seed-2027.pth"
+    },
+    {
+      "variant": "quantile",
+      "seed": 2028,
+      "best_validation_loss": 0.12525682151317596,
+      "epochs_trained": 31,
+      "parameter_count": 51835,
+      "train_wall_seconds": 24.807061000000033,
+      "point_metrics": {
+        "sample_count": 914,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "path_mae_km": 41.85466137269,
+            "path_rmse_km": 51.74760742528061
+          },
+          {
+            "lead_hours": 12,
+            "path_mae_km": 84.02836620969576,
+            "path_rmse_km": 102.00045180873981
+          },
+          {
+            "lead_hours": 18,
+            "path_mae_km": 132.013984997239,
+            "path_rmse_km": 160.52816450229176
+          },
+          {
+            "lead_hours": 24,
+            "path_mae_km": 186.85791292629045,
+            "path_rmse_km": 226.60331348180836
+          },
+          {
+            "lead_hours": 30,
+            "path_mae_km": 248.37088815006192,
+            "path_rmse_km": 298.81659028255837
+          },
+          {
+            "lead_hours": 36,
+            "path_mae_km": 318.42455731745406,
+            "path_rmse_km": 381.47382169834634
+          }
+        ]
+      },
+      "calibration": {
+        "method": "storm-max split conformal radius calibrated on validation storms",
+        "target_coverage": 0.9,
+        "calibration_windows": 234,
+        "calibration_storms": 22,
+        "by_horizon": [
+          {
+            "lead_hours": 6,
+            "conformal_radius_km": 151.68970173201848,
+            "window_coverage": 0.9890590809628009,
+            "storm_coverage": 0.8767123287671232,
+            "mean_band_width_km": 303.37940346403695
+          },
+          {
+            "lead_hours": 12,
+            "conformal_radius_km": 268.6331019680567,
+            "window_coverage": 0.9814004376367614,
+            "storm_coverage": 0.863013698630137,
+            "mean_band_width_km": 537.2662039361134
+          },
+          {
+            "lead_hours": 18,
+            "conformal_radius_km": 459.2103379090443,
+            "window_coverage": 0.9923413566739606,
+            "storm_coverage": 0.9178082191780822,
+            "mean_band_width_km": 918.4206758180886
+          },
+          {
+            "lead_hours": 24,
+            "conformal_radius_km": 676.3955064155882,
+            "window_coverage": 0.9934354485776805,
+            "storm_coverage": 0.9452054794520548,
+            "mean_band_width_km": 1352.7910128311764
+          },
+          {
+            "lead_hours": 30,
+            "conformal_radius_km": 894.5433492983176,
+            "window_coverage": 0.9934354485776805,
+            "storm_coverage": 0.9452054794520548,
+            "mean_band_width_km": 1789.0866985966352
+          },
+          {
+            "lead_hours": 36,
+            "conformal_radius_km": 1287.6340323007632,
+            "window_coverage": 0.9989059080962801,
+            "storm_coverage": 0.9863013698630136,
+            "mean_band_width_km": 2575.2680646015265
+          }
+        ]
+      },
+      "direct_quantile_coverage": [
+        {
+          "lead_hours": 6,
+          "east_north_component_coverage": 0.6887308533916849,
+          "east_north_mean_width_km": 67.30602460028094
+        },
+        {
+          "lead_hours": 12,
+          "east_north_component_coverage": 0.7040481400437637,
+          "east_north_mean_width_km": 139.61080980233143
+        },
+        {
+          "lead_hours": 18,
+          "east_north_component_coverage": 0.7396061269146609,
+          "east_north_mean_width_km": 233.65211873069094
+        },
+        {
+          "lead_hours": 24,
+          "east_north_component_coverage": 0.7341356673960613,
+          "east_north_mean_width_km": 330.91356485429134
+        },
+        {
+          "lead_hours": 30,
+          "east_north_component_coverage": 0.7445295404814004,
+          "east_north_mean_width_km": 457.3838319411008
+        },
+        {
+          "lead_hours": 36,
+          "east_north_component_coverage": 0.7412472647702407,
+          "east_north_mean_width_km": 580.2098893110092
+        }
+      ],
+      "inference_latency_ms_per_sample": 3.514499999999998,
+      "checkpoint_path": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\artifacts\\multiscale\\runs\\20261019T031709Z\\checkpoints\\quantile-seed-2028.pth"
+    }
+  ],
+  "parameter_count": 50659,
+  "note": "Frozen storm holdout used for final metrics; calibration uses a storm-disjoint half of validation storms."
+}

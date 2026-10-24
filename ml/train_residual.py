@@ -14,6 +14,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from ml.models.residual_cnn import ResidualTrackCNN, residual_loss
+from ml.features.local_motion import destination_lonlat
 from ml.train import (
     PROJECT_ROOT,
     WindowDataset,
@@ -41,6 +42,13 @@ def constant_velocity_normalized(
     last = features[:, -1, :] * scales + means
     steps = torch.arange(1, horizons + 1, dtype=features.dtype, device=features.device).view(1, horizons)
     raw = torch.zeros((features.shape[0], horizons, 3), dtype=features.dtype, device=features.device)
+    if scaler.get("coordinate_system") == "local_motion_v1":
+        raw[..., 0] = steps * last[:, None, 0]
+        raw[..., 1] = steps * last[:, None, 1]
+        raw[..., 2] = last[:, None, 2]
+        target_means = torch.as_tensor(scaler["target_mean"], dtype=features.dtype, device=features.device)
+        target_scales = torch.as_tensor(scaler["target_std"], dtype=features.dtype, device=features.device)
+        return (raw - target_means) / target_scales
     raw[..., 0] = (last[:, None, 0] + steps * last[:, None, 4]) % 360.0
     raw[..., 1] = last[:, None, 1] + steps * last[:, None, 5]
     raw[..., 2] = last[:, None, 2]
@@ -89,6 +97,16 @@ def evaluate(model, dataset, device, scaler, horizons):
             residual = model(features.to(device))
             outputs.append((prior + torch.cat((residual["track"], residual["wind"]), dim=-1)).cpu().numpy())
     normalized = np.concatenate(outputs, axis=0)
+    if scaler.get("coordinate_system") == "local_motion_v1":
+        means = np.asarray(scaler["target_mean"], dtype=np.float64)
+        scales = np.asarray(scaler["target_std"], dtype=np.float64)
+        local_predictions = normalized * scales + means
+        predictions = np.zeros_like(local_predictions)
+        for sample_index, origin in enumerate(dataset.origins):
+            for horizon_index, (east, north, speed) in enumerate(local_predictions[sample_index]):
+                longitude, latitude = destination_lonlat(origin, float(east), float(north))
+                predictions[sample_index, horizon_index] = (longitude, latitude, max(0.0, float(speed)))
+        return metric_summary(predictions, dataset.raw_targets_tensor.numpy())
     means = np.asarray(scaler["mean"][:3], dtype=np.float64)
     scales = np.asarray(scaler["std"][:3], dtype=np.float64)
     predictions = normalized * scales + means
@@ -96,6 +114,25 @@ def evaluate(model, dataset, device, scaler, horizons):
     predictions[..., 1] = np.clip(predictions[..., 1], -90.0, 90.0)
     predictions[..., 2] = np.maximum(predictions[..., 2], 0.0)
     return metric_summary(predictions, dataset.raw_targets_tensor.numpy())
+
+
+def evaluate_local_baselines(dataset, scaler, horizons):
+    raw_features = dataset.features_tensor.numpy().astype(np.float64)
+    raw_features = raw_features * np.asarray(scaler["std"]) + np.asarray(scaler["mean"])
+    actual = dataset.raw_targets_tensor.numpy()
+    persistence = np.zeros_like(actual)
+    constant_velocity = np.zeros_like(actual)
+    for index, origin in enumerate(dataset.origins):
+        for lead in range(horizons):
+            persistence[index, lead] = (origin["lng"], origin["lat"], raw_features[index, -1, 2])
+            east = (lead + 1) * raw_features[index, -1, 0]
+            north = (lead + 1) * raw_features[index, -1, 1]
+            longitude, latitude = destination_lonlat(origin, float(east), float(north))
+            constant_velocity[index, lead] = (longitude, latitude, raw_features[index, -1, 2])
+    return {
+        "last_observation": metric_summary(persistence, actual),
+        "constant_velocity": metric_summary(constant_velocity, actual),
+    }
 
 
 def train(args: argparse.Namespace) -> Dict[str, Any]:
@@ -107,9 +144,13 @@ def train(args: argparse.Namespace) -> Dict[str, Any]:
     if args.seed is not None:
         config["seed"] = args.seed
     seed_everything(config["seed"])
-    processed = args.data_root / "processed"
+    processed = args.processed_root or args.data_root / "processed"
     manifest = load_json(processed / "manifest.json")
     scaler = manifest["preprocessing"]["normalizer"]
+    if scaler.get("coordinate_system") == "local_motion_v1":
+        config["input_features"] = len(scaler["feature_names"])
+        config["target_features"] = len(scaler["target_names"])
+        config["model_version"] = "track-cnn-local-motion-residual-v1"
     train_data = WindowDataset(processed / "train.jsonl")
     validation_data = WindowDataset(processed / "validation.jsonl")
     test_data = WindowDataset(processed / "test.jsonl")
@@ -124,7 +165,7 @@ def train(args: argparse.Namespace) -> Dict[str, Any]:
     run_dir = args.output_root / "runs" / run_id
     run_dir.mkdir(parents=True, exist_ok=False)
     logger = configure_logging(run_dir / "train.log")
-    config.update({"device": str(device), "run_id": run_id, "model_version": "track-cnn-residual-v1", "dataset_fingerprint_sha256": manifest["source"]["fingerprint_sha256"], "dataset_split_counts": manifest["preprocessing"]["split_sample_counts"]})
+    config.update({"device": str(device), "run_id": run_id, "model_version": config.get("model_version", "track-cnn-residual-v1"), "dataset_fingerprint_sha256": manifest["source"]["fingerprint_sha256"], "dataset_split_counts": manifest["preprocessing"]["split_sample_counts"]})
     save_json(run_dir / "config.json", config)
     generator = torch.Generator().manual_seed(config["seed"])
     loader = DataLoader(train_data, batch_size=config["batch_size"], shuffle=True, generator=generator)
@@ -143,7 +184,7 @@ def train(args: argparse.Namespace) -> Dict[str, Any]:
             torch.save(
                 {
                     "model_state_dict": model.state_dict(),
-                    "model_version": "track-cnn-residual-v1",
+                    "model_version": config.get("model_version", "track-cnn-residual-v1"),
                     "architecture": {
                         "type": "residual",
                         "input_steps": config["input_steps"],
@@ -151,6 +192,7 @@ def train(args: argparse.Namespace) -> Dict[str, Any]:
                         "target_steps": config["target_steps"],
                         "target_features": config["target_features"],
                         "dropout": config["dropout"],
+                        "coordinate_system": scaler.get("coordinate_system", "geographic_v1"),
                     },
                     "normalizer": scaler,
                 },
@@ -163,11 +205,16 @@ def train(args: argparse.Namespace) -> Dict[str, Any]:
                 break
     state = torch.load(checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(state["model_state_dict"])
-    evaluation = {"cnn_residual": evaluate(model, test_data, device, scaler, config["target_steps"]), "baselines": evaluate_baselines(test_data, scaler)}
+    baseline_metrics = (
+        evaluate_local_baselines(test_data, scaler, config["target_steps"])
+        if scaler.get("coordinate_system") == "local_motion_v1"
+        else evaluate_baselines(test_data, scaler)
+    )
+    evaluation = {"cnn_residual": evaluate(model, test_data, device, scaler, config["target_steps"]), "baselines": baseline_metrics}
     published = args.output_root / "checkpoints" / "track_cnn_residual.pth"
     published.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(checkpoint, published)
-    result = {"run_id": run_id, "model_version": "track-cnn-residual-v1", "dataset_fingerprint_sha256": manifest["source"]["fingerprint_sha256"], "dataset_split_counts": manifest["preprocessing"]["split_sample_counts"], "device": str(device), "best_epoch": best_epoch, "best_validation_loss": best_loss, "checkpoint": {"path": str(published.resolve()), "sha256": hashlib.sha256(published.read_bytes()).hexdigest()}, "evaluation": evaluation}
+    result = {"run_id": run_id, "model_version": config.get("model_version", "track-cnn-residual-v1"), "dataset_fingerprint_sha256": manifest["source"]["fingerprint_sha256"], "dataset_split_counts": manifest["preprocessing"]["split_sample_counts"], "device": str(device), "best_epoch": best_epoch, "best_validation_loss": best_loss, "checkpoint": {"path": str(published.resolve()), "sha256": hashlib.sha256(published.read_bytes()).hexdigest()}, "evaluation": evaluation}
     save_json(run_dir / "test_metrics.json", result)
     return result
 
@@ -176,6 +223,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=PROJECT_ROOT / "ml" / "configs" / "baseline.json")
     parser.add_argument("--data-root", type=Path, default=PROJECT_ROOT / "data")
+    parser.add_argument("--processed-root", type=Path, default=None,
+                        help="prepared dataset directory; defaults to <data-root>/processed")
     parser.add_argument("--output-root", type=Path, default=PROJECT_ROOT / "artifacts" / "residual")
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)

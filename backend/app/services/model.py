@@ -19,6 +19,11 @@ FORECAST_STEPS = 6
 STEP_HOURS = 6
 FEATURE_NAMES = ["lng", "lat", "speed", "power", "delta_lng", "delta_lat"]
 TARGET_FEATURES = ["lng", "lat", "speed"]
+LOCAL_FEATURE_NAMES = [
+    "east_km", "north_km", "speed", "power", "acceleration_ms_per_hour",
+    "turn_rate_rad_per_hour", "heading_sin", "heading_cos",
+]
+LOCAL_TARGET_FEATURES = ["east_km", "north_km", "speed"]
 
 
 class ModelService:
@@ -38,6 +43,8 @@ class ModelService:
         self._normalizer = None
         self._device = None
         self._model_type = None
+        self._coordinate_system = "geographic_v1"
+        self._input_steps = INPUT_STEPS
         self._reason = None
         self._checkpoint_sha256 = None
         self._uncertainty = None
@@ -75,21 +82,34 @@ class ModelService:
             normalizer = checkpoint["normalizer"]
             model_version = checkpoint.get("model_version", "")
             architecture = checkpoint.get("architecture", {})
+            coordinate_system = architecture.get(
+                "coordinate_system", normalizer.get("coordinate_system", "geographic_v1")
+            )
+            if coordinate_system not in ("geographic_v1", "local_motion_v1"):
+                raise ValueError("checkpoint coordinate system is not supported")
+            input_steps = int(architecture.get("input_steps", INPUT_STEPS))
+            if not 1 <= input_steps <= 24:
+                raise ValueError("checkpoint input_steps must be between 1 and 24")
+            feature_names = LOCAL_FEATURE_NAMES if coordinate_system == "local_motion_v1" else FEATURE_NAMES
+            target_names = LOCAL_TARGET_FEATURES if coordinate_system == "local_motion_v1" else TARGET_FEATURES
+            input_features = len(feature_names)
             model_type = architecture.get("type") or (
                 "residual" if "residual" in model_version else "track"
             )
             if architecture and (
-                architecture.get("input_steps", INPUT_STEPS) != INPUT_STEPS
-                or architecture.get("input_features", INPUT_FEATURES) != INPUT_FEATURES
+                input_steps != architecture.get("input_steps", INPUT_STEPS)
+                or architecture.get("input_features", input_features) != input_features
                 or architecture.get("target_steps", FORECAST_STEPS) != FORECAST_STEPS
                 or architecture.get("target_features", len(TARGET_FEATURES)) != len(TARGET_FEATURES)
             ):
                 raise ValueError("checkpoint architecture does not match the API contract")
             if model_type == "track":
+                if input_steps != INPUT_STEPS:
+                    raise ValueError("track CNN checkpoints require four input steps")
                 from ml.models.track_cnn import TrackCNN
 
                 model = TrackCNN(
-                    input_features=INPUT_FEATURES,
+                    input_features=input_features,
                     horizons=FORECAST_STEPS,
                     dropout=architecture.get("dropout", 0.3),
                 )
@@ -97,20 +117,41 @@ class ModelService:
                 from ml.models.residual_cnn import ResidualTrackCNN
 
                 model = ResidualTrackCNN(
-                    input_features=INPUT_FEATURES,
+                    input_features=input_features,
                     horizons=FORECAST_STEPS,
                     dropout=architecture.get("dropout", 0.3),
                 )
+            elif model_type == "multiscale_residual":
+                if coordinate_system != "local_motion_v1":
+                    raise ValueError("multi-scale residual checkpoints require local-motion coordinates")
+                from ml.models.multiscale_residual_cnn import MultiScaleResidualCNN
+
+                model = MultiScaleResidualCNN(
+                    input_features=input_features,
+                    horizons=FORECAST_STEPS,
+                    hidden_channels=architecture.get("hidden_channels", 48),
+                    dropout=architecture.get("dropout", 0.15),
+                    quantile=architecture.get("quantile", False),
+                )
             else:
-                raise ValueError("checkpoint model type must be track or residual")
-            if normalizer.get("feature_names") != FEATURE_NAMES:
+                raise ValueError("checkpoint model type must be track, residual, or multiscale_residual")
+            if normalizer.get("feature_names") != feature_names:
                 raise ValueError("checkpoint feature names do not match the API contract")
-            if len(normalizer.get("mean", [])) != INPUT_FEATURES or len(normalizer.get("std", [])) != INPUT_FEATURES:
-                raise ValueError("checkpoint normalizer must contain six feature means and scales")
+            if len(normalizer.get("mean", [])) != input_features or len(normalizer.get("std", [])) != input_features:
+                raise ValueError("checkpoint normalizer feature means and scales do not match its feature schema")
             if any(not math.isfinite(float(value)) for value in normalizer["mean"] + normalizer["std"]):
                 raise ValueError("checkpoint normalizer contains non-finite values")
             if any(float(value) <= 0 for value in normalizer["std"]):
                 raise ValueError("checkpoint normalizer scales must be positive")
+            if coordinate_system == "local_motion_v1":
+                if normalizer.get("target_names") != target_names:
+                    raise ValueError("checkpoint target names do not match the local-motion API contract")
+                if len(normalizer.get("target_mean", [])) != len(target_names) or len(normalizer.get("target_std", [])) != len(target_names):
+                    raise ValueError("checkpoint must contain local-motion target means and scales")
+                if any(not math.isfinite(float(value)) for value in normalizer["target_mean"] + normalizer["target_std"]):
+                    raise ValueError("checkpoint local-motion target normalizer contains non-finite values")
+                if any(float(value) <= 0 for value in normalizer["target_std"]):
+                    raise ValueError("checkpoint local-motion target scales must be positive")
 
             model.load_state_dict(checkpoint["model_state_dict"], strict=True)
             model.to(device)
@@ -121,6 +162,8 @@ class ModelService:
             self._normalizer = normalizer
             self._device = device
             self._model_type = model_type
+            self._coordinate_system = coordinate_system
+            self._input_steps = input_steps
             self.model_version = self.model_version or model_version
             self._checkpoint_sha256 = hashlib.sha256(self.checkpoint_path.read_bytes()).hexdigest()
             if self._uncertainty_path and self._uncertainty_path.is_file():
@@ -179,57 +222,129 @@ class ModelService:
     def predict(self, history: Sequence[Dict[str, Any]], horizons_hours: Sequence[int]) -> Dict[str, Any]:
         if not self.ready:
             raise RuntimeError("model is not ready")
-        if len(history) != INPUT_STEPS + 1:
-            raise ValueError("history must contain five consecutive 6-hour observations")
+        if len(history) != self._input_steps + 1:
+            raise ValueError(
+                "history must contain {} consecutive 6-hour observations".format(self._input_steps + 1)
+            )
 
         means = self._normalizer["mean"]
         scales = self._normalizer["std"]
         features: List[List[float]] = []
-        for index in range(1, len(history)):
-            previous = history[index - 1]
-            point = history[index]
-            required = (point.get("speed"), point.get("power"))
-            if any(value is None for value in required):
-                raise ValueError("speed and power are required for each of the last four history points")
-            longitude = float(point["lng"]) % 360.0
-            previous_longitude = float(previous["lng"]) % 360.0
-            delta_longitude = (longitude - previous_longitude + 180.0) % 360.0 - 180.0
-            row = [
-                longitude,
-                float(point["lat"]),
-                float(point["speed"]),
-                float(point["power"]),
-                delta_longitude,
-                float(point["lat"]) - float(previous["lat"]),
-            ]
-            if any(not math.isfinite(value) for value in row):
+        if self._coordinate_system == "local_motion_v1":
+            if history[0].get("speed") is None or any(
+                point.get("speed") is None or point.get("power") is None for point in history[1:]
+            ):
+                raise ValueError("context speed and input-observation speed and power are required for local motion")
+            from ml.features.local_motion import encode_track
+
+            rows = encode_track(history, STEP_HOURS)
+            features = [row["features"] for row in rows]
+            if len(features) != self._input_steps:
+                raise ValueError("history could not be encoded to the checkpoint input length")
+            if any(not math.isfinite(value) for row in features for value in row):
                 raise ValueError("history features must be finite numbers")
-            features.append([(value - means[column]) / scales[column] for column, value in enumerate(row)])
+        else:
+            for index in range(1, len(history)):
+                previous = history[index - 1]
+                point = history[index]
+                required = (point.get("speed"), point.get("power"))
+                if any(value is None for value in required):
+                    raise ValueError("speed and power are required for each of the last four history points")
+                longitude = float(point["lng"]) % 360.0
+                previous_longitude = float(previous["lng"]) % 360.0
+                delta_longitude = (longitude - previous_longitude + 180.0) % 360.0 - 180.0
+                row = [longitude, float(point["lat"]), float(point["speed"]), float(point["power"]), delta_longitude, float(point["lat"]) - float(previous["lat"])]
+                if any(not math.isfinite(value) for value in row):
+                    raise ValueError("history features must be finite numbers")
+                features.append(row)
+        features = [[(value - means[column]) / scales[column] for column, value in enumerate(row)] for row in features]
 
         tensor = self._torch.tensor([features], dtype=self._torch.float32, device=self._device)
+        quantile_values = None
         with self._torch.no_grad():
             output = self._model(tensor)
-            if self._model_type == "residual":
+            if self._model_type == "multiscale_residual":
+                target_means = self._torch.tensor(
+                    self._normalizer["target_mean"], dtype=tensor.dtype, device=self._device
+                )
+                target_scales = self._torch.tensor(
+                    self._normalizer["target_std"], dtype=tensor.dtype, device=self._device
+                )
+                feature_means = self._torch.tensor(means, dtype=tensor.dtype, device=self._device)
+                feature_scales = self._torch.tensor(scales, dtype=tensor.dtype, device=self._device)
+                last = tensor[:, -1, :] * feature_scales + feature_means
+                steps = self._torch.arange(
+                    1, FORECAST_STEPS + 1, dtype=tensor.dtype, device=self._device
+                ).view(1, -1)
+                prior_raw = self._torch.stack(
+                    (
+                        steps * last[:, None, 0],
+                        steps * last[:, None, 1],
+                        last[:, None, 2].expand(-1, FORECAST_STEPS),
+                    ),
+                    dim=-1,
+                )
+                prior = (prior_raw - target_means) / target_scales
+                normalized_track = output["track"] + prior[..., :2]
+                normalized_wind = output["wind"] + prior[..., 2:3]
+                local_values = self._torch.cat((normalized_track, normalized_wind), dim=-1)[0]
+                local_values = (
+                    local_values.cpu().numpy() * self._normalizer["target_std"]
+                    + self._normalizer["target_mean"]
+                )
+                track, wind = local_values[:, :2], local_values[:, 2]
+                if output.get("quantiles") is not None:
+                    normalized_quantiles = output["quantiles"] + prior[..., None, :2]
+                    normalized_quantiles, _ = normalized_quantiles.sort(dim=2)
+                    quantile_values = (
+                        normalized_quantiles[0].cpu().numpy() * self._normalizer["target_std"][:2]
+                        + self._normalizer["target_mean"][:2]
+                    )
+            elif self._model_type == "residual":
                 means_tensor = self._torch.tensor(means, dtype=tensor.dtype, device=self._device)
                 scales_tensor = self._torch.tensor(scales, dtype=tensor.dtype, device=self._device)
                 last = tensor[:, -1, :] * scales_tensor + means_tensor
                 steps = self._torch.arange(1, FORECAST_STEPS + 1, dtype=tensor.dtype, device=self._device).view(1, -1)
                 prior = self._torch.zeros((1, FORECAST_STEPS, 3), dtype=tensor.dtype, device=self._device)
-                prior[..., 0] = (last[:, None, 0] + steps * last[:, None, 4]) % 360.0
-                prior[..., 1] = last[:, None, 1] + steps * last[:, None, 5]
-                prior[..., 2] = last[:, None, 2]
                 residual = self._torch.cat((output["track"], output["wind"]), dim=-1)
-                output_values = (prior - means_tensor[:3]) / scales_tensor[:3] + residual
-                track, wind = output_values[0, :, :2].cpu().numpy(), output_values[0, :, 2].cpu().numpy()
+                if self._coordinate_system == "local_motion_v1":
+                    target_means = self._torch.tensor(self._normalizer["target_mean"], dtype=tensor.dtype, device=self._device)
+                    target_scales = self._torch.tensor(self._normalizer["target_std"], dtype=tensor.dtype, device=self._device)
+                    prior[..., 0] = steps * last[:, None, 0]
+                    prior[..., 1] = steps * last[:, None, 1]
+                    prior[..., 2] = last[:, None, 2]
+                    prior = (prior - target_means) / target_scales
+                    output_values = prior + residual
+                    local_values = output_values[0].cpu().numpy() * self._normalizer["target_std"] + self._normalizer["target_mean"]
+                    track, wind = local_values[:, :2], local_values[:, 2]
+                else:
+                    prior[..., 0] = (last[:, None, 0] + steps * last[:, None, 4]) % 360.0
+                    prior[..., 1] = last[:, None, 1] + steps * last[:, None, 5]
+                    prior[..., 2] = last[:, None, 2]
+                    output_values = (prior - means_tensor[:3]) / scales_tensor[:3] + residual
+                    track, wind = output_values[0, :, :2].cpu().numpy(), output_values[0, :, 2].cpu().numpy()
             else:
                 track = output["track"][0].detach().cpu().numpy()
                 wind = output["wind"][0, :, 0].detach().cpu().numpy()
+                if self._coordinate_system == "local_motion_v1":
+                    local_values = (
+                        self._torch.cat((output["track"], output["wind"]), dim=-1)[0].cpu().numpy()
+                        * self._normalizer["target_std"]
+                        + self._normalizer["target_mean"]
+                    )
+                    track, wind = local_values[:, :2], local_values[:, 2]
         target_indexes = (0, 1, 2)
         predictions = []
         for index in range(FORECAST_STEPS):
-            longitude = (float(track[index, 0]) * scales[target_indexes[0]] + means[target_indexes[0]]) % 360.0
-            latitude = float(track[index, 1]) * scales[target_indexes[1]] + means[target_indexes[1]]
-            speed = float(wind[index]) * scales[target_indexes[2]] + means[target_indexes[2]]
+            if self._coordinate_system == "local_motion_v1":
+                from ml.features.local_motion import destination_lonlat
+
+                longitude, latitude = destination_lonlat(history[-1], float(track[index, 0]), float(track[index, 1]))
+                speed = float(wind[index])
+            else:
+                longitude = (float(track[index, 0]) * scales[target_indexes[0]] + means[target_indexes[0]]) % 360.0
+                latitude = float(track[index, 1]) * scales[target_indexes[1]] + means[target_indexes[1]]
+                speed = float(wind[index]) * scales[target_indexes[2]] + means[target_indexes[2]]
             if not all(math.isfinite(value) for value in (longitude, latitude, speed)):
                 raise RuntimeError("model produced a non-finite prediction")
             predictions.append(
@@ -240,6 +355,8 @@ class ModelService:
                     "speed_ms": max(0.0, speed),
                     "p05": None,
                     "p95": None,
+                    "p10": self._local_quantile_point(history[-1], quantile_values, index, 0),
+                    "p90": self._local_quantile_point(history[-1], quantile_values, index, 2),
                     "location_radius_90_km": (
                         self._uncertainty["calibration"]["location_radius_km"][index]
                         if self._uncertainty else None
@@ -253,8 +370,10 @@ class ModelService:
         return {
             "model_version": self.model_version,
             "model_type": self._model_type,
+            "coordinate_system": self._coordinate_system,
+            "input_steps": self._input_steps,
             "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-            "input_window": INPUT_STEPS,
+            "input_window": self._input_steps,
             "horizons_hours": list(horizons_hours),
             "predictions": [item for item in predictions if item["lead_hours"] in requested],
             "uncertainty": self._uncertainty_summary(),
@@ -324,6 +443,21 @@ class ModelService:
             "interpretation": "历史台风分组校准的二维位置区域，不是实时预报保证或灾害概率区。",
         }
 
+    @staticmethod
+    def _local_quantile_point(
+        origin: Dict[str, Any], values: Optional[Any], horizon_index: int, quantile_index: int
+    ) -> Optional[Dict[str, float]]:
+        if values is None:
+            return None
+        from ml.features.local_motion import destination_lonlat
+
+        longitude, latitude = destination_lonlat(
+            origin,
+            float(values[horizon_index, quantile_index, 0]),
+            float(values[horizon_index, quantile_index, 1]),
+        )
+        return {"lng": longitude, "lat": latitude}
+
     def status(self) -> Dict[str, Any]:
         exists = self.checkpoint_path.exists()
         size_bytes = self.checkpoint_path.stat().st_size if exists else 0
@@ -334,6 +468,9 @@ class ModelService:
             "size_bytes": size_bytes,
             "model_version": self.model_version,
             "model_type": self._model_type,
+            "coordinate_system": self._coordinate_system if self.ready else None,
+            "input_steps": self._input_steps if self.ready else None,
+            "history_points": self._input_steps + 1 if self.ready else None,
             "device": str(self._device) if self._device is not None else None,
             "checkpoint_sha256": self._checkpoint_sha256,
             "reason": self._reason,

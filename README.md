@@ -8,7 +8,7 @@
 
 - 按年份、编号和名称查询热带气旋历史数据
 - Cesium 三维地球展示历史轨迹、当前点和预测轨迹
-- CNN 多步预测未来 6、12、18、24、30、36 小时的路径与风速
+- 基于局地运动坐标的 CNN 多步预测未来 6、12、18、24、30、36 小时路径与风速
 - ECharts 展示轨迹参数和预测结果
 - FastAPI 提供健康检查、历史数据和预测接口
 - 提供数据审计、6 小时重采样、数据集构建和模型训练脚本
@@ -163,17 +163,37 @@ cd D:\project\CNN-Cesium
 .\.venv\Scripts\python.exe -m ml.prepare_dataset
 ```
 
-训练模型：
+训练物理坐标残差模型：
 
 ```powershell
-.\.venv\Scripts\python.exe -m ml.train --device auto
+.\.venv\Scripts\python.exe -m ml.train_residual --device auto
 ```
 
-训练产物保存到 `artifacts/`。当前后端默认加载：
+### 72 小时多尺度模型实验（离线候选，不自动替换在线模型）
 
-```text
-artifacts/checkpoints/track_cnn_baseline.pth
+当前项目已使用局地东—北运动坐标编码。多尺度实验将历史窗口扩展到 12 个六小时步长，并分别比较多尺度残差 CNN、加入速度/加速度/转向约束的版本，以及 P10/P50/P90 分位数版本。它们写入独立的数据目录和实验目录，在线 API 继续使用已验收的四步 checkpoint，直到长窗口 API、固定测试集和校准结果单独通过验收。
+
+```powershell
+# 保留现有 data/processed 与在线模型使用的数据不变
+.venv\Scripts\python.exe -m ml.prepare_dataset --input-steps 12 --output-root data\processed_12 --split-file data\splits\storm_splits_multiscale.json
+.venv\Scripts\python.exe -m ml.train_multiscale --processed-root data\processed_12 --device auto
 ```
+
+默认使用 2026、2027、2028 三个随机种子，冻结同一台风分组测试集。训练提前停止只使用验证台风的一半；另一半独立用于台风分组 split conformal 半径校准，测试集只用于最终报告。结果包含 6–36 小时逐时效误差、区间覆盖率和宽度、参数量及训练耗时，保存在 `artifacts/multiscale/runs/`。按论文口径解释结果时，应以每个台风为统计单位，并同时报告逐窗口与整场台风覆盖率。
+
+该多尺度实验当前不会被 `/api/predict` 加载。现有在线接口仍要求 5 个连续观测点（形成 4 个历史特征步），需要完成输入窗口契约、checkpoint 兼容和浏览器端到端验收后，才可切换线上模型。ERA5 环境场当前属于单独的历史离线实验；本多尺度训练脚本不读取环境场，也不声称已实现缺失环境数据时的门控回退。
+
+ERA5 增强版本还提供 `ml.models.gated_era5_fusion.GatedERA5Fusion` 组件。它只有在样本通过时间对齐并且 `era5_mask=1` 时才加入环境特征；缺失或不匹配时自动退回轨迹特征。该组件是后续实验接口，当前没有接入在线预测服务。
+
+数据集输入为东向/北向位移、风速、强度、加速度、转向率和航向角正余弦；目标为相对最新观测点的东向/北向位移与风速。后端推理时会把位移还原为经纬度。
+
+训练产物保存到 `artifacts/residual/`。使用新模型时设置：
+
+```powershell
+$env:TC_MODEL_PATH = 'D:\project\CNN-Cesium\artifacts\residual\checkpoints\track_cnn_residual.pth'
+```
+
+`/health` 的 `model.coordinate_system` 会报告当前模型的坐标格式。
 
 `CNN-Cesium/model.pth` 是历史目录中的空占位文件，不是运行所需权重。运行预测时以后端实际加载结果和 `/health` 返回状态为准。
 
@@ -206,7 +226,7 @@ pnpm preview
 
 项目已完成 ERA5 500/850 hPa 风场匹配和融合消融。扩展测试子集含 1,661 个配对窗口、112 场台风；三种子均值下，500/850 hPa 融合路径 MAE 在 6/12/18/24/30/36 小时分别为 41.93/81.18/127.01/179.85/239.52/306.65 km，轨迹-only 对照分别为 44.17/86.63/134.35/187.28/246.63/312.25 km。结果仅适用于当前 ERA5 配对历史测试集，不能外推为实时业务预报结论。
 
-在线默认 API 仍加载 `artifacts/checkpoints/track_cnn_baseline.pth` 轨迹模型。该 checkpoint 有单独的台风分组 conformal 历史位置误差校准，6-36 小时展示半径约为 479.8/479.8/491.2/616.5/838.5/1,008.2 km；测试集窗口覆盖率较高，但整场台风覆盖率在部分时效低于 90%。该范围是历史位置误差，不是灾害概率、实际影响半径或实时预报保证。
+在线默认 API 加载 `artifacts/checkpoints/track_cnn_physics_multiscale.pth`，采用 12 步局地东-北运动特征、多尺度因果残差 CNN 和物理约束训练。前端按健康检查报告自动构造 13 个六小时观测点。该模型在 914 个留出台风窗口上低于旧基线误差；与原残差 CNN 的差异未达到统计显著。位置半径来自独立验证台风校准，目标覆盖率为 90%，不是灾害概率、实际影响半径或实时预报保证。设置 `TC_MODEL_PATH` 可切回旧模型。
 阶段一已补充可追溯的 JTWC 官方预报数据：原始 b-deck/f-deck 保存在本地 `official_forecast/JTWC/`，因数据量较大不随普通源码提交；汇总表和配对误差位于 `official_forecast/forecast_points.csv`、`official_forecast/best_track_points.csv`、`official_forecast/paired_errors.csv`。当前冻结测试集已完成 JTWC 2025 f-deck 同起报对比，覆盖 26 个台风、471 个测试窗口；同一最佳路径真值下，官方 12/24/36 小时平均位置误差为 48.6/67.2/84.0 km。官方预报只覆盖 2025 年，且 f-deck 没有 6/18/30 小时点，不能据此声称模型全面优于官方预报。完整口径见 `official_forecast/说明.txt` 和 `artifacts/era5/annular_steering_flow/official_comparison/official_comparison.json`。
 
 ERA5 来源为 [Copernicus Climate Change Service ERA5 pressure levels](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels)，来源登记和原始文件元数据见 `ERA5data/SOURCE.json` 与 `ERA5data/metadata.json`。轨迹对齐、配对样本和实验指标保存在 `artifacts/era5/historical_500_850_refresh_20261002/`。原始 GRIB 和派生 JSONL 属于本地数据材料，不随普通 GitHub 源码提交；按项目数据清单准备后可复现实验。

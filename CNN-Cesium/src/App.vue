@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import WorkspaceApp from './App.workspace.vue'
-import AssistantPanel from '@/components/AssistantPanel.vue'
 import ExperimentComparisonChart from '@/components/ExperimentComparisonChart.vue'
 import TyphoonCharts from '@/components/TyphoonCharts.vue'
+import TyphoonAssistant from '@/components/TyphoonAssistant.vue'
 import {
   fetchExperimentSummary,
   fetchExportSettings,
@@ -21,7 +21,6 @@ import {
 } from '@/services/typhoonApi'
 import { buildPredictionWindow } from '@/services/predictionWindow'
 import type {
-  AssistantContext,
   Era5Point,
   Era5Response,
   ExportInfoId,
@@ -42,7 +41,6 @@ const selectedYear = ref(2025)
 const typhoons = ref<TyphoonIndexItem[]>([])
 const selectedId = ref('202501')
 const selectedTyphoon = ref<TyphoonDetail | null>(null)
-const assistantOpen = ref(false)
 const currentIndex = ref(0)
 const playing = ref(false)
 const health = ref<HealthResponse | null>(null)
@@ -73,6 +71,22 @@ let replayCompositeStream: MediaStream | null = null
 let replaySourceVideo: HTMLVideoElement | null = null
 let exportSettingsSaveTimer: number | undefined
 let legacyListElement: HTMLElement | null = null
+let legacyHeaderResizeObserver: ResizeObserver | null = null
+const positionReadout = ref({ longitude: '--', latitude: '--', altitude: '--' })
+
+function syncLegacyPositionReadout(doc = iframeRef.value?.contentDocument) {
+  const position = doc?.querySelector<HTMLElement>('.position-container')
+  if (!position) return
+  const values = Array.from(position.children).map((item) => item.textContent?.trim() || '--')
+  if (values.length >= 3) {
+    positionReadout.value = {
+      longitude: values[0],
+      latitude: values[1],
+      altitude: values[2]
+    }
+  }
+  position.style.display = 'none'
+}
 
 function applyLegacyListLayout(doc = iframeRef.value?.contentDocument) {
   if (!doc) return
@@ -80,13 +94,14 @@ function applyLegacyListLayout(doc = iframeRef.value?.contentDocument) {
   if (!style) return
   style.textContent = `
     .layout .layout-header { display: none !important; }
+    .layout .layout-footer { display: none !important; }
     html.main-screen-embedded .layout-main .list-panel .widget-panel {
-      top: calc(10vh + 80px) !important;
+      top: 0 !important;
       left: 4px !important;
       right: auto !important;
-      bottom: auto !important;
-      width: min(20vw, 420px) !important;
-      height: min(720px, calc(100vh - 10vh - 172px)) !important;
+      bottom: 0 !important;
+      width: min(24vw, 420px) !important;
+      height: auto !important;
       transform: none !important;
       box-sizing: border-box !important;
       resize: none !important;
@@ -106,6 +121,10 @@ function applyLegacyListLayout(doc = iframeRef.value?.contentDocument) {
   if (listElement && listElement !== legacyListElement) {
     legacyListElement = listElement
   }
+}
+
+function handleLegacyViewportResize() {
+  applyLegacyListLayout()
 }
 
 type LegacyEntity = Record<string, unknown>
@@ -166,6 +185,18 @@ const legacyHighlights = new Map<string, LegacyHighlight>()
 let legacyPredictionOverlay: LegacyPredictionOverlay | null = null
 let legacyEra5Overlay: LegacyPredictionOverlay | null = null
 const highlightColors = ['#ff1493', '#00fff0', '#ffe600', '#76ff03', '#ff6d00']
+const intensityColors: Record<string, string> = {
+  '热带低压(TD)': '#30fc31',
+  '热带风暴(TS)': '#307efa',
+  '强热带风暴(STS)': '#fffc00',
+  '台风(TY)': '#ff9c00',
+  '强台风(STY)': '#fb7cff',
+  '超强台风(Super TY)': '#fa3030'
+}
+const intensityLegend = Object.entries(intensityColors).map(([label, color]) => ({
+  label: label.replace(/\(.*\)$/, ''),
+  color
+}))
 const typhoonIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
   <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72">
     <circle cx="36" cy="36" r="31" fill="#071d2b" fill-opacity=".9" stroke="#ffffff" stroke-width="3"/>
@@ -176,7 +207,11 @@ const typhoonIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
 let legacyObserver: MutationObserver | null = null
 let legacySyncTimer: number | undefined
 let playTimer: number | undefined
+let historyTableTimer: number | undefined
 const replayStepMs = 200
+const historyTableStepMs = 2000
+const historyTableScrollStep = 34
+const historyTableBody = ref<HTMLTableSectionElement | null>(null)
 let legacyDblClickDocument: Document | null = null
 let legacyDblClickWindow: Window | null = null
 let legacyCheckboxDocument: Document | null = null
@@ -185,39 +220,6 @@ const legacyDblClickRows = new WeakSet<HTMLTableRowElement>()
 const selectedPoint = computed(
   () => prediction.value?.predictions.find((point) => point.lead_hours === selectedLead.value) ?? null
 )
-const assistantContext = computed<AssistantContext>(() => {
-  const point = selectedPoint.value
-  const region = point?.uncertainty_region
-  const wind = forecastEra5Point.value?.levels['850']
-  return {
-    typhoon_id: selectedTyphoon.value?.tfbh,
-    typhoon_name: selectedTyphoon.value?.name || selectedTyphoon.value?.ename,
-    lead_hours: selectedLead.value,
-    forecast_position: point ? { lng: point.lng, lat: point.lat } : undefined,
-    speed_ms: point?.speed_ms ?? undefined,
-    location_radius_90_km:
-      point?.location_radius_90_km ??
-      experimentSummary.value?.uncertainty?.by_horizon?.find((item) => item.lead_hours === selectedLead.value)?.location_radius_90_km ??
-      undefined,
-    uncertainty_region: region
-      ? {
-          semi_major_axis_km: region.semi_major_axis_km,
-          semi_minor_axis_km: region.semi_minor_axis_km,
-          coverage: region.coverage
-        }
-      : undefined,
-    era5: wind
-      ? {
-          level: 850,
-          u: wind.u,
-          v: wind.v,
-          speed_ms: wind.speed_ms,
-          direction_deg: wind.direction_deg,
-          shear: forecastEra5Point.value?.shear_500_850_ms ?? undefined
-        }
-      : undefined
-  }
-})
 const historicalWindRadius = computed(() => {
   const point = [...(selectedTyphoon.value?.points ?? [])].reverse().find(
     (item) => (item.radius7 ?? 0) > 0 || (item.radius10 ?? 0) > 0
@@ -231,13 +233,23 @@ const selectedImpactRadiusKm = computed(() => {
   return errorRadius + Math.max(windBasedRadius, historicalWindRadius.value ?? 0)
 })
 const modelReady = computed(() => health.value?.model.status === 'ready')
+const modelInputSteps = computed(() => health.value?.model.input_steps ?? 4)
 const windowResult = computed(() =>
   selectedTyphoon.value
-    ? buildPredictionWindow(selectedTyphoon.value.points, selectedTyphoon.value.points.length - 1)
+    ? buildPredictionWindow(
+      selectedTyphoon.value.points,
+      selectedTyphoon.value.points.length - 1,
+      modelInputSteps.value,
+      health.value?.model.coordinate_system === 'local_motion_v1'
+    )
     : null
 )
 const canPredict = computed(() => Boolean(windowResult.value?.ok))
 const currentPoint = computed(() => selectedTyphoon.value?.points[currentIndex.value] ?? null)
+const historyTableRows = computed(() => {
+  const points = selectedTyphoon.value?.points ?? []
+  return points.map((point, pointIndex) => ({ point, pointIndex }))
+})
 const replayProgress = computed(() => {
   const length = selectedTyphoon.value?.points.length ?? 0
   return length > 1 ? (currentIndex.value / (length - 1)) * 100 : 0
@@ -268,6 +280,31 @@ const era5Status = computed(() => {
   if (!era5.value) return '同步中'
   return selectedEra5Point.value && (currentWind500.value || currentWind850.value) ? '已同步' : '未匹配'
 })
+const assistantContext = computed(() => ({
+  selected_typhoon: selectedTyphoon.value
+    ? { tfbh: selectedTyphoon.value.tfbh, name: selectedTyphoon.value.name, ename: selectedTyphoon.value.ename }
+    : null,
+  current_point: currentPoint.value
+    ? { time: currentPoint.value.time, lng: currentPoint.value.lng, lat: currentPoint.value.lat, speed: currentPoint.value.speed, power: currentPoint.value.power }
+    : null,
+  forecast: selectedPoint.value
+    ? { lead_hours: selectedPoint.value.lead_hours, lng: selectedPoint.value.lng, lat: selectedPoint.value.lat, speed_ms: selectedPoint.value.speed_ms, location_radius_90_km: selectedPoint.value.location_radius_90_km }
+    : null,
+  era5: selectedEra5Point.value
+    ? { status: era5Status.value, levels: selectedEra5Point.value.levels }
+    : { status: era5Status.value, levels: {} },
+  selected_horizon: selectedLead.value,
+  model: health.value?.model
+    ? {
+      status: health.value.model.status,
+      model_type: health.value.model.model_type,
+      model_version: health.value.model.model_version,
+      coordinate_system: health.value.model.coordinate_system,
+      input_steps: health.value.model.input_steps,
+      device: health.value.model.device
+    }
+    : null
+}))
 
 function canonicalTime(value?: string | null) {
   if (!value) return ''
@@ -393,7 +430,7 @@ function addLegacyHighlight(detail: TyphoonDetail, flyTo = false) {
     name: `${detail.name || detail.ename || detail.tfbh} 选中轨迹`,
     polyline: {
       positions: Cesium.Cartesian3.fromDegreesArray(positions),
-      width: 5,
+      width: 7,
       clampToGround: true,
       material
     }
@@ -403,8 +440,8 @@ function addLegacyHighlight(detail: TyphoonDetail, flyTo = false) {
     name: `${detail.name || detail.ename || detail.tfbh} 观测点 ${index + 1} · ${point.time}`,
     position: Cesium.Cartesian3.fromDegrees(point.lng, point.lat, 18000),
     point: {
-      pixelSize: 9,
-      color: Cesium.Color.fromCssColorString('#b8c0c5'),
+      pixelSize: 13,
+      color: Cesium.Color.fromCssColorString(intensityColors[point.strong ?? ''] ?? '#b8c0c5'),
       outlineColor: Cesium.Color.fromCssColorString('#102431'),
       outlineWidth: 2,
       disableDepthTestDistance: Number.POSITIVE_INFINITY
@@ -418,7 +455,7 @@ function addLegacyHighlight(detail: TyphoonDetail, flyTo = false) {
     id: `MainHighlightMarker-${detail.tfbh}`,
     name: `${detail.name || detail.ename || detail.tfbh} 当前位置`,
     position: Cesium.Cartesian3.fromDegrees(replayPoint.lng, replayPoint.lat, 12000),
-    point: { pixelSize: 15, color: lineColor, outlineColor: white, outlineWidth: 3 }
+    point: { pixelSize: 18, color: lineColor, outlineColor: white, outlineWidth: 3 }
   })
   const icon = viewer.entities.add({
     id: `MainTyphoonIcon-${detail.tfbh}`,
@@ -448,7 +485,7 @@ function addLegacyHighlight(detail: TyphoonDetail, flyTo = false) {
     name: `${detail.name || detail.ename || detail.tfbh} 已回放轨迹`,
     polyline: {
       positions: Cesium.Cartesian3.fromDegreesArray(positions),
-      width: 7,
+      width: 9,
       clampToGround: true,
       material: replayColor,
       show: detail.tfbh === selectedId.value && currentIndex.value > 0
@@ -648,20 +685,29 @@ function requestLegacyPredictionRender(attempt = 0) {
   window.setTimeout(() => requestLegacyPredictionRender(attempt + 1), 250)
 }
 
+function legacyRowTfbh(row: HTMLTableRowElement) {
+  // The legacy table renders its cells without separators, so a row reads like
+  // "202501WUTIPWUTIP" — no word boundary follows the digits. Read the id cell
+  // directly instead of regexing the whole row text.
+  for (const cell of row.querySelectorAll('td')) {
+    const text = cell.textContent?.trim() ?? ''
+    if (/^\d{4,8}$/.test(text)) return text
+  }
+  return undefined
+}
+
 function checkedLegacyIds() {
   const doc = iframeRef.value?.contentDocument
   if (!doc) return []
   return Array.from(doc.querySelectorAll('tr')).flatMap((row) => {
     const checkbox = row.querySelector<HTMLInputElement>('input[type="checkbox"]')
-    const id = row.textContent?.match(/\b\d{4,8}\b/)?.[0]
+    const id = legacyRowTfbh(row)
     return checkbox?.checked && id ? [id] : []
   })
 }
 
 function legacyRowId(row: HTMLTableRowElement) {
-  const candidates = row.textContent?.match(/\b\d{4,8}\b/g) ?? []
-  return candidates.find((candidate) => typhoons.value.some((item) => item.tfbh === candidate))
-    ?? candidates[0]
+  return legacyRowTfbh(row)
 }
 
 function handleLegacyCheckboxChange(event: Event) {
@@ -702,9 +748,7 @@ function handleLegacyTyphoonDblClick(event: MouseEvent) {
   const row = element?.closest('tr')
   if (!row || !row.querySelector('input[type="checkbox"]')) return
 
-  const candidates = row.textContent?.match(/\b\d{4,8}\b/g) ?? []
-  const id = candidates.find((candidate) => typhoons.value.some((item) => item.tfbh === candidate))
-    ?? candidates[0]
+  const id = legacyRowTfbh(row)
   if (!id) return
 
   // The legacy table has its own row-dblclick camera animation. Capture this
@@ -803,6 +847,13 @@ function hideLegacyWorkspaceLink() {
     doc.head?.appendChild(style)
   }
   applyLegacyListLayout(doc)
+  syncLegacyPositionReadout(doc)
+  legacyHeaderResizeObserver?.disconnect()
+  const header = iframeRef.value?.ownerDocument.querySelector<HTMLElement>('.screen-header')
+  if (header) {
+    legacyHeaderResizeObserver = new ResizeObserver(() => applyLegacyListLayout(doc))
+    legacyHeaderResizeObserver.observe(header)
+  }
   window.setTimeout(renderLegacyEra5, 1200)
   doc.querySelectorAll('a[href*="workspace"]').forEach((link) => {
     ;(link as HTMLElement).style.display = 'none'
@@ -821,11 +872,13 @@ function hideLegacyWorkspaceLink() {
   if (doc.body) {
     legacyObserver = new MutationObserver(() => {
       bindLegacyTyphoonRows(doc)
+      syncLegacyPositionReadout(doc)
       requestLegacyHighlightSync()
     })
     legacyObserver.observe(doc.body, {
       subtree: true,
       childList: true,
+      characterData: true,
       attributes: true,
       attributeFilter: ['class', 'checked', 'aria-checked']
     })
@@ -898,6 +951,37 @@ function stopReplay() {
     window.clearInterval(playTimer)
     playTimer = undefined
   }
+}
+
+function stopHistoryTableScroll() {
+  if (historyTableTimer) {
+    window.clearInterval(historyTableTimer)
+    historyTableTimer = undefined
+  }
+}
+
+function historyTableScrollWrap() {
+  return historyTableBody.value?.closest<HTMLElement>('.history-data-table-wrap') ?? null
+}
+
+function startHistoryTableScroll(reset = false) {
+  stopHistoryTableScroll()
+  const tableWrap = historyTableScrollWrap()
+  if (!tableWrap) return
+  if (reset) tableWrap.scrollTop = 0
+  historyTableTimer = window.setInterval(() => {
+    const wrap = historyTableScrollWrap()
+    if (!wrap || wrap.scrollHeight <= wrap.clientHeight) return
+    const maxScrollTop = wrap.scrollHeight - wrap.clientHeight
+    if (wrap.scrollTop >= maxScrollTop - 2) {
+      wrap.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      wrap.scrollTo({
+        top: Math.min(wrap.scrollTop + historyTableScrollStep, maxScrollTop),
+        behavior: 'smooth'
+      })
+    }
+  }, historyTableStepMs)
 }
 
 function toggleReplay() {
@@ -1010,25 +1094,25 @@ function downloadRiskGeoJson() {
     const region = point.uncertainty_region
     const regionFeature = region && region.semi_major_axis_km > 0 && region.semi_minor_axis_km > 0
       ? [{
-          type: 'Feature',
-          properties: {
-            layer: 'historical_calibration_error',
-            typhoon_id: selectedTyphoon.value?.tfbh,
-            lead_hours: point.lead_hours,
-            coverage: region.coverage,
-            region_geometry: region.geometry,
-            interpretation: region.interpretation ?? '历史校准二维位置区域，不是实时灾害概率区'
-          },
-          geometry: {
-            type: 'Polygon',
-            coordinates: [ellipseCoordinates(
-              point,
-              region.semi_major_axis_km,
-              region.semi_minor_axis_km,
-              region.bearing_deg ?? 0
-            )]
-          }
-        }]
+        type: 'Feature',
+        properties: {
+          layer: 'historical_calibration_error',
+          typhoon_id: selectedTyphoon.value?.tfbh,
+          lead_hours: point.lead_hours,
+          coverage: region.coverage,
+          region_geometry: region.geometry,
+          interpretation: region.interpretation ?? '历史校准二维位置区域，不是实时灾害概率区'
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [ellipseCoordinates(
+            point,
+            region.semi_major_axis_km,
+            region.semi_minor_axis_km,
+            region.bearing_deg ?? 0
+          )]
+        }
+      }]
       : []
     const errorRadius = point.location_radius_90_km ?? 0
     const windBasedRadius = Math.max(35, (point.speed_ms ?? 0) * 2.5)
@@ -1051,7 +1135,7 @@ function downloadRiskGeoJson() {
         era5_context: 'ERA5 850 hPa track-aligned wind or nearest matching sample; environmental context, not CNN input',
         interpretation: 'Heuristic estimate; not a hazard probability, observed impact footprint, or official warning'
       },
-        geometry: {
+      geometry: {
         type: 'Polygon',
         coordinates: [ellipseCoordinates(point, impactRadius, impactRadius * 0.72, impactBearingDegrees.value ?? region?.bearing_deg ?? 0)]
       }
@@ -1086,8 +1170,10 @@ function exportCanvasPng(kind: 'screenshot' | 'wind') {
   }
   try {
     legacyFrame()?.viewer?.scene?.requestRender?.()
-    legacyFrame()?.viewer && typeof (legacyFrame()?.viewer as LegacyViewer & { render?: () => void }).render === 'function'
-      && (legacyFrame()?.viewer as LegacyViewer & { render: () => void }).render()
+    const viewer = legacyFrame()?.viewer as (LegacyViewer & { render?: () => void }) | undefined
+    if (viewer && typeof viewer.render === 'function') {
+      viewer.render()
+    }
     let exportCanvas = canvas
     if (kind === 'wind') {
       exportCanvas = document.createElement('canvas')
@@ -1181,10 +1267,13 @@ function drawWindExportPanel(
     const wind = point.levels['850']
     if (!wind) continue
     y += lineHeight
-    const arrowX = left + 12 * scale
+    const arrowX = left + 10 * scale
     const arrowY = y - 5 * scale
     const angle = Math.atan2(wind.v, wind.u)
-    const arrowLength = 84 * scale
+    // Keep each arrow inside its own row band (lineHeight). The old 84px shaft
+    // ran through several rows and the arrows overlapped into a clump.
+    const arrowLength = (10 + Math.min(Math.max(wind.speed_ms, 0), 30) * 0.25) * scale
+    const headLength = 5.5 * scale
     context.strokeStyle = '#b8c0c5'
     context.fillStyle = '#b8c0c5'
     context.lineWidth = Math.max(1, 2 * scale)
@@ -1194,14 +1283,14 @@ function drawWindExportPanel(
     context.stroke()
     context.beginPath()
     context.moveTo(arrowX + Math.cos(angle) * arrowLength, arrowY - Math.sin(angle) * arrowLength)
-    context.lineTo(arrowX + Math.cos(angle + 2.55) * 21 * scale, arrowY - Math.sin(angle + 2.55) * 21 * scale)
-    context.lineTo(arrowX + Math.cos(angle - 2.55) * 21 * scale, arrowY - Math.sin(angle - 2.55) * 21 * scale)
+    context.lineTo(arrowX + Math.cos(angle + 2.55) * headLength, arrowY - Math.sin(angle + 2.55) * headLength)
+    context.lineTo(arrowX + Math.cos(angle - 2.55) * headLength, arrowY - Math.sin(angle - 2.55) * headLength)
     context.closePath()
     context.fill()
     context.fillStyle = '#e5f1f3'
     context.font = `500 ${12 * scale}px "Microsoft YaHei", Arial, sans-serif`
     const time = point.time.replace('T', ' ').slice(0, 16)
-    context.fillText(`${time}   ${wind.speed_ms.toFixed(1)} m/s   ${wind.direction_deg.toFixed(0)}°`, left + 108 * scale, y)
+    context.fillText(`${time}   ${wind.speed_ms.toFixed(1)} m/s   ${wind.direction_deg.toFixed(0)}°`, left + 46 * scale, y)
   }
 
   if (exportInfoEnabled('era5')) {
@@ -1549,6 +1638,12 @@ watch(currentIndex, () => {
   updateLegacyMarker()
 })
 
+watch(selectedTyphoon, async () => {
+  await nextTick()
+  startHistoryTableScroll(true)
+  window.setTimeout(() => startHistoryTableScroll(), 240)
+})
+
 watch(selectedLead, () => requestLegacyPredictionRender())
 
 watch(prediction, () => requestLegacyPredictionRender(), { deep: true })
@@ -1584,6 +1679,7 @@ watch(exportInfoIds, () => {
 
 onUnmounted(() => {
   stopReplay()
+  stopHistoryTableScroll()
   finishReplayRecording()
   clearLegacyPrediction()
   clearLegacyEra5()
@@ -1591,11 +1687,14 @@ onUnmounted(() => {
   legacyDblClickWindow?.removeEventListener('dblclick', handleLegacyTyphoonDblClick, true)
   legacyCheckboxDocument?.removeEventListener('change', handleLegacyCheckboxChange, true)
   legacyObserver?.disconnect()
+  legacyHeaderResizeObserver?.disconnect()
+  window.removeEventListener('resize', handleLegacyViewportResize)
   if (legacySyncTimer) window.clearTimeout(legacySyncTimer)
   if (exportSettingsSaveTimer) window.clearTimeout(exportSettingsSaveTimer)
 })
 
 onMounted(async () => {
+  window.addEventListener('resize', handleLegacyViewportResize)
   health.value = await fetchHealth().catch(() => null)
   years.value = await fetchYears().catch(() => [])
   if (!years.value.includes(selectedYear.value)) selectedYear.value = years.value[0] ?? 2024
@@ -1617,21 +1716,56 @@ onMounted(async () => {
 
     <header class="screen-header" aria-label="平台导航">
       <div class="screen-brand">
-        <div class="screen-brand-title-row">
-          <h1>历年台风展示监控平台</h1>
-          <span class="screen-brand-subtitle">轨迹回放 · CNN 预测 · ERA5 风场</span>
+        <span class="screen-brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 44 44" role="presentation">
+            <circle cx="22" cy="22" r="17" />
+            <path d="M14 18c2-5 9-7 14-3 3 2 4 5 3 8M30 26c-2 5-9 7-14 3-3-2-4-5-3-8" />
+            <circle cx="22" cy="22" r="2.3" class="mark-core" />
+          </svg>
+        </span>
+        <div class="screen-brand-copy">
+          <h1>热带气旋可视化与预测平台</h1>
+          <span class="screen-brand-subtitle">台风智轨 <i>|</i> 气旋视界队</span>
         </div>
       </div>
 
+      <div class="screen-header-status" aria-label="系统状态">
+        <span class="status-connector" aria-hidden="true"><i></i></span>
+        <span class="status-dot" :class="{ ready: health?.data.status === 'ready' }"></span>
+        <span>在线</span>
+      </div>
+
       <nav class="top-actions" aria-label="功能模块">
-        <button type="button" title="回到大屏全局视角" @click="resetGlobal">⌂ <span>全局视角</span></button>
-        <button type="button" :class="{ active: showPanel && panelMode === 'history' }" title="打开历史路径面板" @click="openPanel('history')">⌁ <span>历史路径</span></button>
-        <button type="button" :class="{ active: showPanel && panelMode === 'forecast' }" title="打开模型预测面板" @click="openPanel('forecast')">◈ <span>模型预测</span></button>
-        <button type="button" :class="{ active: showPanel && panelMode === 'environment' }" title="打开 ERA5 环境场面板" @click="openPanel('environment')">↗ <span>环境风场</span></button>
-        <button type="button" :class="{ active: showPanel && panelMode === 'risk' }" title="打开风险研判面板" @click="openPanel('risk')">△ <span>风险研判</span></button>
-        <button type="button" :class="{ active: showPanel && panelMode === 'export' }" title="打开导出面板" @click="openPanel('export')">⇩ <span>导出</span></button>
-        <button type="button" :class="{ active: assistantOpen }" title="打开 AI 研判助手" @click="assistantOpen = !assistantOpen">✦ <span>AI 研判</span></button>
+        <button class="nav-item" type="button" :class="{ active: !showPanel }" title="回到大屏全局视角" @click="resetGlobal">
+          <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 13.5 14 6l9 7.5M8 12.5V22h12v-9.5M11 22v-6h6v6" /></svg>
+          <span>全局视角<small>Overview</small></span>
+        </button>
+        <button class="nav-item" type="button" :class="{ active: showPanel && panelMode === 'history' }" title="打开历史路径面板" @click="openPanel('history')">
+          <svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="7.5" /><path d="M14 9.5v4.8l3.5 2.2" /></svg>
+          <span>历史路径<small>History</small></span>
+        </button>
+        <button class="nav-item" type="button" :class="{ active: showPanel && panelMode === 'forecast' }" title="打开模型预测面板" @click="openPanel('forecast')">
+          <svg viewBox="0 0 28 28" aria-hidden="true"><path d="m5 20 6-8 5 4 7-10" /><path d="M18 6h5v5" /></svg>
+          <span>模型预测<small>Prediction</small></span>
+        </button>
+        <button class="nav-item" type="button" :class="{ active: showPanel && panelMode === 'environment' }" title="打开 ERA5 环境场面板" @click="openPanel('environment')">
+          <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 9h14M4 14h18M7 19h10" /><path d="M19 17a3 3 0 1 0 0-6" /></svg>
+          <span>环境风场<small>Wind Field</small></span>
+        </button>
+        <button class="nav-item" type="button" :class="{ active: showPanel && panelMode === 'risk' }" title="打开风险研判面板" @click="openPanel('risk')">
+          <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 4 23 7.5v6.2c0 5-3.8 8-9 10-5.2-2-9-5-9-10V7.5L14 4Z" /><path d="m10 14 2.7 2.7L18 11" /></svg>
+          <span>风险研判<small>Risk</small></span>
+        </button>
       </nav>
+
+      <button class="runtime-status" type="button" title="查看运行状态" @click="openPanel('forecast')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 2-6 11h5l-2 9 6-11h-5l2-9Z" /></svg>
+        <span>运行状态</span>
+      </button>
+      <button class="export-action" type="button" :class="{ active: showPanel && panelMode === 'export' }" title="打开导出面板" @click="openPanel('export')">
+        <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 19V7M9 12l5-5 5 5M7 20c1.5 3 12.5 3 14 0" /></svg>
+        <span>导出</span>
+      </button>
     </header>
 
     <section
@@ -1875,16 +2009,67 @@ onMounted(async () => {
       </template>
     </section>
 
-    <footer
+    <section
       v-if="selectedTyphoon"
+      class="history-data-panel"
+      aria-label="历史路径数据展示"
+    >
+      <div class="history-data-heading">
+        <div>
+          <span class="history-data-title">历史路径数据展示</span>
+          <small>{{ selectedTyphoon.name || selectedTyphoon.ename || selectedTyphoon.tfbh }} · {{ selectedTyphoon.points.length }} 个观测点</small>
+          <ul class="history-intensity-legend" aria-label="台风强度图例">
+            <li v-for="item in intensityLegend" :key="item.label">
+              <i :style="{ background: item.color }"></i>{{ item.label }}
+            </li>
+          </ul>
+        </div>
+        <span class="history-data-live"><i></i>自动滚动</span>
+      </div>
+      <div
+        class="history-data-table-wrap"
+        @mouseenter="stopHistoryTableScroll"
+        @mouseleave="startHistoryTableScroll()"
+      >
+        <table class="history-data-table">
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>经度 (°E)</th>
+              <th>纬度 (°N)</th>
+              <th>风速 (m/s)</th>
+              <th>气压 (hPa)</th>
+              <th>强度</th>
+            </tr>
+          </thead>
+          <tbody ref="historyTableBody">
+            <tr
+              v-for="row in historyTableRows"
+              :key="`${row.pointIndex}-${row.point.time}`"
+              :class="{ current: row.pointIndex === currentIndex }"
+            >
+              <td>{{ row.point.time?.replace('T', ' ') ?? '--' }}</td>
+              <td>{{ Number.isFinite(row.point.lng) ? row.point.lng.toFixed(1) : '--' }}</td>
+              <td>{{ Number.isFinite(row.point.lat) ? row.point.lat.toFixed(1) : '--' }}</td>
+              <td class="accent-speed">{{ typeof row.point.speed === 'number' ? row.point.speed.toFixed(1) : '--' }}</td>
+              <td class="accent-pressure">{{ typeof row.point.pressure === 'number' ? row.point.pressure.toFixed(0) : '--' }}</td>
+              <td>{{ row.point.strong || '--' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer
       ref="timelineElement"
       class="legacy-timeline"
+      :class="{ 'is-empty': !selectedTyphoon }"
     >
       <div class="legacy-timeline-control">
         <button
           class="legacy-play-button"
           type="button"
-          :disabled="!selectedTyphoon.points.length"
+          :disabled="!selectedTyphoon?.points.length"
           :title="playing ? '暂停历史回顾' : '播放历史回顾'"
           @click="toggleReplay"
         >
@@ -1892,7 +2077,7 @@ onMounted(async () => {
         </button>
         <div>
           <strong>历史回顾</strong>
-          <small>{{ currentIndex + 1 }} / {{ selectedTyphoon.points.length }}</small>
+          <small>{{ selectedTyphoon ? `${currentIndex + 1} / ${selectedTyphoon.points.length} 个观测点` : '等待历史数据' }}</small>
         </div>
       </div>
       <div class="legacy-timeline-track">
@@ -1900,36 +2085,35 @@ onMounted(async () => {
           v-model.number="currentIndex"
           type="range"
           min="0"
-          :max="Math.max(selectedTyphoon.points.length - 1, 0)"
+          :max="Math.max((selectedTyphoon?.points.length ?? 0) - 1, 0)"
           :style="{ '--progress': `${replayProgress}%` }"
-          :disabled="!selectedTyphoon.points.length"
+          :disabled="!selectedTyphoon?.points.length"
           aria-label="历史回顾进度"
         />
-        <div class="legacy-timeline-dates">
-          <span>{{ selectedTyphoon.points[0]?.time?.replace('T', ' ') ?? '--' }}</span>
-          <span>{{ selectedTyphoon.points[selectedTyphoon.points.length - 1]?.time?.replace('T', ' ') ?? '--' }}</span>
-        </div>
       </div>
       <div class="legacy-replay-readout">
-        <strong>{{ currentPoint?.time?.replace('T', ' ') ?? '--' }}</strong>
-        <span>{{ currentPoint?.lat.toFixed(1) ?? '--' }}°N · {{ currentPoint?.lng.toFixed(1) ?? '--' }}°E</span>
+        <strong>{{ selectedTyphoon ? currentPoint?.time?.replace('T', ' ') ?? '--' : '当前状态' }}</strong>
+        <span>{{ selectedTyphoon ? `${currentPoint?.lat.toFixed(1) ?? '--'}°N · ${currentPoint?.lng.toFixed(1) ?? '--'}°E` : '尚无可回放的观测点' }}</span>
       </div>
-      <button class="legacy-reset-button" type="button" :disabled="!selectedTyphoon.points.length" @click="resetTimeline">重置</button>
+      <button class="legacy-reset-button" type="button" :disabled="!selectedTyphoon?.points.length" @click="resetTimeline">重置</button>
     </footer>
+    <div class="viewport-readout" aria-label="地图视角位置">
+      <span>{{ positionReadout.longitude }}</span>
+      <span>{{ positionReadout.latitude }}</span>
+      <span>{{ positionReadout.altitude }}</span>
+    </div>
+    <TyphoonAssistant :context="assistantContext" />
   </main>
-  <AssistantPanel
-    v-if="assistantOpen"
-    :open="assistantOpen"
-    :context="assistantContext"
-    @close="assistantOpen = false"
-  />
 </template>
 
 <style scoped>
 .screen {
   position: relative;
-  width: 100vw;
+  display: grid;
+  grid-template-rows: 72px minmax(0, 1fr) 64px 28px;
+  width: 100%;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background: #030b14;
 }
@@ -1938,100 +2122,302 @@ onMounted(async () => {
   display: block;
   width: 100%;
   height: 100%;
+  min-height: 0;
   border: 0;
+  grid-row: 2;
 }
 
 .screen-header {
-  position: fixed;
-  top: 8px;
-  right: 18px;
-  left: 18px;
+  position: relative;
+  grid-row: 1;
+  min-width: 0;
+  height: 72px;
   z-index: 40;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 22px;
+  align-items: center;
+  gap: 14px;
+  padding: 0 22px;
+  border-bottom: 1px solid rgba(33, 82, 117, 0.72);
+  background: linear-gradient(180deg, #0e2238 0%, #0a1930 100%);
+  box-shadow: 0 3px 18px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
   pointer-events: none;
 }
 
 .screen-brand {
-  min-width: 250px;
-  padding-left: 12px;
-  border-left: 3px solid #67e8d0;
+  display: flex;
+  flex: 0 0 clamp(421px, 24.8vw, 632px);
+  align-items: center;
+  min-width: 0;
+  gap: 11px;
   color: #e4ffff;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.72);
   pointer-events: auto;
 }
 
-.screen-brand h1 {
-  margin: 0 0 3px;
-  color: #f2ffff;
-  font-size: 25px;
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
+.screen-brand-mark {
+  display: grid;
+  flex: 0 0 50px;
+  width: 50px;
+  height: 50px;
+  place-items: center;
+  border: 1px solid #3ec9e8;
+  border-radius: 50%;
+  color: #5fe0f5;
+  background: #0d3450;
+  box-shadow: 0 0 13px rgba(62, 201, 232, 0.72), inset 0 0 10px rgba(62, 201, 232, 0.16);
 }
 
-.screen-brand-title-row {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: baseline;
-  column-gap: 16px;
+.screen-brand-mark svg {
+  width: 38px;
+  height: 38px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 4px rgba(95, 224, 245, 0.7));
+}
+
+.screen-brand-mark .mark-core {
+  fill: #8fefff;
+  stroke: none;
+}
+
+.screen-brand-copy {
+  min-width: 0;
+}
+
+.screen-brand h1 {
+  overflow: hidden;
+  margin: 0;
+  color: #62d0ef;
+  font-size: clamp(19px, 2vw, 28px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(79, 198, 238, 0.44);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .screen-brand-subtitle {
   display: block;
-  color: #ffffff;
-  font-size: 11px;
+  margin-top: 5px;
+  color: #7fc3de;
+  font-size: 13px;
+  letter-spacing: 1px;
   white-space: nowrap;
 }
 
-.top-actions {
-  position: static;
+.screen-brand-subtitle i {
+  margin: 0 6px;
+  color: #4e89a8;
+  font-style: normal;
+}
+
+.screen-header-status {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-  max-width: min(820px, 70vw);
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  color: #3ddc84;
+  font-size: 16px;
+  letter-spacing: 1px;
   pointer-events: auto;
 }
 
-.top-actions button,
-.top-actions a {
-  min-height: 42px;
-  border: 1px solid rgba(103, 232, 208, 0.62);
-  border-radius: 3px;
-  padding: 0 14px;
-  color: #d7ffff;
-  background: rgba(4, 36, 52, 0.92);
-  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
+.status-connector {
+  position: relative;
+  display: block;
+  width: 40px;
+  height: 12px;
+  margin-right: 1px;
+}
+
+.status-connector::before,
+.status-connector::after {
+  position: absolute;
+  top: 5px;
+  height: 1px;
+  content: '';
+  background: #2aa8cc;
+}
+
+.status-connector::before {
+  right: 16px;
+  left: 0;
+}
+
+.status-connector::after {
+  right: 0;
+  width: 10px;
+}
+
+.status-connector i {
+  position: absolute;
+  top: 1px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #3ec9e8;
+  border-radius: 50%;
+}
+
+.status-connector i::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  content: '';
+  background: #7fe8ff;
+}
+
+.top-actions {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  height: 60px;
+  overflow: hidden;
+  border: 1px solid #1d4a6b;
+  border-radius: 29px;
+  background: #10283f;
+  pointer-events: auto;
+}
+
+.nav-item {
+  display: flex;
+  flex: 1 1 94px;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  height: 58px;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 26px;
+  color: #bfe3f2;
+  background: transparent;
   cursor: pointer;
-  font: 600 13px/1.2 'Microsoft YaHei', sans-serif;
-  text-decoration: none;
+  font: 500 14px/1.1 'Microsoft YaHei', sans-serif;
+  letter-spacing: 0.5px;
+  transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.nav-item svg {
+  flex: 0 0 25px;
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: #5fc8e6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.nav-item span {
+  display: grid;
+  gap: 3px;
+  text-align: center;
   white-space: nowrap;
 }
 
-.top-actions button span {
-  margin-left: 3px;
+.nav-item small {
+  color: #5e93b2;
+  font-size: 10px;
+  letter-spacing: 0;
 }
 
-.top-actions button:hover,
-.top-actions button.active,
-.top-actions a:hover,
-.close-button:hover {
-  color: #06212a;
-  background: #67e8d0;
+.nav-item:hover,
+.nav-item.active {
+  color: #fff;
+  background: linear-gradient(180deg, #25b7d6, #1490b4);
+  box-shadow: 0 0 15px rgba(39, 195, 224, 0.56);
+}
+
+.nav-item.active svg,
+.nav-item:hover svg {
+  stroke: #fff;
+}
+
+.nav-item.active small,
+.nav-item:hover small {
+  color: #d8f4ff;
+}
+
+.runtime-status {
+  display: grid;
+  flex: 0 0 58px;
+  justify-items: center;
+  gap: 1px;
+  padding: 0;
+  color: #bfe3f2;
+  background: transparent;
+  cursor: pointer;
+  font: 500 10px/1.1 'Microsoft YaHei', sans-serif;
+  letter-spacing: 0.7px;
+  pointer-events: auto;
+}
+
+.runtime-status svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: #f2c94c;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 4px rgba(242, 201, 76, 0.42));
+}
+
+.runtime-status:hover {
+  color: #fff;
+}
+
+.export-action {
+  display: flex;
+  flex: 0 0 70px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+  color: #bfe3f2;
+  background: transparent;
+  cursor: pointer;
+  font: 500 13px/1.1 'Microsoft YaHei', sans-serif;
+  letter-spacing: 1px;
+  pointer-events: auto;
+}
+
+.export-action svg {
+  width: 38px;
+  height: 38px;
+  padding: 7px;
+  border: 1.5px solid #3ec9e8;
+  border-radius: 50%;
+  fill: none;
+  stroke: #8fe8ff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+  background: #12314c;
+  box-shadow: 0 0 12px rgba(62, 201, 232, 0.46);
+}
+
+.export-action:hover,
+.export-action.active {
+  color: #fff;
 }
 
 .forecast-panel {
   position: fixed;
-  top: 68px;
-  right: 18px;
-  bottom: 80px;
+  top: 72px;
+  right: 0;
+  bottom: 92px;
   z-index: 30;
-  width: min(430px, calc(100vw - 36px));
+  width: max(min(25vw, 430px), calc(20vw + 4px));
   overflow: auto;
-  padding: 16px;
+  padding: 12px;
   border: 1px solid rgba(92, 211, 210, 0.78);
   border-radius: 3px;
   color: #e4ffff;
@@ -2047,34 +2433,34 @@ onMounted(async () => {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .kicker {
   color: #67e8d0;
-  font-size: 10px;
+  font-size: 15px;
   letter-spacing: 1px;
 }
 
 .panel-title h2 {
   margin: 3px 0 0;
-  font-size: 20px;
+  font-size: 28px;
 }
 
 .panel-context {
   margin: 5px 0 0;
   color: #87a9ad;
-  font-size: 11px;
+  font-size: 16px;
 }
 
 .metric-switch button {
-  min-height: 28px;
+  min-height: 36px;
   border: 0;
   border-radius: 2px;
   color: #91afb3;
   background: transparent;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 15px;
 }
 
 .metric-switch button.active {
@@ -2088,8 +2474,8 @@ onMounted(async () => {
 }
 
 .selection-block {
-  margin-bottom: 14px;
-  padding-bottom: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 15px;
   border-bottom: 1px solid rgba(143, 207, 205, 0.16);
 }
 
@@ -2103,7 +2489,7 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
-  margin: 10px 0 14px;
+  margin: 12px 0 18px;
   border: 1px solid rgba(143, 207, 205, 0.14);
   background: rgba(143, 207, 205, 0.12);
 }
@@ -2112,9 +2498,9 @@ onMounted(async () => {
 .prediction-meta div,
 .source-meta div {
   display: grid;
-  gap: 5px;
-  min-height: 55px;
-  padding: 9px;
+  gap: 7px;
+  min-height: 76px;
+  padding: 11px;
   background: rgba(8, 29, 39, 0.92);
 }
 
@@ -2122,7 +2508,7 @@ onMounted(async () => {
 .prediction-meta span,
 .source-meta span {
   color: #94b8be;
-  font-size: 10px;
+  font-size: 15px;
 }
 
 .history-overview strong,
@@ -2130,7 +2516,7 @@ onMounted(async () => {
 .source-meta strong {
   overflow-wrap: anywhere;
   color: #eaf6f5;
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -2140,8 +2526,8 @@ onMounted(async () => {
   gap: 8px 12px;
   margin-top: 13px;
   color: #b5ccd0;
-  font-size: 10px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .legend-swatch {
@@ -2190,15 +2576,15 @@ onMounted(async () => {
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  margin: 18px 0 8px;
+  margin: 18px 0 10px;
   color: #67e8d0;
-  font-size: 12px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 .section-heading small {
   color: #749399;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 400;
 }
 
@@ -2217,10 +2603,10 @@ onMounted(async () => {
 }
 
 .export-legend-trigger {
-  min-height: 38px;
+  min-height: 40px;
   padding: 0 10px;
   color: #dff8f4;
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
   list-style: none;
 }
@@ -2244,7 +2630,7 @@ onMounted(async () => {
 .export-legend-trigger span,
 .export-legend-picker small {
   color: #8eabb0;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .export-legend-menu {
@@ -2262,7 +2648,7 @@ onMounted(async () => {
   border: 1px solid rgba(103, 232, 208, 0.35);
   color: #9fe8dc;
   background: transparent;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -2270,7 +2656,7 @@ onMounted(async () => {
   display: block;
   margin: 8px 0 2px;
   color: #9fe8dc;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -2278,9 +2664,9 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  min-height: 24px;
+  min-height: 26px;
   color: #d5e9ee;
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
 }
 
@@ -2318,7 +2704,7 @@ onMounted(async () => {
 
 .comparison-snapshot span small {
   color: #66838a;
-  font-size: 9px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
@@ -2391,10 +2777,10 @@ onMounted(async () => {
 .model-line {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin: 8px 0 13px;
+  gap: 8px;
+  margin: 12px 0 18px;
   color: #b5ccd0;
-  font-size: 12px;
+  font-size: 17px;
 }
 
 .status-dot {
@@ -2411,29 +2797,29 @@ onMounted(async () => {
 
 .field-label {
   display: block;
-  margin: 9px 0 4px;
+  margin: 11px 0 5px;
   color: #94b8be;
-  font-size: 11px;
+  font-size: 16px;
 }
 
 .forecast-panel select {
   width: 100%;
-  min-height: 33px;
+  min-height: 44px;
   border: 1px solid #356a76;
   border-radius: 3px;
-  padding: 6px 8px;
+  padding: 8px 10px;
   color: #e4ffff;
   background: #0a2a38;
-  font: 13px 'Microsoft YaHei', sans-serif;
+  font: 18px 'Microsoft YaHei', sans-serif;
 }
 
 .selection-info {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  margin: 12px 0;
+  margin: 15px 0;
   color: #70e2d3;
-  font-size: 13px;
+  font-size: 18px;
 }
 
 .selection-info span,
@@ -2443,7 +2829,7 @@ onMounted(async () => {
 .comparison-snapshot span,
 .analysis-metric-list span {
   color: #94b8be;
-  font-size: 11px;
+  font-size: 16px;
 }
 
 .horizon-group,
@@ -2451,20 +2837,21 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 4px;
-  margin: 10px 0;
+  margin: 14px 0;
 }
 
 .horizon-group button,
 .analysis-horizons button {
-  min-height: 28px;
+  min-height: 40px;
   padding: 5px 1px;
+  font-size: 16px;
 }
 
 .prediction-readout {
   display: grid;
-  gap: 8px;
-  margin: 10px 0;
-  padding: 10px;
+  gap: 12px;
+  margin: 14px 0;
+  padding: 15px;
   border-left: 3px solid #ff806f;
   background: #0b3441;
 }
@@ -2484,26 +2871,27 @@ onMounted(async () => {
 .comparison-snapshot strong,
 .analysis-metric-list strong {
   color: #fff;
-  font-size: 12px;
+  font-size: 17px;
   text-align: right;
 }
 
 .message {
-  margin: 10px 0;
+  margin: 12px 0;
   color: #ffb1a2;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 .run-button {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 14px;
   border: 0;
   border-radius: 3px;
-  padding: 10px;
+  padding: 16px;
   color: #06212a;
   background: #67e8d0;
   cursor: pointer;
+  font-size: 18px;
   font-weight: 700;
 }
 
@@ -2515,30 +2903,30 @@ onMounted(async () => {
 
 .panel-note {
   display: block;
-  margin-top: 12px;
+  margin-top: 15px;
   color: #749399;
-  font-size: 10px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .forecast-subtabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px;
-  margin: 0 0 14px;
+  margin: 0 0 18px;
   padding: 3px;
   border: 1px solid rgba(143, 207, 205, 0.2);
   background: rgba(8, 36, 48, 0.7);
 }
 
 .forecast-subtabs button {
-  min-height: 30px;
+  min-height: 42px;
   border: 0;
   border-radius: 2px;
   color: #9dbabc;
   background: transparent;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 16px;
 }
 
 .forecast-subtabs button.active {
@@ -2548,12 +2936,12 @@ onMounted(async () => {
 }
 
 .impact-note {
-  margin: 9px 0 0;
-  padding-left: 9px;
+  margin: 13px 0 0;
+  padding-left: 10px;
   border-left: 2px solid #ef4444;
   color: #a9c0c4;
-  font-size: 10px;
-  line-height: 1.55;
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .environment-toolbar {
@@ -2563,7 +2951,7 @@ onMounted(async () => {
   gap: 12px;
   margin-bottom: 10px;
   color: #d3eeee;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .environment-toolbar select {
@@ -2623,7 +3011,7 @@ onMounted(async () => {
   display: block;
   margin-top: 4px;
   color: #87a9ad;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .wind-arrow {
@@ -2648,7 +3036,7 @@ onMounted(async () => {
 
 .risk-radius span {
   color: #c7b081;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .risk-radius strong {
@@ -2665,14 +3053,14 @@ onMounted(async () => {
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(143, 207, 205, 0.16);
   color: #67e8d0;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .analysis-headline strong {
   display: block;
   margin-top: 5px;
   color: #eaf6f5;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -2686,8 +3074,8 @@ onMounted(async () => {
 
 .comparison-snapshot div,
 .analysis-metric-list div {
-  min-height: 34px;
-  padding: 7px 0;
+  min-height: 44px;
+  padding: 9px 0;
   border-bottom: 1px solid rgba(143, 207, 205, 0.1);
 }
 
@@ -2721,18 +3109,187 @@ onMounted(async () => {
   cursor: not-allowed;
 }
 
-.legacy-timeline {
+.history-data-panel {
   position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  right: max(min(25vw, 430px), calc(20vw + 4px));
+  bottom: 92px;
+  left: calc(min(18vw, 400px) + 4px);
+  z-index: 34;
+  width: auto;
+  min-width: 0;
+  overflow: hidden;
+  transform: none;
+  border: 1px solid rgba(43, 185, 224, 0.62);
+  color: #d8f4ff;
+  background: linear-gradient(180deg, rgba(10, 42, 71, 0.25), rgba(5, 27, 48, 0.25));
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35), 0 0 18px rgba(31, 151, 198, 0.12);
+  font-family: 'Microsoft YaHei', sans-serif;
+  pointer-events: auto;
+}
+
+.history-data-heading {
+  display: flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 12px;
+  border-bottom: 1px solid rgba(68, 174, 214, 0.25);
+  background: rgba(12, 44, 74, 0.92);
+}
+
+.history-data-heading > div {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+
+.history-data-title {
+  color: #a8e8ff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+}
+
+.history-data-heading small {
+  overflow: hidden;
+  color: #6c9fbb;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-intensity-legend {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  color: #9db8c8;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.history-intensity-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.history-intensity-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+}
+
+.history-data-live {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  color: #3ddc84;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.history-data-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3ddc84;
+  box-shadow: 0 0 8px rgba(61, 220, 132, 0.8);
+}
+
+.history-data-table-wrap {
+  height: clamp(190px, 28vh, 320px);
+  background: rgba(13, 43, 71, 0.25);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-color: #2aa8cc rgba(13, 43, 71, 0.72);
+  scrollbar-width: thin;
+}
+
+.history-data-table-wrap::-webkit-scrollbar {
+  width: 7px;
+}
+
+.history-data-table-wrap::-webkit-scrollbar-track {
+  background: rgba(13, 43, 71, 0.72);
+}
+
+.history-data-table-wrap::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: #2aa8cc;
+}
+
+.history-data-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.history-data-table th,
+.history-data-table td {
+  overflow: hidden;
+  height: 34px;
+  padding: 0 8px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 32px;
+  color: #7fc3de;
+  background: #123a5e;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.history-data-table td {
+  border-top: 1px solid rgba(44, 112, 151, 0.22);
+  color: #9cc8de;
+  background: rgba(13, 43, 71, 0.25);
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.history-data-table tbody tr:nth-child(even) td {
+  background: rgba(13, 43, 71, 0.25);
+}
+
+.history-data-table tbody tr:hover td,
+.history-data-table tbody tr.current td {
+  color: #ffffff;
+  background: rgba(31, 169, 201, 0.48);
+}
+
+.history-data-table td.accent-speed {
+  color: #f2d24b;
+}
+
+.history-data-table td.accent-pressure {
+  color: #ff9a5a;
+}
+
+.legacy-timeline {
+  position: relative;
+  grid-row: 3;
   z-index: 35;
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr) 250px 54px;
-  gap: 14px;
+  grid-template-columns: minmax(207px, 1.2fr) minmax(120px, 3fr) minmax(160px, 0.8fr) 54px;
+  gap: 16px;
   align-items: center;
-  min-height: 72px;
-  padding: 10px 20px;
+  min-height: 0;
+  padding: 5px 22px;
   border-top: 1px solid rgba(103, 232, 208, 0.32);
   color: #e4ffff;
   background: rgba(3, 24, 38, 0.94);
@@ -2742,30 +3299,43 @@ onMounted(async () => {
   resize: none;
 }
 
+.viewport-readout {
+  grid-row: 4;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+  padding: 0 22px;
+  border-top: 1px solid rgba(33, 82, 117, 0.5);
+  color: rgba(178, 221, 235, 0.86);
+  background: #031724;
+  font: 11px 'Microsoft YaHei', sans-serif;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
 .legacy-timeline-control,
-.legacy-replay-readout,
-.legacy-timeline-dates {
+.legacy-replay-readout {
   display: flex;
   align-items: center;
 }
 
 .legacy-timeline-control {
-  gap: 10px;
+  gap: 8px;
 }
 
 .legacy-timeline-control strong,
 .legacy-replay-readout strong {
   display: block;
   color: #eaf6f5;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .legacy-timeline-control small,
-.legacy-replay-readout span,
-.legacy-timeline-dates {
+.legacy-replay-readout span {
   color: #7f9da7;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .legacy-timeline-control small {
@@ -2775,15 +3345,15 @@ onMounted(async () => {
 
 .legacy-play-button {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   place-items: center;
   border: 1px solid rgba(103, 232, 208, 0.56);
   border-radius: 2px;
   color: #06212a;
   background: #67e8d0;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .legacy-play-button:disabled,
@@ -2800,8 +3370,8 @@ onMounted(async () => {
 .legacy-timeline-track input {
   display: block;
   width: 100%;
-  height: 6px;
-  margin: 4px 0 8px;
+  height: 10px;
+  margin: 0;
   appearance: none;
   border-radius: 3px;
   outline: none;
@@ -2810,8 +3380,8 @@ onMounted(async () => {
 }
 
 .legacy-timeline-track input::-webkit-slider-thumb {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   appearance: none;
   border: 2px solid #06212a;
   border-radius: 50%;
@@ -2820,17 +3390,12 @@ onMounted(async () => {
 }
 
 .legacy-timeline-track input::-moz-range-thumb {
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   border: 2px solid #06212a;
   border-radius: 50%;
   background: #f7c873;
   box-shadow: 0 0 0 2px #67e8d0;
-}
-
-.legacy-timeline-dates {
-  justify-content: space-between;
-  gap: 12px;
 }
 
 .legacy-replay-readout {
@@ -2849,13 +3414,13 @@ onMounted(async () => {
 }
 
 .legacy-reset-button {
-  min-height: 30px;
+  min-height: 34px;
   border: 1px solid rgba(143, 207, 205, 0.3);
   border-radius: 2px;
   color: #67e8d0;
   background: transparent;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .legacy-reset-button:hover {
@@ -2863,46 +3428,146 @@ onMounted(async () => {
   background: rgba(103, 232, 208, 0.1);
 }
 
+.legacy-timeline.is-empty .legacy-timeline-track input {
+  cursor: not-allowed;
+}
+
 @media (max-width: 760px) {
+  .screen {
+    grid-template-rows: 102px minmax(0, 1fr) 50px 24px;
+  }
+
   .screen-header {
-    top: 8px;
-    right: 8px;
-    left: 8px;
-    flex-direction: column;
-    gap: 8px;
+    height: 102px;
+    min-height: 0;
+    padding: 8px;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 7px;
+  }
+
+  .screen-header-status {
+    margin-left: auto;
+    font-size: 11px;
+  }
+
+  .status-connector,
+  .runtime-status {
+    display: none;
+  }
+
+  .export-action {
+    flex: 0 0 54px;
+    font-size: 0;
   }
 
   .screen-brand {
     min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .screen-brand-mark {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .screen-brand-mark svg {
+    width: 28px;
+    height: 28px;
   }
 
   .screen-brand h1 {
-    font-size: 20px;
+    font-size: 16px;
+    letter-spacing: 1px;
   }
 
-  .screen-brand-title-row {
-    flex-wrap: wrap;
+  .screen-brand-subtitle {
+    margin-top: 3px;
+    font-size: 9px;
   }
 
   .top-actions {
+    order: 3;
     width: 100%;
-    max-width: none;
-    justify-content: flex-start;
-    gap: 5px;
+    height: 48px;
   }
 
-  .top-actions button,
-  .top-actions a {
-    min-height: 36px;
-    padding: 0 9px;
-    font-size: 11px;
+  .nav-item {
+    min-width: 0;
+    height: 46px;
+    gap: 2px;
+    padding: 3px 2px;
+    font-size: 9px;
+  }
+
+  .nav-item svg {
+    flex-basis: 19px;
+    width: 19px;
+    height: 19px;
+  }
+
+  .nav-item small {
+    display: none;
   }
 
   .forecast-panel {
-    top: 126px;
+    top: 108px;
     right: 8px;
-    bottom: 78px;
+    bottom: 184px;
     width: calc(100vw - 16px);
+  }
+
+  .history-data-panel {
+    right: 8px;
+    bottom: 82px;
+    left: 8px;
+    width: auto;
+    min-width: 0;
+    transform: none;
+  }
+
+  .history-data-heading {
+    min-height: 28px;
+    padding: 4px 8px;
+  }
+
+  .history-data-heading > div {
+    gap: 6px;
+  }
+
+  .history-data-title {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .history-data-heading small {
+    font-size: 8px;
+  }
+
+  .history-data-table {
+    font-size: 9px;
+  }
+
+  .history-data-table-wrap {
+    height: 88px;
+  }
+
+  .history-data-table th,
+  .history-data-table td {
+    height: 22px;
+    padding: 0 3px;
+  }
+
+  .history-data-table th {
+    font-size: 8px;
+  }
+
+  .history-data-table th:nth-child(2),
+  .history-data-table td:nth-child(2),
+  .history-data-table th:nth-child(3),
+  .history-data-table td:nth-child(3) {
+    display: none;
   }
 
   .wind-vector-list {
@@ -2916,24 +3581,98 @@ onMounted(async () => {
   }
 
   .legacy-timeline {
-    grid-template-columns: 112px minmax(0, 1fr) 48px;
+    grid-template-columns: 106px minmax(0, 1fr) 42px;
     gap: 8px;
-    min-height: 66px;
-    padding: 8px;
+    padding: 5px 8px;
   }
 
   .legacy-replay-readout {
     display: none;
   }
 
-  .legacy-timeline-dates {
-    font-size: 8px;
+  .viewport-readout {
+    gap: 10px;
+    padding: 0 8px;
+    font-size: 9px;
   }
+
 }
 
 @media (max-width: 1100px) and (min-width: 761px) {
-  .screen-brand-title-row {
-    flex-wrap: wrap;
+  .screen-brand h1 {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .screen-brand-subtitle {
+    font-size: 9px;
+  }
+
+  .screen-header {
+    gap: 7px;
+    padding: 0 12px;
+  }
+
+  .screen-header-status {
+    font-size: 11px;
+  }
+
+  .top-actions {
+    flex: 1 1 auto;
+  }
+
+  .nav-item {
+    min-width: 68px;
+    padding: 5px 4px;
+    font-size: 10px;
+  }
+
+  .nav-item svg {
+    flex-basis: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .top-actions {
+    flex: 0 0 auto;
+    width: clamp(600px, 32vw, 820px);
+  }
+}
+
+@media (max-height: 560px) and (min-width: 761px) {
+  .screen {
+  grid-template-rows: 56px minmax(0, 1fr) 46px 22px;
+  }
+
+  .screen-header {
+    height: 56px;
+  }
+
+  .screen-brand-mark {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .top-actions,
+  .nav-item {
+    height: 46px;
+  }
+
+  .legacy-timeline {
+    gap: 10px;
+    padding: 3px 16px;
+  }
+
+  .forecast-panel {
+    top: 56px;
+    bottom: 68px;
+  }
+
+  .history-data-panel {
+    bottom: 84px;
   }
 }
 </style>

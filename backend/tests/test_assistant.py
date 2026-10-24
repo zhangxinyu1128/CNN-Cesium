@@ -1,63 +1,50 @@
-"""Tests for the knowledge-base assistant service and its request schema."""
-
+import os
 import unittest
-from pathlib import Path
 
-from pydantic import ValidationError
-
-from backend.app.schemas import AssistantQueryRequest
-from backend.app.services.knowledge import AssistantService
+from backend.app.services.assistant import answer_question
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CARDS_PATH = PROJECT_ROOT / "backend" / "app" / "knowledge" / "cards.json"
+class AssistantTests(unittest.TestCase):
+    def setUp(self):
+        self.provider = os.environ.pop("TC_ASSISTANT_PROVIDER", None)
+        self.api_key = os.environ.pop("DEEPSEEK_API_KEY", None)
 
+    def tearDown(self):
+        if self.provider is not None:
+            os.environ["TC_ASSISTANT_PROVIDER"] = self.provider
+        if self.api_key is not None:
+            os.environ["DEEPSEEK_API_KEY"] = self.api_key
 
-class AssistantServiceTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.service = AssistantService(CARDS_PATH)
+    def test_local_answer_is_grounded_and_keeps_model_boundary(self):
+        result = answer_question(
+            "当前在线模型使用了 ERA5 吗？",
+            {
+                "selected_typhoon": {"name": "测试台风"},
+                "forecast": {"lead_hours": 24, "location_radius_90_km": 622.6},
+            },
+        )
+        self.assertEqual(result["mode"], "local_grounded")
+        self.assertIn("多尺度因果残差 CNN", result["answer"])
+        self.assertIn("没有作为 /api/predict 的输入", result["answer"])
+        self.assertGreaterEqual(len(result["citations"]), 2)
 
-    def test_load_cards_reads_eight_unique_cards(self):
-        cards = self.service.load_cards(CARDS_PATH)
-        self.assertEqual(len(cards), 8)
-        ids = [card["id"] for card in cards]
-        self.assertEqual(len(ids), len(set(ids)))
-
-    def test_official_forecast_query_matches_with_sources(self):
-        result = self.service.query("官方预报对比")
-        self.assertEqual(result["status"], "matched")
-        self.assertTrue(result["sources"])
-
-    def test_online_model_query_matches_without_era5(self):
-        result = self.service.query("在线预测模型是什么")
-        self.assertEqual(result["status"], "matched")
-        self.assertEqual(result["matched_card_ids"][0], "online_model")
-        self.assertNotIn("ERA5", result["answer"])
-
-    def test_era5_fusion_query_matches_era5_fusion_card(self):
-        result = self.service.query("ERA5 融合有效吗")
-        self.assertIn("era5_fusion", result["matched_card_ids"])
-
-    def test_dynamic_position_query_returns_coordinates(self):
-        context = {"forecast_position": {"lng": 130.5, "lat": 20.1}}
-        result = self.service.query("当前预测位置", context)
-        self.assertEqual(result["status"], "dynamic")
-        self.assertIn("130.5", result["answer"])
-        self.assertIn("20.1", result["answer"])
-
-    def test_uncertainty_query_keeps_not_disaster_caveat(self):
-        result = self.service.query("误差范围口径")
-        self.assertEqual(result["matched_card_ids"][0], "uncertainty")
-        self.assertTrue(any("不是灾害概率" in caveat for caveat in result["caveats"]))
-
-    def test_unknown_query_falls_back_without_raising(self):
-        result = self.service.query("xyz乱词")
-        self.assertEqual(result["status"], "fallback")
-
-    def test_empty_query_triggers_validation_error(self):
-        with self.assertRaises(ValidationError):
-            AssistantQueryRequest(query="   ")
+    def test_context_is_used_for_prediction_explanation(self):
+        result = answer_question(
+            "当前台风的预测结果如何解释？",
+            {
+                "selected_typhoon": {"name": "测试台风"},
+                "current_point": {"time": "2025-08-01T00:00:00", "lng": 130.2, "lat": 20.4},
+                "forecast": {
+                    "lead_hours": 24,
+                    "lng": 132.1,
+                    "lat": 21.2,
+                    "location_radius_90_km": 622.6,
+                },
+            },
+        )
+        self.assertIn("测试台风", result["answer"])
+        self.assertIn("24 小时预测", result["answer"])
+        self.assertIn("623 km", result["answer"])
 
 
 if __name__ == "__main__":

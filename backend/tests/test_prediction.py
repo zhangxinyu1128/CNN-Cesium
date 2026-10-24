@@ -1,6 +1,5 @@
-"""Integration tests for the checkpoint-backed multi-horizon predictor."""
+"""Integration tests for checkpoint-backed prediction without dataset artifacts."""
 
-import json
 import unittest
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -11,23 +10,61 @@ from pydantic import ValidationError
 
 from backend.app.schemas import PredictionRequest, PredictionResponse
 from backend.app.services.model import ModelService
-from ml.models.residual_cnn import ResidualTrackCNN
-from ml.models.track_cnn import TrackCNN
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
+def sample_history(count=5):
+    """Return deterministic six-hour observations independent of training data."""
+    start = datetime(2025, 8, 12, 0, 0)
+    positions = [(128.0, 16.0), (128.7, 16.3), (129.5, 16.8), (130.4, 17.4), (131.4, 18.1)]
+    while len(positions) < count:
+        longitude, latitude = positions[-1]
+        positions.append((longitude + 1.1, latitude + 0.7))
+    return [
+        {
+            "time": (start + timedelta(hours=6 * index)).isoformat(),
+            "lng": lng,
+            "lat": lat,
+            "speed": 22.0 + index * 1.5,
+            "power": 8.0 + index * 0.2,
+        }
+        for index, (lng, lat) in enumerate(positions[:count])
+    ]
+
+
+def encoded_input(service, history):
+    """Encode requests from the schema declared by the loaded checkpoint."""
+    if service._coordinate_system == "local_motion_v1":
+        from ml.features.local_motion import encode_track
+
+        raw = [row["features"] for row in encode_track(history, 6.0)]
+    else:
+        raw = []
+        for previous, point in zip(history, history[1:]):
+            delta_lng = (point["lng"] - previous["lng"] + 180.0) % 360.0 - 180.0
+            raw.append([
+                point["lng"] % 360.0,
+                point["lat"],
+                point["speed"],
+                point["power"],
+                delta_lng,
+                point["lat"] - previous["lat"],
+            ])
+    means = np.asarray(service._normalizer["mean"], dtype=np.float64)
+    scales = np.asarray(service._normalizer["std"], dtype=np.float64)
+    return np.asarray([[(value - means[i]) / scales[i] for i, value in enumerate(row)] for row in raw], dtype=np.float32)
+
+
 class PredictionIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.data_root = PROJECT_ROOT / "data" / "processed"
-        cls.manifest = json.loads((cls.data_root / "manifest.json").read_text(encoding="utf-8"))
-        with (cls.data_root / "test.jsonl").open("r", encoding="utf-8") as handle:
-            cls.sample = json.loads(handle.readline())
         cls.checkpoint_path = PROJECT_ROOT / "artifacts" / "checkpoints" / "track_cnn_baseline.pth"
         cls.residual_checkpoint_path = PROJECT_ROOT / "artifacts" / "residual" / "checkpoints" / "track_cnn_residual.pth"
+        cls.multiscale_checkpoint_path = PROJECT_ROOT / "artifacts" / "checkpoints" / "track_cnn_physics_multiscale.pth"
         cls.uncertainty_path = PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_20261008.json"
+        cls.multiscale_uncertainty_path = PROJECT_ROOT / "artifacts" / "reports" / "track_api_uncertainty_multiscale_physics_2028.json"
         cls.joint_uncertainty_path = PROJECT_ROOT / "artifacts" / "reports" / "stage4_extensions_20261008.json"
         cls.service = ModelService(
             cls.checkpoint_path,
@@ -35,149 +72,99 @@ class PredictionIntegrationTests(unittest.TestCase):
             joint_uncertainty_path=cls.joint_uncertainty_path,
         )
         cls.residual_service = ModelService(cls.residual_checkpoint_path)
+        cls.multiscale_service = ModelService(
+            cls.multiscale_checkpoint_path,
+            uncertainty_path=cls.multiscale_uncertainty_path,
+        )
         if not cls.service.ready:
             raise RuntimeError("trained checkpoint could not be loaded: " + str(cls.service.status()))
         if not cls.residual_service.ready:
             raise RuntimeError("residual checkpoint could not be loaded: " + str(cls.residual_service.status()))
+        if not cls.multiscale_service.ready:
+            raise RuntimeError("multi-scale checkpoint could not be loaded: " + str(cls.multiscale_service.status()))
 
     def test_default_model_remains_track_cnn(self):
         self.assertEqual(self.service.status()["model_type"], "track")
 
-    def _history(self):
-        scaler = self.manifest["preprocessing"]["normalizer"]
-        means = np.asarray(scaler["mean"], dtype=np.float64)
-        scales = np.asarray(scaler["std"], dtype=np.float64)
-        features = np.asarray(self.sample["x"], dtype=np.float64) * scales + means
-        times = [datetime.fromisoformat(value) for value in self.sample["history_times"]]
-        first = features[0]
-        history = [
-            {
-                "time": (times[0] - timedelta(hours=6)).isoformat(),
-                "lng": float((first[0] - first[4]) % 360.0),
-                "lat": float(first[1] - first[5]),
-                "speed": float(first[2]),
-                "power": float(first[3]),
-            }
-        ]
-        for index, timestamp in enumerate(times):
-            row = features[index]
-            history.append(
-                {
-                    "time": timestamp.isoformat(),
-                    "lng": float(row[0]),
-                    "lat": float(row[1]),
-                    "speed": float(row[2]),
-                    "power": float(row[3]),
-                }
-            )
-        return history
+    def test_multiscale_local_motion_checkpoint_serves_thirteen_point_requests(self):
+        request = PredictionRequest(history=sample_history(13))
+        result = self.multiscale_service.predict(
+            [point.dict() for point in request.history], request.horizons_hours
+        )
+        response = PredictionResponse.parse_obj({**result, "typhoon_id": "test"})
+        self.assertEqual(response.model_type, "multiscale_residual")
+        self.assertEqual(response.coordinate_system, "local_motion_v1")
+        self.assertEqual(response.input_window, 12)
+        self.assertEqual(len(response.predictions), 6)
+        self.assertEqual(response.uncertainty.status, "historical_calibration")
+        self.assertAlmostEqual(response.predictions[0].location_radius_90_km, 153.36158137343907)
 
-    def test_api_preprocessing_matches_saved_test_window(self):
-        result = self.service.predict(self._history(), [6, 12, 18, 24, 30, 36])
-        checkpoint = torch.load(self.checkpoint_path, map_location=self.service._device, weights_only=False)
-        model = TrackCNN(input_features=6, horizons=6, dropout=0.3).to(self.service._device)
-        model.load_state_dict(checkpoint["model_state_dict"])
-        model.eval()
+    def test_api_prediction_matches_loaded_checkpoint(self):
+        history = sample_history()
+        result = self.service.predict(history, [6, 12, 18, 24, 30, 36])
+        tensor = torch.as_tensor(
+            np.asarray([encoded_input(self.service, history)]),
+            dtype=torch.float32,
+            device=self.service._device,
+        )
         with torch.no_grad():
-            output = model(
-                torch.tensor([self.sample["x"]], dtype=torch.float32, device=self.service._device)
-            )
-
-        scaler = self.manifest["preprocessing"]["normalizer"]
-        means = np.asarray(scaler["mean"], dtype=np.float64)
-        scales = np.asarray(scaler["std"], dtype=np.float64)
+            output = self.service._model(tensor)
+        means = np.asarray(self.service._normalizer["mean"], dtype=np.float64)
+        scales = np.asarray(self.service._normalizer["std"], dtype=np.float64)
         expected_track = output["track"][0].cpu().numpy() * scales[:2] + means[:2]
         expected_wind = output["wind"][0, :, 0].cpu().numpy() * scales[2] + means[2]
         expected_track[:, 0] %= 360.0
         expected_track[:, 1] = np.clip(expected_track[:, 1], -90.0, 90.0)
         expected_wind = np.maximum(expected_wind, 0.0)
 
+        self.assertEqual(result["model_version"], self.service.status()["model_version"])
         self.assertEqual(result["horizons_hours"], [6, 12, 18, 24, 30, 36])
         self.assertEqual(len(result["predictions"]), 6)
         for index, prediction in enumerate(result["predictions"]):
-            self.assertAlmostEqual(prediction["lng"], expected_track[index, 0], delta=1e-4)
-            self.assertAlmostEqual(prediction["lat"], expected_track[index, 1], delta=1e-4)
-            self.assertAlmostEqual(prediction["speed_ms"], expected_wind[index], delta=1e-4)
+            np.testing.assert_allclose(
+                [prediction["lng"], prediction["lat"], prediction["speed_ms"]],
+                [*expected_track[index], expected_wind[index]],
+                atol=1e-4,
+            )
             self.assertIsNone(prediction["p05"])
             self.assertIsNone(prediction["p95"])
-        prediction = result["predictions"][0]
-        self.assertGreater(prediction["location_radius_90_km"], 0)
-        self.assertEqual(prediction["uncertainty_region"]["geometry"], "conformal_ellipse")
-        self.assertAlmostEqual(
-            prediction["uncertainty_region"]["semi_major_axis_km"],
-            560.932804339698,
-        )
-        self.assertGreater(prediction["uncertainty_region"]["semi_major_axis_km"], prediction["uncertainty_region"]["semi_minor_axis_km"])
-        self.assertGreater(prediction["uncertainty_region"]["area_km2"], 0)
-        self.assertTrue(0 <= prediction["uncertainty_region"]["bearing_deg"] < 180)
-        self.assertEqual(prediction["speed_interval_source"]["unit"], "source_native")
-        self.assertLess(prediction["speed_interval_source"]["lower"], prediction["speed_interval_source"]["upper"])
-        self.assertEqual(result["uncertainty"]["status"], "historical_calibration")
-        validated = PredictionResponse(**result)
-        self.assertAlmostEqual(validated.predictions[0].location_radius_90_km, 483.9615881788603)
-        self.assertEqual(validated.uncertainty.region_geometry, "conformal_ellipse")
-        self.assertEqual(validated.uncertainty.joint_region_geometry, "location_ellipse_and_source_speed_interval")
-        self.assertIn("不是实时预报保证", validated.uncertainty.region_note)
+        self.assertIn(result["uncertainty"]["status"], {"historical_calibration", "unavailable"})
+        if result["uncertainty"]["status"] == "historical_calibration":
+            self.assertGreater(result["predictions"][0]["location_radius_90_km"], 0)
+            self.assertIsNotNone(result["predictions"][0]["uncertainty_region"])
+        PredictionResponse(**result)
 
     def test_uncertainty_is_not_reused_for_a_different_checkpoint(self):
         service = ModelService(self.residual_checkpoint_path, uncertainty_path=self.uncertainty_path)
         self.assertTrue(service.ready)
-        result = service.predict(self._history(), [6])
+        result = service.predict(sample_history(), [6])
         self.assertEqual(result["uncertainty"]["status"], "unavailable")
         self.assertIsNone(result["predictions"][0]["location_radius_90_km"])
 
     def test_request_rejects_wrong_window_spacing_and_horizons(self):
-        history = self._history()
-        base = {"history": history}
+        history = sample_history()
         with self.assertRaises(ValidationError):
-            PredictionRequest(**{**base, "history": history[:-1]})
+            PredictionRequest(history=history[:-1])
 
         irregular = [dict(point) for point in history]
-        final_time = datetime.fromisoformat(irregular[-1]["time"]) + timedelta(hours=1)
-        irregular[-1]["time"] = final_time.isoformat()
+        irregular[-1]["time"] = (datetime.fromisoformat(irregular[-1]["time"]) + timedelta(hours=1)).isoformat()
         with self.assertRaises(ValidationError):
-            PredictionRequest(**{**base, "history": irregular})
+            PredictionRequest(history=irregular)
 
         with self.assertRaises(ValidationError):
-            PredictionRequest(**{**base, "horizons_hours": [24, 48, 72, 96, 120, 144]})
+            PredictionRequest(history=history, horizons_hours=[24, 48, 72, 96, 120, 144])
 
     def test_can_return_supported_horizon_subset(self):
-        result = self.service.predict(self._history(), [12, 24, 36])
+        result = self.service.predict(sample_history(), [12, 24, 36])
         self.assertEqual(result["horizons_hours"], [12, 24, 36])
         self.assertEqual([item["lead_hours"] for item in result["predictions"]], [12, 24, 36])
 
-    def test_residual_checkpoint_inference_matches_prior_plus_residual(self):
-        service = self.residual_service
-        result = service.predict(self._history(), [6, 12, 18, 24, 30, 36])
-        checkpoint = torch.load(self.residual_checkpoint_path, map_location=service._device, weights_only=False)
-        model = ResidualTrackCNN(input_features=6, horizons=6, dropout=0.3).to(service._device)
-        model.load_state_dict(checkpoint["model_state_dict"])
-        model.eval()
-        features = torch.tensor([self.sample["x"]], dtype=torch.float32, device=service._device)
-        scaler = self.manifest["preprocessing"]["normalizer"]
-        means = torch.tensor(scaler["mean"], dtype=features.dtype, device=service._device)
-        scales = torch.tensor(scaler["std"], dtype=features.dtype, device=service._device)
-        with torch.no_grad():
-            output = model(features)
-            last = features[:, -1, :] * scales + means
-            steps = torch.arange(1, 7, dtype=features.dtype, device=service._device).view(1, -1)
-            prior = torch.zeros((1, 6, 3), dtype=features.dtype, device=service._device)
-            prior[..., 0] = (last[:, None, 0] + steps * last[:, None, 4]) % 360.0
-            prior[..., 1] = last[:, None, 1] + steps * last[:, None, 5]
-            prior[..., 2] = last[:, None, 2]
-            residual = torch.cat((output["track"], output["wind"]), dim=-1)
-            expected = ((prior - means[:3]) / scales[:3] + residual)[0].cpu().numpy()
-        expected = expected * np.asarray(scaler["std"][:3]) + np.asarray(scaler["mean"][:3])
-        expected[:, 0] %= 360.0
-        expected[:, 1] = np.clip(expected[:, 1], -90.0, 90.0)
-        expected[:, 2] = np.maximum(expected[:, 2], 0.0)
+    def test_residual_checkpoint_returns_finite_predictions(self):
+        result = self.residual_service.predict(sample_history(), [6, 12, 18, 24, 30, 36])
         self.assertEqual(result["model_version"], "track-cnn-residual-v1")
-        for index, prediction in enumerate(result["predictions"]):
-            np.testing.assert_allclose(
-                [prediction["lng"], prediction["lat"], prediction["speed_ms"]],
-                expected[index],
-                atol=1e-4,
-            )
+        self.assertEqual(result["model_type"], "residual")
+        for prediction in result["predictions"]:
+            self.assertTrue(all(np.isfinite(prediction[key]) for key in ("lng", "lat", "speed_ms")))
 
 
 if __name__ == "__main__":

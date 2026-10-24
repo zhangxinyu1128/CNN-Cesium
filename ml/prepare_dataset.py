@@ -10,10 +10,12 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from ml.data_audit import PROJECT_ROOT, SPLIT_RANGES, audit, number, parse_time, track_year
+from ml.features.local_motion import FEATURE_NAMES, TARGET_NAMES, displacement_km, encode_track
 
 
-FEATURES = ("lng", "lat", "speed", "power", "delta_lng", "delta_lat")
-TARGETS = ("lng", "lat", "speed")
+FEATURES = FEATURE_NAMES
+TARGETS = TARGET_NAMES
+COORDINATE_SYSTEM = "local_motion_v1"
 INPUT_STEPS = 4
 TARGET_STEPS = 6
 DEFAULT_SPLIT_FILE = PROJECT_ROOT / "data" / "splits" / "storm_splits.json"
@@ -96,25 +98,8 @@ def resample_segment(
     return result
 
 
-def feature_rows(points: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
-    for previous, point in zip(points, points[1:]):
-        delta_lng = (point["lng"] - previous["lng"] + 180.0) % 360.0 - 180.0
-        rows.append(
-            {
-                "time": point["time"],
-                "features": [
-                    point["lng"],
-                    point["lat"],
-                    point["speed"],
-                    point["power"],
-                    delta_lng,
-                    point["lat"] - previous["lat"],
-                ],
-                "target": [point["lng"], point["lat"], point["speed"]],
-            }
-        )
-    return rows
+def feature_rows(points: List[Dict[str, Any]], interval_hours: int = 6) -> List[Dict[str, Any]]:
+    return encode_track(points, interval_hours)
 
 
 def load_track(path: Path, counters: Counter) -> Optional[Tuple[str, List[Dict[str, Any]]]]:
@@ -225,6 +210,7 @@ def build_samples(
     gap_hours: float,
     interval_hours: int,
     split_assignments: Dict[str, str],
+    input_steps: int = INPUT_STEPS,
 ) -> Tuple[Dict[str, List[Dict[str, Any]]], Dict[str, List[List[float]]], Counter, Dict[str, set]]:
     split_samples: Dict[str, List[Dict[str, Any]]] = {
         "train": [],
@@ -254,20 +240,20 @@ def build_samples(
             for point in sampled:
                 if not point["usable"]:
                     if block:
-                        rows = feature_rows(block)
+                        rows = feature_rows(block, interval_hours)
                         if split == "train":
                             train_features.extend(row["features"] for row in rows)
                         counters["usable_segments"] += 1
-                        _append_segment_samples(identifier, split, rows, split_samples, storms_with_samples, counters)
+                        _append_segment_samples(identifier, split, rows, split_samples, storms_with_samples, counters, input_steps)
                         block = []
                     continue
                 block.append(point)
             if block:
-                rows = feature_rows(block)
+                rows = feature_rows(block, interval_hours)
                 if split == "train":
                     train_features.extend(row["features"] for row in rows)
                 counters["usable_segments"] += 1
-                _append_segment_samples(identifier, split, rows, split_samples, storms_with_samples, counters)
+                _append_segment_samples(identifier, split, rows, split_samples, storms_with_samples, counters, input_steps)
 
     return split_samples, {"train": train_features}, counters, storms_with_samples
 
@@ -279,21 +265,36 @@ def _append_segment_samples(
     split_samples: Dict[str, List[Dict[str, Any]]],
     storms_with_samples: Dict[str, set],
     counters: Counter,
+    input_steps: int = INPUT_STEPS,
 ) -> None:
-    max_start = len(rows) - INPUT_STEPS - TARGET_STEPS
+    max_start = len(rows) - input_steps - TARGET_STEPS
     if max_start < 1:
         counters["segments_too_short"] += 1
         return
     for start in range(1, max_start + 1):
-        history = rows[start : start + INPUT_STEPS]
-        future = rows[start + INPUT_STEPS : start + INPUT_STEPS + TARGET_STEPS]
+        history = rows[start : start + input_steps]
+        future = rows[start + input_steps : start + input_steps + TARGET_STEPS]
+        origin = history[-1]["position"]
+        x_raw = [list(item["features"]) for item in history]
+        # The API receives exactly one context point before the four model inputs,
+        # so the first in-window turn rate has no prior heading available.
+        x_raw[0][5] = 0.0
+        y_raw = []
+        for item in future:
+            east, north = displacement_km(origin, item["position"])
+            y_raw.append([east, north, item["target"][2]])
         split_samples[split].append(
             {
                 "typhoon_id": identifier,
                 "history_times": [item["time"].isoformat() for item in history],
                 "target_times": [item["time"].isoformat() for item in future],
-                "x_raw": [item["features"] for item in history],
-                "y_raw": [item["target"] for item in future],
+                "origin": origin,
+                "x_raw": x_raw,
+                "y_raw": y_raw,
+                "target_geo": [
+                    [item["position"]["lng"], item["position"]["lat"], item["target"][2]]
+                    for item in future
+                ],
             }
         )
         storms_with_samples[split].add(identifier)
@@ -314,11 +315,14 @@ def fit_scaler(rows: List[List[float]]) -> Dict[str, List[float]]:
 
 
 def normalize_samples(
-    samples: List[Dict[str, Any]], scaler: Dict[str, List[float]]
+    samples: List[Dict[str, Any]],
+    scaler: Dict[str, List[float]],
+    target_scaler: Dict[str, List[float]],
 ) -> List[Dict[str, Any]]:
     feature_means = scaler["mean"]
     feature_stds = scaler["std"]
-    target_indexes = (0, 1, 2)
+    target_means = target_scaler["mean"]
+    target_stds = target_scaler["std"]
     result = []
     for sample in samples:
         x = [
@@ -326,19 +330,14 @@ def normalize_samples(
             for row in sample.pop("x_raw")
         ]
         y_raw = sample.pop("y_raw")
-        y = [
-            [
-                (value - feature_means[index]) / feature_stds[index]
-                for index, value in zip(target_indexes, row)
-            ]
-            for row in y_raw
-        ]
-        result.append({**sample, "x": x, "y": y, "target_raw": y_raw})
+        target_geo = sample.pop("target_geo")
+        y = [[(value - target_means[index]) / target_stds[index] for index, value in enumerate(row)] for row in y_raw]
+        result.append({**sample, "x": x, "y": y, "target_raw": target_geo})
     return result
 
 
 def validate_samples(
-    split_samples: Dict[str, List[Dict[str, Any]]], interval_hours: int
+    split_samples: Dict[str, List[Dict[str, Any]]], interval_hours: int, input_steps: int = INPUT_STEPS
 ) -> None:
     owners: Dict[str, str] = {}
     expected_step = timedelta(hours=interval_hours)
@@ -348,7 +347,7 @@ def validate_samples(
             previous_owner = owners.setdefault(identifier, split)
             if previous_owner != split:
                 raise ValueError("a typhoon appears in more than one data split: " + identifier)
-            if len(sample["x_raw"]) != INPUT_STEPS or any(
+            if len(sample["x_raw"]) != input_steps or any(
                 len(row) != len(FEATURES) for row in sample["x_raw"]
             ):
                 raise ValueError("invalid model input shape for " + identifier)
@@ -382,25 +381,31 @@ def prepare(
     max_gap_hours: float,
     seed: int,
     split_file: Path,
+    input_steps: int = INPUT_STEPS,
 ) -> Dict[str, Any]:
     if interval_hours <= 0:
         raise ValueError("interval_hours must be positive")
     if max_gap_hours < interval_hours or max_gap_hours > 24:
         raise ValueError("max_gap_hours must be between interval_hours and 24")
+    if input_steps < 4 or input_steps > 24:
+        raise ValueError("input_steps must be between 4 and 24")
 
     manifest = audit(data_root, seed)
     split_assignments = load_or_create_split_file(
         data_root, split_file, manifest["source"]["fingerprint_sha256"], seed
     )
     split_samples, training_rows, counters, storms = build_samples(
-        data_root, max_gap_hours, interval_hours, split_assignments
+        data_root, max_gap_hours, interval_hours, split_assignments, input_steps
     )
-    validate_samples(split_samples, interval_hours)
+    validate_samples(split_samples, interval_hours, input_steps)
     scaler = fit_scaler(training_rows["train"])
+    target_scaler = fit_scaler(
+        [row for sample in split_samples["train"] for row in sample["y_raw"]]
+    )
     output_root.mkdir(parents=True, exist_ok=True)
     outputs = []
     for split, samples in split_samples.items():
-        normalized = normalize_samples(samples, scaler)
+        normalized = normalize_samples(samples, scaler, target_scaler)
         for sample in normalized:
             values = [value for row in sample["x"] + sample["y"] for value in row]
             if not all(math.isfinite(value) for value in values):
@@ -408,14 +413,15 @@ def prepare(
         outputs.append(write_jsonl(output_root / (split + ".jsonl"), normalized))
 
     manifest["preprocessing"] = {
-        "input_steps": INPUT_STEPS,
+        "input_steps": input_steps,
         "input_features": list(FEATURES),
+        "coordinate_system": COORDINATE_SYSTEM,
         "target_steps": TARGET_STEPS,
         "target_features": list(TARGETS),
         "target_interval_hours": interval_hours,
         "maximum_interpolation_gap_hours": max_gap_hours,
         "interpolation": "linear for speed, power and latitude; shortest-arc linear for longitude",
-        "normalization": "population mean and standard deviation fit on unique resampled training points only",
+        "normalization": "input statistics fit on unique resampled training points; target statistics fit on training-window targets only",
         "empty_and_invalid_tracks": counters["empty_tracks"] + counters["invalid_tracks"],
         "invalid_points_skipped": counters["invalid_points"],
         "duplicate_points_removed": counters["duplicate_points"],
@@ -426,10 +432,13 @@ def prepare(
         "resampled_points": counters["resampled_points"],
         "valid_tracks": counters["valid_tracks"],
         "normalizer": {
+            "coordinate_system": COORDINATE_SYSTEM,
             "feature_names": list(FEATURES),
             "mean": scaler["mean"],
             "std": scaler["std"],
-            "target_feature_indexes": [0, 1, 2],
+            "target_names": list(TARGETS),
+            "target_mean": target_scaler["mean"],
+            "target_std": target_scaler["std"],
         },
         "split_track_counts": {name: len(ids) for name, ids in storms.items()},
         "split_sample_counts": {name: len(samples) for name, samples in split_samples.items()},
@@ -449,6 +458,9 @@ def prepare(
         "linear interpolation to a six-hour cadence within segments; "
         "segments split when a source gap exceeds the configured limit"
     )
+    manifest["preprocessing_policy"]["coordinate_system"] = COORDINATE_SYSTEM
+    manifest["preprocessing_policy"]["input_features"] = list(FEATURES)
+    manifest["preprocessing_policy"]["target_features"] = list(TARGETS)
     manifest_path = output_root / "manifest.json"
     temporary_manifest = manifest_path.with_suffix(".json.tmp")
     temporary_manifest.write_text(
@@ -467,6 +479,8 @@ def main() -> None:
     parser.add_argument("--max-gap-hours", type=float, default=9.0)
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--split-file", type=Path, default=DEFAULT_SPLIT_FILE)
+    parser.add_argument("--input-steps", type=int, default=INPUT_STEPS,
+                        help="number of historical 6-hour feature rows (12 = 72 hours)")
     args = parser.parse_args()
 
     manifest = prepare(
@@ -476,6 +490,7 @@ def main() -> None:
         args.max_gap_hours,
         args.seed,
         args.split_file,
+        args.input_steps,
     )
     print(json.dumps(manifest["preprocessing"], ensure_ascii=False, indent=2))
     print("Manifest:", (args.output_root / "manifest.json").resolve())

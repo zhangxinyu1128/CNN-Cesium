@@ -2,7 +2,7 @@
   "schema_version": 1,
   "created_at_utc": "2026-10-19T01:31:57.855455+00:00",
   "source": {
-    "root": "E:\\xwechat_files\\wxid_6xemrvy56q2s32_e6eb\\msg\\file\\2026-10\\AIC\\CNN-Cesium-修复版\\data",
+    "root": "data/",
     "fingerprint_sha256": "bf0d81871daf8c7b82824314aff36288359aad752867589334c474109c97c0ee",
     "bytes": 52410338,
     "components": [

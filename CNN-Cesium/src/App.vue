@@ -207,10 +207,11 @@ const typhoonIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
 let legacyObserver: MutationObserver | null = null
 let legacySyncTimer: number | undefined
 let playTimer: number | undefined
-let historyTableTimer: number | undefined
-const replayStepMs = 200
-const historyTableStepMs = 2000
+let historyTableRaf: number | undefined
+let historyTableLastFrame = 0
+const replayStepMs = 500
 const historyTableScrollStep = 34
+const historyTableRowsAbove = 2
 const historyTableBody = ref<HTMLTableSectionElement | null>(null)
 let legacyDblClickDocument: Document | null = null
 let legacyDblClickWindow: Window | null = null
@@ -252,7 +253,7 @@ const historyTableRows = computed(() => {
 })
 const replayProgress = computed(() => {
   const length = selectedTyphoon.value?.points.length ?? 0
-  return length > 1 ? (currentIndex.value / (length - 1)) * 100 : 0
+  return length > 1 ? currentIndex.value / (length - 1) : 0
 })
 const selectedEra5Point = computed<Era5Point | null>(() => {
   const point = currentPoint.value
@@ -954,9 +955,9 @@ function stopReplay() {
 }
 
 function stopHistoryTableScroll() {
-  if (historyTableTimer) {
-    window.clearInterval(historyTableTimer)
-    historyTableTimer = undefined
+  if (historyTableRaf !== undefined) {
+    window.cancelAnimationFrame(historyTableRaf)
+    historyTableRaf = undefined
   }
 }
 
@@ -964,24 +965,53 @@ function historyTableScrollWrap() {
   return historyTableBody.value?.closest<HTMLElement>('.history-data-table-wrap') ?? null
 }
 
+const historyTableCollapsed = ref(false)
+let ignoreTableHover = false
+
+function toggleHistoryTable() {
+  historyTableCollapsed.value = !historyTableCollapsed.value
+  if (historyTableCollapsed.value) {
+    ignoreTableHover = false
+    stopHistoryTableScroll()
+  } else {
+    ignoreTableHover = true
+    startHistoryTableScroll()
+  }
+}
+
+function pauseHistoryTableScroll() {
+  if (ignoreTableHover) return
+  stopHistoryTableScroll()
+}
+
+function resumeHistoryTableScroll() {
+  ignoreTableHover = false
+  startHistoryTableScroll()
+}
+
 function startHistoryTableScroll(reset = false) {
   stopHistoryTableScroll()
   const tableWrap = historyTableScrollWrap()
   if (!tableWrap) return
   if (reset) tableWrap.scrollTop = 0
-  historyTableTimer = window.setInterval(() => {
+  historyTableLastFrame = 0
+  const step = (timestamp: number) => {
     const wrap = historyTableScrollWrap()
-    if (!wrap || wrap.scrollHeight <= wrap.clientHeight) return
+    if (!wrap) return
     const maxScrollTop = wrap.scrollHeight - wrap.clientHeight
-    if (wrap.scrollTop >= maxScrollTop - 2) {
-      wrap.scrollTo({ top: 0, behavior: 'smooth' })
+    const offset = (currentIndex.value - historyTableRowsAbove) * historyTableScrollStep
+    const target = Math.min(Math.max(0, offset), Math.max(0, maxScrollTop))
+    const distance = target - wrap.scrollTop
+    if (Math.abs(distance) < 0.5 || Math.abs(distance) > historyTableScrollStep * 4) {
+      wrap.scrollTop = target
     } else {
-      wrap.scrollTo({
-        top: Math.min(wrap.scrollTop + historyTableScrollStep, maxScrollTop),
-        behavior: 'smooth'
-      })
+      const delta = historyTableLastFrame ? Math.min(timestamp - historyTableLastFrame, 64) : 16.7
+      wrap.scrollTop += distance * (1 - Math.exp(-delta / 80))
     }
-  }, historyTableStepMs)
+    historyTableLastFrame = timestamp
+    historyTableRaf = window.requestAnimationFrame(step)
+  }
+  historyTableRaf = window.requestAnimationFrame(step)
 }
 
 function toggleReplay() {
@@ -2012,6 +2042,7 @@ onMounted(async () => {
     <section
       v-if="selectedTyphoon"
       class="history-data-panel"
+      :class="{ 'is-collapsed': historyTableCollapsed }"
       aria-label="历史路径数据展示"
     >
       <div class="history-data-heading">
@@ -2024,12 +2055,24 @@ onMounted(async () => {
             </li>
           </ul>
         </div>
-        <span class="history-data-live"><i></i>自动滚动</span>
+        <div class="history-data-actions">
+          <span class="history-data-live"><i></i>自动滚动</span>
+          <button
+            class="history-data-toggle"
+            type="button"
+            :aria-expanded="!historyTableCollapsed"
+            :title="historyTableCollapsed ? '展开历史路径数据' : '收起历史路径数据'"
+            @click="toggleHistoryTable"
+          >
+            {{ historyTableCollapsed ? '展开' : '收起' }}
+          </button>
+        </div>
       </div>
       <div
+        v-show="!historyTableCollapsed"
         class="history-data-table-wrap"
-        @mouseenter="stopHistoryTableScroll"
-        @mouseleave="startHistoryTableScroll()"
+        @mouseenter="pauseHistoryTableScroll"
+        @mouseleave="resumeHistoryTableScroll"
       >
         <table class="history-data-table">
           <thead>
@@ -2080,13 +2123,12 @@ onMounted(async () => {
           <small>{{ selectedTyphoon ? `${currentIndex + 1} / ${selectedTyphoon.points.length} 个观测点` : '等待历史数据' }}</small>
         </div>
       </div>
-      <div class="legacy-timeline-track">
+      <div class="legacy-timeline-track" :style="{ '--progress': replayProgress }">
         <input
           v-model.number="currentIndex"
           type="range"
           min="0"
           :max="Math.max((selectedTyphoon?.points.length ?? 0) - 1, 0)"
-          :style="{ '--progress': `${replayProgress}%` }"
           :disabled="!selectedTyphoon?.points.length"
           aria-label="历史回顾进度"
         />
@@ -2110,7 +2152,7 @@ onMounted(async () => {
 .screen {
   position: relative;
   display: grid;
-  grid-template-rows: 72px minmax(0, 1fr) 64px 28px;
+  grid-template-rows: 108px minmax(0, 1fr) 96px 42px;
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -2131,7 +2173,7 @@ onMounted(async () => {
   position: relative;
   grid-row: 1;
   min-width: 0;
-  height: 72px;
+  height: 108px;
   z-index: 40;
   display: flex;
   align-items: center;
@@ -2146,7 +2188,7 @@ onMounted(async () => {
 
 .screen-brand {
   display: flex;
-  flex: 0 0 clamp(421px, 24.8vw, 632px);
+  flex: 0 0 clamp(492px, 29.7vw, 758px);
   align-items: center;
   min-width: 0;
   gap: 11px;
@@ -2190,7 +2232,7 @@ onMounted(async () => {
   overflow: hidden;
   margin: 0;
   color: #62d0ef;
-  font-size: clamp(19px, 2vw, 28px);
+  font-size: clamp(22.8px, 2.4vw, 33.6px);
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: 2px;
@@ -2203,7 +2245,7 @@ onMounted(async () => {
   display: block;
   margin-top: 5px;
   color: #7fc3de;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 1px;
   white-space: nowrap;
 }
@@ -2220,7 +2262,7 @@ onMounted(async () => {
   align-items: center;
   gap: 7px;
   color: #3ddc84;
-  font-size: 16px;
+  font-size: 19px;
   letter-spacing: 1px;
   pointer-events: auto;
 }
@@ -2299,7 +2341,7 @@ onMounted(async () => {
   color: #bfe3f2;
   background: transparent;
   cursor: pointer;
-  font: 500 14px/1.1 'Microsoft YaHei', sans-serif;
+  font: 500 16px/1.1 'Microsoft YaHei', sans-serif;
   letter-spacing: 0.5px;
   transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
@@ -2324,7 +2366,7 @@ onMounted(async () => {
 
 .nav-item small {
   color: #5e93b2;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0;
 }
 
@@ -2354,7 +2396,7 @@ onMounted(async () => {
   color: #bfe3f2;
   background: transparent;
   cursor: pointer;
-  font: 500 10px/1.1 'Microsoft YaHei', sans-serif;
+  font: 500 12px/1.1 'Microsoft YaHei', sans-serif;
   letter-spacing: 0.7px;
   pointer-events: auto;
 }
@@ -2376,7 +2418,7 @@ onMounted(async () => {
 
 .export-action {
   display: flex;
-  flex: 0 0 70px;
+  flex: 0 0 78px;
   align-items: center;
   justify-content: center;
   gap: 5px;
@@ -2384,7 +2426,7 @@ onMounted(async () => {
   color: #bfe3f2;
   background: transparent;
   cursor: pointer;
-  font: 500 13px/1.1 'Microsoft YaHei', sans-serif;
+  font: 500 15px/1.1 'Microsoft YaHei', sans-serif;
   letter-spacing: 1px;
   pointer-events: auto;
 }
@@ -2411,9 +2453,9 @@ onMounted(async () => {
 
 .forecast-panel {
   position: fixed;
-  top: 72px;
+  top: 108px;
   right: 0;
-  bottom: 92px;
+  bottom: 138px;
   z-index: 30;
   width: max(min(25vw, 430px), calc(20vw + 4px));
   overflow: auto;
@@ -3112,7 +3154,7 @@ onMounted(async () => {
 .history-data-panel {
   position: fixed;
   right: max(min(25vw, 430px), calc(20vw + 4px));
-  bottom: 92px;
+  bottom: 138px;
   left: calc(min(18vw, 400px) + 4px);
   z-index: 34;
   width: auto;
@@ -3205,6 +3247,38 @@ onMounted(async () => {
   box-shadow: 0 0 8px rgba(61, 220, 132, 0.8);
 }
 
+.history-data-heading > .history-data-actions {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-data-toggle {
+  min-width: 48px;
+  height: 24px;
+  border: 1px solid rgba(103, 232, 208, 0.42);
+  border-radius: 2px;
+  padding: 0 8px;
+  color: #9ed0ca;
+  background: rgba(103, 232, 208, 0.06);
+  cursor: pointer;
+  font: 500 12px/1 'Microsoft YaHei', sans-serif;
+  letter-spacing: 1px;
+}
+
+.history-data-toggle:hover,
+.history-data-toggle:focus-visible {
+  color: #06212a;
+  background: #67e8d0;
+  outline: none;
+}
+
+.history-data-panel.is-collapsed .history-intensity-legend,
+.history-data-panel.is-collapsed .history-data-live {
+  display: none;
+}
+
 .history-data-table-wrap {
   height: clamp(190px, 28vh, 320px);
   background: rgba(13, 43, 71, 0.25);
@@ -3285,7 +3359,7 @@ onMounted(async () => {
   grid-row: 3;
   z-index: 35;
   display: grid;
-  grid-template-columns: minmax(207px, 1.2fr) minmax(120px, 3fr) minmax(160px, 0.8fr) 54px;
+  grid-template-columns: calc(min(18vw, 400px) - 34px) calc(100vw - min(18vw, 400px) - 4px - max(min(25vw, 430px), calc(20vw + 4px))) minmax(160px, 1fr) 54px;
   gap: 16px;
   align-items: center;
   min-height: 0;
@@ -3309,7 +3383,7 @@ onMounted(async () => {
   border-top: 1px solid rgba(33, 82, 117, 0.5);
   color: rgba(178, 221, 235, 0.86);
   background: #031724;
-  font: 11px 'Microsoft YaHei', sans-serif;
+  font: 13px 'Microsoft YaHei', sans-serif;
   white-space: nowrap;
   box-sizing: border-box;
 }
@@ -3328,14 +3402,14 @@ onMounted(async () => {
 .legacy-replay-readout strong {
   display: block;
   color: #eaf6f5;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
 }
 
 .legacy-timeline-control small,
 .legacy-replay-readout span {
   color: #7f9da7;
-  font-size: 13px;
+  font-size: 15.5px;
 }
 
 .legacy-timeline-control small {
@@ -3353,7 +3427,7 @@ onMounted(async () => {
   color: #06212a;
   background: #67e8d0;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 21.5px;
 }
 
 .legacy-play-button:disabled,
@@ -3364,18 +3438,35 @@ onMounted(async () => {
 }
 
 .legacy-timeline-track {
+  position: relative;
   min-width: 0;
 }
 
+.legacy-timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 10px;
+  border-radius: 3px;
+  --fill: calc(20px + var(--progress) * (100% - 40px));
+  background: linear-gradient(90deg, #67e8d0 0 var(--fill), rgba(143, 207, 205, 0.2) var(--fill) 100%);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
 .legacy-timeline-track input {
+  position: relative;
   display: block;
+  box-sizing: border-box;
   width: 100%;
   height: 10px;
   margin: 0;
+  padding: 0 11px;
   appearance: none;
-  border-radius: 3px;
   outline: none;
-  background: linear-gradient(90deg, #67e8d0 0 var(--progress), rgba(143, 207, 205, 0.2) var(--progress) 100%);
+  background: transparent;
   cursor: pointer;
 }
 
@@ -3420,12 +3511,16 @@ onMounted(async () => {
   color: #67e8d0;
   background: transparent;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 15.5px;
 }
 
 .legacy-reset-button:hover {
   border-color: #67e8d0;
   background: rgba(103, 232, 208, 0.1);
+}
+
+.legacy-timeline.is-empty .legacy-timeline-track::before {
+  --fill: 0px;
 }
 
 .legacy-timeline.is-empty .legacy-timeline-track input {

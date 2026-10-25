@@ -164,7 +164,7 @@ watch(open, (value) => {
 .typhoon-assistant {
   position: fixed;
   right: 22px;
-  bottom: 94px;
+  bottom: 140px;
   z-index: 80;
   font-family: 'Microsoft YaHei', Inter, sans-serif;
 }
@@ -185,6 +185,10 @@ watch(open, (value) => {
   font-weight: 700;
 }
 
+.typhoon-assistant.is-open .assistant-launcher {
+  display: none;
+}
+
 .assistant-launcher:hover,
 .assistant-launcher:focus-visible {
   background: #a6f7e7;
@@ -203,11 +207,13 @@ watch(open, (value) => {
 }
 
 .assistant-panel {
+  position: fixed;
+  top: 108px;
+  right: 0;
+  bottom: 138px;
   display: grid;
   grid-template-rows: auto minmax(180px, 1fr) auto auto auto;
-  width: min(390px, calc(100vw - 32px));
-  height: min(620px, calc(100vh - 130px));
-  margin-bottom: 10px;
+  width: max(min(25vw, 430px), calc(20vw + 4px));
   overflow: hidden;
   border: 1px solid rgba(103, 232, 208, 0.55);
   border-radius: 4px;
@@ -228,14 +234,14 @@ watch(open, (value) => {
 
 .assistant-kicker {
   color: #67e8d0;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 0.14em;
 }
 
 .assistant-header h2 {
   margin: 4px 0 2px;
   color: #f0fffc;
-  font-size: 17px;
+  font-size: 26px;
   font-weight: 700;
 }
 
@@ -244,7 +250,7 @@ watch(open, (value) => {
   margin: 0;
   overflow: hidden;
   color: #8eabb0;
-  font-size: 10px;
+  font-size: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -257,7 +263,7 @@ watch(open, (value) => {
   color: #cfe8e6;
   background: transparent;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 26px;
   line-height: 1;
 }
 
@@ -289,14 +295,14 @@ watch(open, (value) => {
 .message-role {
   display: grid;
   flex: 0 0 auto;
-  width: 25px;
-  height: 25px;
+  width: 28px;
+  height: 28px;
   place-items: center;
   border: 1px solid rgba(103, 232, 208, 0.42);
   border-radius: 2px;
   color: #67e8d0;
   background: rgba(103, 232, 208, 0.08);
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -322,7 +328,7 @@ watch(open, (value) => {
 .message-body p {
   margin: 0;
   color: #d9ecea;
-  font-size: 12px;
+  font-size: 19px;
   line-height: 1.6;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -332,7 +338,7 @@ watch(open, (value) => {
   display: block;
   margin-top: 6px;
   color: #67e8d0;
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .message-citations {
@@ -344,7 +350,7 @@ watch(open, (value) => {
 .message-citations summary {
   color: #f7c873;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 15px;
 }
 
 .citation {
@@ -357,13 +363,13 @@ watch(open, (value) => {
 
 .citation strong {
   color: #eaf6f5;
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .citation span,
 .citation small {
   color: #91afb3;
-  font-size: 9px;
+  font-size: 13px;
   line-height: 1.45;
 }
 
@@ -376,9 +382,9 @@ watch(open, (value) => {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 0 10px 33px;
+  padding: 3px 0 10px 36px;
   color: #8eabb0;
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .assistant-pending span {
@@ -420,7 +426,7 @@ watch(open, (value) => {
   color: #9ed0ca;
   background: rgba(103, 232, 208, 0.05);
   cursor: pointer;
-  font-size: 10px;
+  font-size: 15px;
   white-space: nowrap;
 }
 
@@ -447,7 +453,7 @@ watch(open, (value) => {
   padding: 8px;
   color: #eaf6f5;
   background: #0a2a38;
-  font-size: 12px;
+  font-size: 18px;
   line-height: 1.45;
   outline: none;
 }
@@ -468,7 +474,7 @@ watch(open, (value) => {
   color: #06212a;
   background: #67e8d0;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 28px;
   line-height: 1;
 }
 
@@ -481,14 +487,14 @@ watch(open, (value) => {
 .assistant-error {
   margin: 0 12px 7px;
   color: #ffb1a2;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1.4;
 }
 
 .assistant-footer {
   padding: 0 12px 9px;
   color: #749399;
-  font-size: 9px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
@@ -499,7 +505,10 @@ watch(open, (value) => {
   }
 
   .assistant-panel {
-    height: min(580px, calc(100vh - 108px));
+    top: 108px;
+    right: 8px;
+    bottom: 184px;
+    width: calc(100vw - 16px);
   }
 
   .assistant-launcher {
@@ -509,6 +518,13 @@ watch(open, (value) => {
 
   .launcher-label {
     display: none;
+  }
+}
+
+@media (max-height: 560px) and (min-width: 761px) {
+  .assistant-panel {
+    top: 56px;
+    bottom: 68px;
   }
 }
 </style>

@@ -42,7 +42,9 @@ corepack pnpm dev     # 或 npm run dev
 访问 http://127.0.0.1:10060/ ，点右上角「✦ AI 研判」。
 
 ## 5. 配置 DeepSeek（可选，默认离线）
-# 在启动后端之前设置（同终端）：
+
+在启动后端之前设置（与启动命令同一终端）：
+
 ```powershell
 $env:DEEPSEEK_API_KEY = "sk-你的key"
 python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
@@ -52,15 +54,29 @@ python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
 - 可选环境变量：DEEPSEEK_BASE_URL（默认 https://api.deepseek.com）、DEEPSEEK_MODEL（默认 deepseek-chat，演示求快别用 reasoner）、DEEPSEEK_TIMEOUT（默认 10）。
 
 ## 6. 使用 / 测试问题清单
-固定问题：在线预测模型是什么 / ERA5 融合有效吗 / 与官方预报差多少 / 误差范围口径 / 数据范围
-动态问题（先选中台风并点「运行 CNN 预测」）：当前台风是什么 / 当前预测位置在哪 / 当前误差范围是多少 / 当前环境风场怎么样
-区分验证：在线预测和 ERA5 融合实验有什么区别
-兜底验证：今天天气怎么样（应回「知识库中暂未收录该信息」）
+
+| 类型 | 问题 | 预期回答要点 |
+| --- | --- | --- |
+| 固定问题 | 在线预测模型是什么 / ERA5 融合有效吗 / 与官方预报差多少 / 误差范围口径 / 数据范围 | 来自知识卡片 |
+| 动态问题 | 当前台风是什么 / 当前预测位置在哪 / 当前误差范围是多少 / 当前环境风场怎么样 | 先选中台风并点「运行 CNN 预测」，再提问 |
+| 区分验证 | 在线预测和 ERA5 融合实验有什么区别 | 应明确区分两者 |
+| 兜底验证 | 今天天气怎么样 | 应回「知识库中暂未收录该信息」 |
 
 ## 7. 如何新增 / 修改知识卡片
-编辑 backend/app/knowledge/cards.json，每张卡结构：
-{ "id": "唯一英文", "title": "短标题", "keywords": ["强关联词..."], "weight": 1,
-  "answer": "2-4 句确定结论（带数字）", "sources": [{"path": "相对路径", "section": "小节"}], "caveats": ["口径红线"] }
+编辑 backend/app/knowledge/cards.json，每张卡片结构：
+
+```json
+{
+  "id": "唯一英文",
+  "title": "短标题",
+  "keywords": ["强关联词..."],
+  "weight": 1,
+  "answer": "2-4 句确定结论（带数字）",
+  "sources": [{ "path": "相对路径", "section": "小节" }],
+  "caveats": ["口径红线"]
+}
+```
+
 注意：
 - keywords 用强关联词，禁用宽泛单字（如「模型」）；实时值问题不要写成卡片（走 context 自动读取）。
 - 改完必须重启后端（卡片在启动时加载）。

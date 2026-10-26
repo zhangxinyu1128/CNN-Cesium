@@ -61,7 +61,7 @@ CNN-Cesium/
 ### 前端
 
 ```powershell
-cd D:\project\CNN-Cesium\CNN-Cesium
+cd e:\比赛\CNN-Cesium\CNN-Cesium
 corepack enable
 corepack prepare pnpm@9 --activate
 pnpm install --frozen-lockfile
@@ -76,7 +76,7 @@ corepack pnpm install --frozen-lockfile
 ### 后端和模型
 
 ```powershell
-cd D:\project\CNN-Cesium
+cd e:\比赛\CNN-Cesium
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
@@ -91,7 +91,7 @@ python -m pip install -r ml\requirements.txt
 复制环境变量模板：
 
 ```powershell
-cd D:\project\CNN-Cesium\CNN-Cesium
+cd e:\比赛\CNN-Cesium\CNN-Cesium
 Copy-Item .env.example .env.dev
 ```
 
@@ -112,7 +112,7 @@ VITE_API_PROXY_TARGET=http://127.0.0.1:8000
 在项目根目录执行：
 
 ```powershell
-cd D:\project\CNN-Cesium
+cd e:\比赛\CNN-Cesium
 .\.venv\Scripts\Activate.ps1
 python -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
 ```
@@ -126,7 +126,7 @@ python -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
 另开一个 PowerShell 窗口：
 
 ```powershell
-cd D:\project\CNN-Cesium\CNN-Cesium
+cd e:\比赛\CNN-Cesium\CNN-Cesium
 pnpm dev
 ```
 
@@ -153,7 +153,7 @@ pnpm dev
 数据审计：
 
 ```powershell
-cd D:\project\CNN-Cesium
+cd e:\比赛\CNN-Cesium
 .\.venv\Scripts\python.exe ml\data_audit.py
 ```
 
@@ -190,7 +190,7 @@ ERA5 增强版本还提供 `ml.models.gated_era5_fusion.GatedERA5Fusion` 组件�
 训练产物保存到 `artifacts/residual/`。使用新模型时设置：
 
 ```powershell
-$env:TC_MODEL_PATH = 'D:\project\CNN-Cesium\artifacts\residual\checkpoints\track_cnn_residual.pth'
+$env:TC_MODEL_PATH = 'e:\比赛\CNN-Cesium\artifacts\residual\checkpoints\track_cnn_residual.pth'
 ```
 
 `/health` 的 `model.coordinate_system` 会报告当前模型的坐标格式。
@@ -200,7 +200,7 @@ $env:TC_MODEL_PATH = 'D:\project\CNN-Cesium\artifacts\residual\checkpoints\track
 ## 前端检查与构建
 
 ```powershell
-cd D:\project\CNN-Cesium\CNN-Cesium
+cd e:\比赛\CNN-Cesium\CNN-Cesium
 pnpm lint
 pnpm build
 pnpm preview
@@ -222,19 +222,30 @@ pnpm preview
 
 ## 当前模型结果说明
 
+### 主实验（残差 CNN）
+
 主实验使用按台风编号和年份隔离的训练、验证、测试集（训练 1945-2016，验证 2017-2019，测试 2020-2025），测试集包含 154 场台风和 1,670 个窗口。残差 CNN 以匀速运动为先验，在固定测试集上 6-36 小时路径误差均低于匀速外推，三种随机种子方向一致。主实验指标保存在 `artifacts/residual/runs/` 和 `artifacts/residual_seed_sensitivity/`。
+
+### ERA5 融合消融
 
 项目已完成 ERA5 500/850 hPa 风场匹配和融合消融。扩展测试子集含 1,661 个配对窗口、112 场台风；三种子均值下，500/850 hPa 融合路径 MAE 在 6/12/18/24/30/36 小时分别为 41.93/81.18/127.01/179.85/239.52/306.65 km，轨迹-only 对照分别为 44.17/86.63/134.35/187.28/246.63/312.25 km。结果仅适用于当前 ERA5 配对历史测试集，不能外推为实时业务预报结论。
 
+### 在线模型与校准
+
 在线默认 API 加载 `artifacts/checkpoints/track_cnn_physics_multiscale.pth`，采用 12 步局地东-北运动特征、多尺度因果残差 CNN 和物理约束训练。前端按健康检查报告自动构造 13 个六小时观测点。该模型在 914 个留出台风窗口上低于旧基线误差；与原残差 CNN 的差异未达到统计显著。位置半径来自独立验证台风校准，目标覆盖率为 90%，不是灾害概率、实际影响半径或实时预报保证。设置 `TC_MODEL_PATH` 可切回旧模型。
+
+### JTWC 官方预报对比
+
 阶段一已补充可追溯的 JTWC 官方预报数据：原始 b-deck/f-deck 保存在本地 `official_forecast/JTWC/`，因数据量较大不随普通源码提交；汇总表和配对误差位于 `official_forecast/forecast_points.csv`、`official_forecast/best_track_points.csv`、`official_forecast/paired_errors.csv`。当前冻结测试集已完成 JTWC 2025 f-deck 同起报对比，覆盖 26 个台风、471 个测试窗口；同一最佳路径真值下，官方 12/24/36 小时平均位置误差为 48.6/67.2/84.0 km。官方预报只覆盖 2025 年，且 f-deck 没有 6/18/30 小时点，不能据此声称模型全面优于官方预报。完整口径见 `official_forecast/说明.txt` 和 `artifacts/era5/annular_steering_flow/official_comparison/official_comparison.json`。
+
+### ERA5 数据来源与核验
 
 ERA5 来源为 [Copernicus Climate Change Service ERA5 pressure levels](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels)，来源登记和原始文件元数据见 `ERA5data/SOURCE.json` 与 `ERA5data/metadata.json`。轨迹对齐、配对样本和实验指标保存在 `artifacts/era5/historical_500_850_refresh_20261002/`。原始 GRIB 和派生 JSONL 属于本地数据材料，不随普通 GitHub 源码提交；按项目数据清单准备后可复现实验。
 
 ERA5 解析环境配置文件为 `ml/requirements-era5.txt`。核验命令：
 
 ```powershell
-cd D:\project\CNN-Cesium
+cd e:\比赛\CNN-Cesium
 .venv\Scripts\python.exe ml\inspect_era5_grib.py --verify
 ```
 

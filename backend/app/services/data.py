@@ -145,6 +145,20 @@ class DataRepository:
         normalized["points"] = [_normalize_point(item) for item in points] if isinstance(points, list) else []
         return normalized
 
+    def iter_typhoons(self):
+        """Yield valid full tracks in stable ID order for offline case matching."""
+        if not self.typhoon_root.exists():
+            return
+        for path in sorted(self.typhoon_root.glob("*.json")):
+            if not TYPHOON_ID_PATTERN.fullmatch(path.stem):
+                continue
+            try:
+                item = self.get_typhoon(path.stem)
+            except (OSError, json.JSONDecodeError):
+                continue
+            if item is not None:
+                yield item
+
     def data_status(self) -> Dict[str, Any]:
         year_files = len(list(self.year_root.glob("*.json"))) if self.year_root.exists() else 0
         typhoon_paths = list(self.typhoon_root.glob("*.json")) if self.typhoon_root.exists() else []

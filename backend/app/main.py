@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 
 from .schemas import (
+    AssistantAnswer,
+    AssistantQueryRequest,
     AssistantRequest,
     AssistantResponse,
     HealthResponse,
@@ -25,6 +27,9 @@ from .services.data import DataRepository
 from .services.era5 import Era5Repository
 from .services.model import ModelService
 from .services.assistant import answer_question
+from .services.knowledge import AssistantService
+from .services.assistant_features import AssistantFeatureService
+from .services.llm import DeepSeekClient
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -84,6 +89,9 @@ model_service = ModelService(
     PREDICTION_UNCERTAINTY_PATH,
     JOINT_UNCERTAINTY_PATH,
 )
+assistant_service = AssistantService(PROJECT_ROOT / "backend" / "app" / "knowledge" / "cards.json")
+assistant_feature_service = AssistantFeatureService(repository)
+deepseek_client = DeepSeekClient()
 
 app = FastAPI(
     title="Tropical Cyclone Intelligence API",
@@ -126,6 +134,69 @@ def health() -> dict:
 def ask_assistant(request: AssistantRequest) -> dict:
     """Answer a project question using local evidence and optional DeepSeek wording."""
     return answer_question(request.question, request.context)
+
+
+SYSTEM_PROMPT = (
+    "你是一个专业气象助手，必须严格基于提供的知识卡片回答。"
+    "如果卡片中没有相关信息，请直接回复\"知识库中暂未收录该信息\"，"
+    "绝对不允许使用你自己的先验知识进行推测。"
+)
+
+
+def _assistant_llm_answer(request: AssistantQueryRequest) -> dict:
+    retrieved = assistant_service.retrieve(request.query, request.context)
+    user_parts = []
+    if retrieved["cards"]:
+        user_parts.append("知识卡片：")
+        for card in retrieved["cards"]:
+            source_paths = [
+                str(source.get("path", ""))
+                for source in card.get("sources", [])
+                if isinstance(source, dict) and source.get("path") is not None
+            ]
+            line = f"- [{card.get('id')}] {card.get('title')}：{card.get('answer')}"
+            if source_paths:
+                line += f"（来源：{'、'.join(source_paths)}）"
+            user_parts.append(line)
+    if retrieved["context_summary"]:
+        user_parts.append("实时上下文：" + retrieved["context_summary"])
+    user_parts.append("用户问题：" + request.query)
+
+    answer = deepseek_client.chat([
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": "\n".join(user_parts)},
+    ])
+    return {
+        "answer": answer,
+        "status": "matched",
+        "sources": retrieved["sources"],
+        "matched_card_ids": [
+            str(card.get("id")) for card in retrieved["cards"] if card.get("id") is not None
+        ],
+        "caveats": retrieved["caveats"],
+    }
+
+
+@app.post("/api/assistant/query", response_model=AssistantAnswer)
+def assistant_query(request: AssistantQueryRequest) -> dict:
+    feature_answer = assistant_feature_service.answer(request.query, request.context)
+    if feature_answer is not None:
+        return {
+            "answer": feature_answer["answer"],
+            "status": "dynamic",
+            "sources": feature_answer.get("sources", []),
+            "matched_card_ids": [feature_answer["feature_card_id"]],
+            "caveats": feature_answer.get("caveats", []),
+            "feature_card_id": feature_answer["feature_card_id"],
+            "historical_cases": feature_answer.get("historical_cases", []),
+            "forecast_timeline": feature_answer.get("forecast_timeline", []),
+        }
+    if not deepseek_client.enabled:
+        return assistant_service.query(request.query, request.context)
+    try:
+        return _assistant_llm_answer(request)
+    except Exception:
+        return assistant_service.query(request.query, request.context)
 
 
 @app.get("/api/export-settings", response_model=ExportSettings)

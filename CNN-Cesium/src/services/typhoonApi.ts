@@ -1,4 +1,6 @@
 import type {
+  AssistantAnswer,
+  AssistantContext,
   HealthResponse,
   Era5Response,
   ExportInfoId,
@@ -42,6 +44,24 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     throw new Error(`请求失败: ${message}`)
   }
   return response.json() as Promise<T>
+}
+
+export function queryAssistant(query: string, context: AssistantContext) {
+  const controller = new AbortController()
+  const timer = window.setTimeout(() => controller.abort(), 15000)
+  return request<AssistantAnswer>('/api/assistant/query', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, context }),
+    signal: controller.signal
+  })
+    .catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        throw new Error('请求超时，请检查网络或稍后重试')
+      }
+      throw error
+    })
+    .finally(() => window.clearTimeout(timer))
 }
 
 export function fetchYears() {

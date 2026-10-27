@@ -33,6 +33,72 @@ export interface TyphoonDetail extends TyphoonIndexItem {
   points: TyphoonPoint[]
 }
 
+export interface AssistantContext {
+  typhoon_id?: string | null
+  typhoon_name?: string | null
+  lead_hours?: number | null
+  forecast_position?: { lng?: number | null; lat?: number | null }
+  speed_ms?: number | null
+  location_radius_90_km?: number | null
+  uncertainty_region?: {
+    semi_major_axis_km?: number | null
+    semi_minor_axis_km?: number | null
+    coverage?: number | null
+  }
+  era5?: {
+    level?: number | null
+    u?: number | null
+    v?: number | null
+    speed_ms?: number | null
+    direction_deg?: number | null
+    shear?: number | null
+  }
+  current_observation?: Pick<TyphoonPoint, 'time' | 'lng' | 'lat' | 'power' | 'speed' | 'pressure' | 'strong'>
+  observed_points?: Array<Pick<TyphoonPoint, 'time' | 'lng' | 'lat' | 'power' | 'speed' | 'strong'>>
+  forecast_points?: Array<{
+    lead_hours: number
+    lng: number
+    lat: number
+    speed_ms?: number | null
+    location_radius_90_km?: number | null
+  }>
+}
+
+export interface AssistantSource {
+  path: string
+  section?: string | null
+}
+
+export interface AssistantAnswer {
+  answer: string
+  status: 'matched' | 'dynamic' | 'fallback'
+  sources: AssistantSource[]
+  matched_card_ids: string[]
+  caveats: string[]
+  feature_card_id?: string | null
+  historical_cases?: AssistantHistoricalCase[]
+  forecast_timeline?: AssistantTimelinePoint[]
+}
+
+export interface AssistantHistoricalCase {
+  tfbh: string
+  name: string
+  year: number
+  match_time: string
+  mean_distance_km: number
+  mean_power_delta?: number | null
+  matched_points: number
+  points: Array<Pick<TyphoonPoint, 'time' | 'lng' | 'lat' | 'strong'>>
+}
+
+export interface AssistantTimelinePoint {
+  lead_hours: number
+  lng: number
+  lat: number
+  speed_ms?: number | null
+  location_radius_90_km?: number | null
+}
+
 export type ExportLegendId = 'history' | 'prediction' | 'error' | 'impact'
 export type ExportInfoId = 'time' | 'position' | 'intensity' | 'era5'
 

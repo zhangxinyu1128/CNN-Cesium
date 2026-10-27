@@ -1,0 +1,162 @@
+[
+  {
+    "id": "project_overview",
+    "title": "项目能力总览",
+    "keywords": ["项目能力", "历史台风筛选", "轨迹回放", "Cesium 三维", "路径预测", "环境风场", "导出"],
+    "weight": 1,
+    "answer": "平台支持历史台风筛选与回放、Cesium 三维展示、轨迹 CNN 预测、沿轨 ERA5 风场查看、预测不确定性展示和分析结果导出。",
+    "sources": [
+      {"path": "README.md", "section": "项目能力与功能介绍"}
+    ],
+    "caveats": ["面向历史分析、科研复核和教学演示，不替代官方预警"]
+  },
+  {
+    "id": "online_model",
+    "title": "在线预测模型",
+    "keywords": ["在线", "接口", "纯轨迹", "多尺度", "局地运动", "物理约束", "CNN", "预测模型", "checkpoint"],
+    "weight": 3,
+    "answer": "当前在线 /api/predict 默认使用 artifacts/checkpoints/track_cnn_physics_multiscale.pth，模型版本 multiscale-residual-physics-12step-seed2028-v1。模型以 12 步局地东-北运动特征和多尺度因果残差 CNN 进行预测，页面请求包含 13 个连续六小时观测点，输出 6/12/18/24/30/36 小时路径和风速。在线模型不把 ERA5 作为输入。",
+    "sources": [
+      {"path": "backend/app/services/model.py", "section": "在线模型加载与预测"},
+      {"path": "README.md", "section": "在线模型"}
+    ],
+    "caveats": ["在线预测与 ERA5 离线融合实验是不同模型口径"]
+  },
+  {
+    "id": "era5_fusion",
+    "title": "ERA5 历史融合实验",
+    "keywords": ["ERA5 融合", "500 hPa", "850 hPa", "外环引导流", "350 km", "550 km", "750 km", "路径 MAE"],
+    "weight": 2,
+    "answer": "ERA5 500/850 hPa 外环融合实验使用 350/550/750 km 半径的方位采样特征。在 1,661 个 ERA5 配对测试窗口上，三随机种子均值路径 MAE（6/12/18/24/30/36 小时）为 41.93/81.18/127.01/179.85/239.52/306.65 km；轨迹-only 对照为 44.17/86.63/134.35/187.28/246.63/312.25 km。",
+    "sources": [
+      {"path": "README.md", "section": "ERA5 融合实验"},
+      {"path": "ml/train_era5_annular_ablation.py", "section": "环带融合实验"}
+    ],
+    "caveats": ["仅适用于 ERA5 配对历史测试集", "不代表当前在线接口使用 ERA5，也不构成实时业务预报结论"]
+  },
+  {
+    "id": "official_compare",
+    "title": "JTWC 官方预报对比",
+    "keywords": ["JTWC", "官方预报", "官方对比", "2025", "12h", "24h", "36h", "官方误差"],
+    "weight": 2,
+    "answer": "当前可复核的 JTWC 官方预报对比覆盖 2025 年、26 个台风和 471 个同起报测试窗口；JTWC 12/24/36 小时平均位置误差为 48.6/67.2/84.0 km。该对比对应阶段三轨迹与 ERA5 实验，不应表述为当前在线多尺度模型已超过官方预报；当前在线模型需要单独按相同样本协议评估。",
+    "sources": [
+      {"path": "README.md", "section": "JTWC 官方预报对比"},
+      {"path": "artifacts/reports/official_forecast_comparison_20261008.md", "section": "对比结果与边界"}
+    ],
+    "caveats": ["仅覆盖 2025 年和 12/24/36 小时", "官方误差不等于模型成绩"]
+  },
+  {
+    "id": "uncertainty",
+    "title": "误差范围口径",
+    "keywords": ["误差范围", "90% 历史校准椭圆", "location_radius_90_km", "位置误差", "展示半径", "不确定性", "概率"],
+    "weight": 2,
+    "answer": "在线模型的不确定性范围由验证集台风个例进行 split-conformal 校准，目标覆盖率为 90%；页面同时显示具体预测时效的历史校准范围。它描述历史位置误差的不确定性，不是灾害概率、实际影响半径或官方预警。独立测试中的整场台风覆盖率可能低于 90%。",
+    "sources": [
+      {"path": "artifacts/reports/track_api_uncertainty_multiscale_physics_2028.json", "section": "模型匹配的在线校准记录"},
+      {"path": "backend/app/services/model.py", "section": "预测范围输出"}
+    ],
+    "caveats": ["90% 是校准目标，不保证每个台风或每个时效均达到该覆盖率", "不是灾害概率"]
+  },
+  {
+    "id": "data_scope",
+    "title": "数据口径与划分",
+    "keywords": ["数据范围", "1945-2025", "最佳路径", "训练集", "验证集", "测试集", "窗口数", "数据泄漏"],
+    "weight": 1,
+    "answer": "轨迹数据覆盖 1945—2025 年，包含 1,935 场有效台风和 73,388 个观测点。多尺度实验按台风个例固定划分，训练/验证/测试窗口为 22,013/475/914；相邻时间窗口不会随机拆到不同集合。ERA5 配对实验使用独立的配对样本子集。",
+    "sources": [
+      {"path": "data/processed/manifest.json", "section": "轨迹数据清单"},
+      {"path": "artifacts/multiscale/runs/20261019T031709Z/experiment_report.json", "section": "独立台风测试集"}
+    ],
+    "caveats": ["不同实验使用各自注明的固定测试集，指标不可跨测试集直接比较"]
+  },
+  {
+    "id": "limitations",
+    "title": "能力边界与免责",
+    "keywords": ["免责", "口径限制", "实时预报", "实时预警", "风险", "灾害概率", "不确定性"],
+    "weight": 1,
+    "answer": "本项目提供历史数据分析、模型模拟预测和辅助解释，不接入实时观测或业务数值预报。预测误差范围不等于风险概率，实验指标受数据集和评估时效限制。应以气象部门正式预报预警为准。",
+    "sources": [
+      {"path": "README.md", "section": "限制与使用边界"},
+      {"path": "official_forecast/说明.txt", "section": "对比口径说明"}
+    ],
+    "caveats": ["不构成实时预报保证或官方预警"]
+  },
+  {
+    "id": "greeting",
+    "title": "打招呼",
+    "keywords": ["你好", "您好", "hi", "hello", "在吗"],
+    "weight": 1,
+    "answer": "你好！我是台风研判助手，可以解释在线模型、ERA5 历史实验、JTWC 对比、误差范围和数据划分。",
+    "sources": [],
+    "caveats": []
+  },
+  {
+    "id": "help",
+    "title": "帮助",
+    "keywords": ["帮助", "说明", "功能", "问题", "能做什么"],
+    "weight": 1,
+    "answer": "可以询问当前在线模型、ERA5 融合实验、JTWC 官方对比、预测误差范围、数据划分，或页面当前台风的预测位置与 ERA5 风场。",
+    "sources": [],
+    "caveats": []
+  },
+  {
+    "id": "similar_typhoons",
+    "title": "历史相似台风案例",
+    "keywords": ["相似台风", "相似案例", "历史案例", "类似台风", "找相似", "匹配案例"],
+    "weight": 2,
+    "answer": "历史案例按当前已观测轨迹前缀、季节和可用强度等级进行启发式排序，匹配到的后续路径是历史事实，仅作对照，不是当前预测。",
+    "sources": [
+      {"path": "data/typhoon/*.json", "section": "历史最佳路径"},
+      {"path": "backend/app/services/assistant_features.py", "section": "相似轨迹检索"}
+    ],
+    "caveats": ["不含灾情资料", "历史案例后续路径不代表当前台风未来路径"]
+  },
+  {
+    "id": "intensity_explainer",
+    "title": "台风强度术语解释",
+    "keywords": ["风力等级", "几级风", "中心气压", "hpa", "百帕", "通俗解释", "影响描述"],
+    "weight": 2,
+    "answer": "风力等级和中心气压描述台风中心强度。等级越高、中心气压越低通常代表系统更强，但不能单独推出某个城市的实际风雨或损害程度。",
+    "sources": [
+      {"path": "data/processed/manifest.json", "section": "台风最佳路径字段口径"},
+      {"path": "backend/app/services/assistant_features.py", "section": "术语解释规则"}
+    ],
+    "caveats": ["中心强度不等于目标城市实况", "具体影响以当地精细化预报和官方预警为准"]
+  },
+  {
+    "id": "forecast_timeline",
+    "title": "预测路径时效时间轴",
+    "keywords": ["风险时间轴", "时间轴", "各时效", "分时效", "逐时效", "未来路径", "路径演变"],
+    "weight": 2,
+    "answer": "时间轴只整理在线模型实际给出的 6/12/18/24/30/36 小时路径位置和可用的历史校准误差，不对离散时效插值，也不推断降雨或灾害概率。",
+    "sources": [
+      {"path": "backend/app/services/model.py", "section": "预测时效输出"},
+      {"path": "backend/app/services/assistant_features.py", "section": "预测时间轴"}
+    ],
+    "caveats": ["不是逐小时预报", "位置校准范围不是灾害概率"]
+  },
+  {
+    "id": "city_proximity",
+    "title": "城市与预测路径距离",
+    "keywords": ["城市距离", "南京", "上海", "杭州", "福州", "厦门", "广州", "深圳", "影响生活", "影响日常"],
+    "weight": 2,
+    "answer": "城市距离由模型预测的台风中心位置与城市坐标计算，只表示中心路径距离，不能据此判断风圈覆盖、降雨影响或官方预警。",
+    "sources": [
+      {"path": "backend/app/services/assistant_features.py", "section": "城市坐标与球面距离计算"},
+      {"path": "backend/app/services/model.py", "section": "预测路径位置"}
+    ],
+    "caveats": ["中心线距离不等于风圈或灾害影响范围", "未接入城市实时降雨、地面阵风和官方预警"]
+  },
+  {
+    "id": "defensive_guidance",
+    "title": "通用防台准备建议",
+    "keywords": ["防御建议", "防台建议", "怎么防御", "如何防御", "准备什么", "避险建议"],
+    "weight": 2,
+    "answer": "可提供关注官方预警、合理安排出行、检查门窗和阳台松动物品、准备常用药品饮水与充电设备等通用提示，不生成停课停工、转移或调度指令。",
+    "sources": [
+      {"path": "backend/app/services/assistant_features.py", "section": "通用防台提示"}
+    ],
+    "caveats": ["通用建议不是官方应急指令", "具体措施以当地政府和气象部门发布为准"]
+  }
+]

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import WorkspaceApp from './App.workspace.vue'
+import AssistantPanel from '@/components/AssistantPanel.vue'
 import ExperimentComparisonChart from '@/components/ExperimentComparisonChart.vue'
 import TyphoonCharts from '@/components/TyphoonCharts.vue'
-import TyphoonAssistant from '@/components/TyphoonAssistant.vue'
 import {
   fetchExperimentSummary,
   fetchExportSettings,
@@ -21,6 +21,8 @@ import {
 } from '@/services/typhoonApi'
 import { buildPredictionWindow } from '@/services/predictionWindow'
 import type {
+  AssistantContext,
+  AssistantHistoricalCase,
   Era5Point,
   Era5Response,
   ExportInfoId,
@@ -41,6 +43,7 @@ const selectedYear = ref(2025)
 const typhoons = ref<TyphoonIndexItem[]>([])
 const selectedId = ref('202501')
 const selectedTyphoon = ref<TyphoonDetail | null>(null)
+const assistantOpen = ref(false)
 const currentIndex = ref(0)
 const playing = ref(false)
 const health = ref<HealthResponse | null>(null)
@@ -180,10 +183,14 @@ type LegacyHighlight = {
 type LegacyPredictionOverlay = {
   entities: LegacyEntity[]
 }
+type LegacyHistoricalOverlay = {
+  entities: LegacyEntity[]
+}
 
 const legacyHighlights = new Map<string, LegacyHighlight>()
 let legacyPredictionOverlay: LegacyPredictionOverlay | null = null
 let legacyEra5Overlay: LegacyPredictionOverlay | null = null
+let legacyHistoricalOverlay: LegacyHistoricalOverlay | null = null
 const highlightColors = ['#ff1493', '#00fff0', '#ffe600', '#76ff03', '#ff6d00']
 const intensityColors: Record<string, string> = {
   '热带低压(TD)': '#30fc31',
@@ -281,31 +288,62 @@ const era5Status = computed(() => {
   if (!era5.value) return '同步中'
   return selectedEra5Point.value && (currentWind500.value || currentWind850.value) ? '已同步' : '未匹配'
 })
-const assistantContext = computed(() => ({
-  selected_typhoon: selectedTyphoon.value
-    ? { tfbh: selectedTyphoon.value.tfbh, name: selectedTyphoon.value.name, ename: selectedTyphoon.value.ename }
-    : null,
-  current_point: currentPoint.value
-    ? { time: currentPoint.value.time, lng: currentPoint.value.lng, lat: currentPoint.value.lat, speed: currentPoint.value.speed, power: currentPoint.value.power }
-    : null,
-  forecast: selectedPoint.value
-    ? { lead_hours: selectedPoint.value.lead_hours, lng: selectedPoint.value.lng, lat: selectedPoint.value.lat, speed_ms: selectedPoint.value.speed_ms, location_radius_90_km: selectedPoint.value.location_radius_90_km }
-    : null,
-  era5: selectedEra5Point.value
-    ? { status: era5Status.value, levels: selectedEra5Point.value.levels }
-    : { status: era5Status.value, levels: {} },
-  selected_horizon: selectedLead.value,
-  model: health.value?.model
-    ? {
-      status: health.value.model.status,
-      model_type: health.value.model.model_type,
-      model_version: health.value.model.model_version,
-      coordinate_system: health.value.model.coordinate_system,
-      input_steps: health.value.model.input_steps,
-      device: health.value.model.device
-    }
-    : null
-}))
+const assistantContext = computed<AssistantContext>(() => {
+  const point = selectedPoint.value
+  const region = point?.uncertainty_region
+  const wind = forecastEra5Point.value?.levels['850']
+  return {
+    typhoon_id: selectedTyphoon.value?.tfbh,
+    typhoon_name: selectedTyphoon.value?.name || selectedTyphoon.value?.ename,
+    lead_hours: selectedLead.value,
+    forecast_position: point ? { lng: point.lng, lat: point.lat } : undefined,
+    speed_ms: point?.speed_ms ?? undefined,
+    location_radius_90_km:
+      point?.location_radius_90_km ??
+      experimentSummary.value?.uncertainty?.by_horizon?.find((item) => item.lead_hours === selectedLead.value)?.location_radius_90_km ??
+      undefined,
+    uncertainty_region: region
+      ? {
+        semi_major_axis_km: region.semi_major_axis_km,
+        semi_minor_axis_km: region.semi_minor_axis_km,
+        coverage: region.coverage
+      }
+      : undefined,
+    era5: wind
+      ? {
+        level: 850,
+        u: wind.u,
+        v: wind.v,
+        speed_ms: wind.speed_ms,
+        direction_deg: wind.direction_deg,
+        shear: forecastEra5Point.value?.shear_500_850_ms ?? undefined
+      }
+      : undefined,
+    current_observation: currentPoint.value
+      ? {
+        time: currentPoint.value.time,
+        lng: currentPoint.value.lng,
+        lat: currentPoint.value.lat,
+        power: currentPoint.value.power,
+        speed: currentPoint.value.speed,
+        pressure: currentPoint.value.pressure,
+        strong: currentPoint.value.strong
+      }
+      : undefined,
+    observed_points: selectedTyphoon.value
+      ? selectedTyphoon.value.points
+        .slice(Math.max(0, currentIndex.value - 7), currentIndex.value + 1)
+        .map(({ time, lng, lat, power, speed, strong }) => ({ time, lng, lat, power, speed, strong }))
+      : [],
+    forecast_points: prediction.value?.predictions.map((forecast) => ({
+      lead_hours: forecast.lead_hours,
+      lng: forecast.lng,
+      lat: forecast.lat,
+      speed_ms: forecast.speed_ms,
+      location_radius_90_km: forecast.location_radius_90_km
+    })) ?? []
+  }
+})
 
 function canonicalTime(value?: string | null) {
   if (!value) return ''
@@ -551,6 +589,64 @@ function clearLegacyEra5() {
     legacyEra5Overlay.entities.forEach((entity) => viewer.entities.remove(entity))
   }
   legacyEra5Overlay = null
+}
+
+function clearLegacyHistoricalOverlay() {
+  const viewer = legacyFrame()?.viewer
+  if (viewer && legacyHistoricalOverlay) {
+    legacyHistoricalOverlay.entities.forEach((entity) => viewer.entities.remove(entity))
+  }
+  legacyHistoricalOverlay = null
+}
+
+function showHistoricalCase(historicalCase: AssistantHistoricalCase) {
+  clearLegacyHistoricalOverlay()
+  const frame = legacyFrame()
+  const Cesium = frame?.Cesium
+  const viewer = frame?.viewer
+  const points = historicalCase.points.filter(
+    (point) => Number.isFinite(point.lng) && Number.isFinite(point.lat)
+  )
+  if (!Cesium || !viewer || points.length < 2) {
+    message.value = '历史参考路径数据不足，无法叠加到地图'
+    return
+  }
+
+  const color = Cesium.Color.fromCssColorString('#ffc66d')
+  const dashed = Cesium.PolylineDashMaterialProperty
+    ? new Cesium.PolylineDashMaterialProperty({ color, dashLength: 12 })
+    : color
+  const entities: LegacyEntity[] = [viewer.entities.add({
+    id: `AssistantHistoricalCase-${historicalCase.tfbh}`,
+    name: `${historicalCase.year} ${historicalCase.name} 历史相似案例路径`,
+    polyline: {
+      positions: Cesium.Cartesian3.fromDegreesArray(points.flatMap((point) => [point.lng, point.lat])),
+      width: 5,
+      clampToGround: true,
+      material: dashed
+    }
+  })]
+  const first = points[0]
+  const last = points[points.length - 1]
+  entities.push(viewer.entities.add({
+    id: `AssistantHistoricalCaseStart-${historicalCase.tfbh}`,
+    name: `${historicalCase.name} 匹配参考段起点`,
+    position: Cesium.Cartesian3.fromDegrees(first.lng, first.lat, 14000),
+    point: { pixelSize: 10, color, outlineColor: Cesium.Color.fromCssColorString('#102431'), outlineWidth: 2 }
+  }))
+  entities.push(viewer.entities.add({
+    id: `AssistantHistoricalCaseEnd-${historicalCase.tfbh}`,
+    name: `${historicalCase.name} 历史路径终点`,
+    position: Cesium.Cartesian3.fromDegrees(last.lng, last.lat, 14000),
+    point: { pixelSize: 12, color, outlineColor: Cesium.Color.fromCssColorString('#ffffff'), outlineWidth: 2 }
+  }))
+  legacyHistoricalOverlay = { entities }
+  viewer.scene?.requestRender?.()
+  void viewer.flyTo(entities, {
+    duration: 1.0,
+    offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-66), 0)
+  })
+  message.value = `已叠加 ${historicalCase.year} 年 ${historicalCase.name} 的历史参考路径；该路径不代表当前预测`
 }
 
 function renderLegacyEra5() {
@@ -1668,6 +1764,8 @@ watch(currentIndex, () => {
   updateLegacyMarker()
 })
 
+watch(selectedId, () => clearLegacyHistoricalOverlay())
+
 watch(selectedTyphoon, async () => {
   await nextTick()
   startHistoryTableScroll(true)
@@ -1713,6 +1811,7 @@ onUnmounted(() => {
   finishReplayRecording()
   clearLegacyPrediction()
   clearLegacyEra5()
+  clearLegacyHistoricalOverlay()
   legacyDblClickDocument?.removeEventListener('dblclick', handleLegacyTyphoonDblClick, true)
   legacyDblClickWindow?.removeEventListener('dblclick', handleLegacyTyphoonDblClick, true)
   legacyCheckboxDocument?.removeEventListener('change', handleLegacyCheckboxChange, true)
@@ -1755,7 +1854,7 @@ onMounted(async () => {
         </span>
         <div class="screen-brand-copy">
           <h1>热带气旋可视化与预测平台</h1>
-          <span class="screen-brand-subtitle">台风智轨 <i>|</i> 气旋视界队</span>
+          <span class="screen-brand-subtitle">驭风智瞳 <i>|</i> 气旋视界队</span>
         </div>
       </div>
 
@@ -1786,6 +1885,10 @@ onMounted(async () => {
           <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 4 23 7.5v6.2c0 5-3.8 8-9 10-5.2-2-9-5-9-10V7.5L14 4Z" /><path d="m10 14 2.7 2.7L18 11" /></svg>
           <span>风险研判<small>Risk</small></span>
         </button>
+        <button class="nav-item" type="button" :class="{ active: assistantOpen }" title="打开 AI 研判助手" @click="assistantOpen = !assistantOpen">
+          <svg viewBox="0 0 28 28" aria-hidden="true"><path d="m14 3 2.5 7.5L24 13l-7.5 2.5L14 23l-2.5-7.5L4 13l7.5-2.5L14 3Z" /></svg>
+          <span>AI 研判<small>Assistant</small></span>
+        </button>
       </nav>
 
       <button class="runtime-status" type="button" title="查看运行状态" @click="openPanel('forecast')">
@@ -1802,6 +1905,7 @@ onMounted(async () => {
       v-if="showPanel"
       ref="panelElement"
       class="forecast-panel analysis-panel"
+      :class="{ 'analysis-panel-export': panelMode === 'export' }"
     >
       <div class="panel-title">
         <div>
@@ -2144,7 +2248,13 @@ onMounted(async () => {
       <span>{{ positionReadout.latitude }}</span>
       <span>{{ positionReadout.altitude }}</span>
     </div>
-    <TyphoonAssistant :context="assistantContext" />
+    <AssistantPanel
+      v-if="assistantOpen"
+      :open="assistantOpen"
+      :context="assistantContext"
+      @close="assistantOpen = false"
+      @show-historical-case="showHistoricalCase"
+    />
   </main>
 </template>
 
@@ -3769,5 +3879,227 @@ onMounted(async () => {
   .history-data-panel {
     bottom: 84px;
   }
+}
+
+.analysis-panel {
+  border-color: rgba(43, 185, 224, 0.62);
+  color: #d8f4ff;
+  background: linear-gradient(180deg, rgba(10, 42, 71, 0.98), rgba(5, 27, 48, 0.98));
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35), 0 0 18px rgba(31, 151, 198, 0.12);
+}
+
+.analysis-panel .panel-title {
+  margin: -12px -12px 12px;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(68, 174, 214, 0.25);
+  background: rgba(12, 44, 74, 0.92);
+}
+
+.analysis-panel .kicker,
+.analysis-panel .section-heading,
+.analysis-panel .selection-info {
+  color: #7fc3de;
+}
+
+.analysis-panel .panel-title h2 {
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.analysis-panel .panel-context,
+.analysis-panel .section-heading small,
+.analysis-panel .panel-note {
+  color: #6c9fbb;
+}
+
+.analysis-panel .selection-block {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom-color: rgba(68, 174, 214, 0.25);
+}
+
+.analysis-panel .field-label,
+.analysis-panel .history-overview span,
+.analysis-panel .prediction-meta span,
+.analysis-panel .source-meta span,
+.analysis-panel .selection-info span,
+.analysis-panel .prediction-readout span,
+.analysis-panel .environment-grid span,
+.analysis-panel .environment-grid small,
+.analysis-panel .comparison-snapshot span,
+.analysis-panel .analysis-metric-list span {
+  color: #82abc2;
+}
+
+.analysis-panel .forecast-panel select,
+.analysis-panel select {
+  border-color: rgba(61, 155, 195, 0.55);
+  color: #e1f5ff;
+  background: rgba(9, 39, 65, 0.95);
+}
+
+.analysis-panel .history-overview,
+.analysis-panel .prediction-meta,
+.analysis-panel .source-meta,
+.analysis-panel .environment-grid,
+.analysis-panel .comparison-snapshot,
+.analysis-panel .analysis-metric-list {
+  border-color: rgba(44, 112, 151, 0.35);
+  background: rgba(44, 112, 151, 0.24);
+}
+
+.analysis-panel .history-overview div,
+.analysis-panel .prediction-meta div,
+.analysis-panel .source-meta div,
+.analysis-panel .environment-grid div {
+  background: rgba(8, 32, 55, 0.94);
+}
+
+.analysis-panel .history-overview strong,
+.analysis-panel .prediction-meta strong,
+.analysis-panel .source-meta strong,
+.analysis-panel .prediction-readout strong,
+.analysis-panel .environment-grid strong,
+.analysis-panel .comparison-snapshot strong,
+.analysis-panel .analysis-metric-list strong {
+  color: #e1f5ff;
+}
+
+.analysis-panel .forecast-subtabs,
+.analysis-panel .metric-switch {
+  border-color: rgba(43, 185, 224, 0.32);
+  background: rgba(13, 43, 71, 0.72);
+}
+
+.analysis-panel .forecast-subtabs button,
+.analysis-panel .metric-switch button {
+  color: #9cc8de;
+}
+
+.analysis-panel .forecast-subtabs button.active,
+.analysis-panel .metric-switch button.active {
+  color: #06243a;
+  background: #2bb9e0;
+}
+
+.analysis-panel .horizon-group button,
+.analysis-panel .analysis-horizons button {
+  border-color: rgba(68, 174, 214, 0.32);
+  color: #9cc8de;
+  background: rgba(13, 43, 71, 0.72);
+}
+
+.analysis-panel .horizon-group button.active,
+.analysis-panel .analysis-horizons button.active {
+  border-color: #2bb9e0;
+  color: #06243a;
+  background: #2bb9e0;
+}
+
+.analysis-panel .prediction-readout {
+  border-left-color: #2bb9e0;
+  background: rgba(13, 53, 82, 0.72);
+}
+
+.analysis-panel .environment-grid strong,
+.analysis-panel .risk-radius strong {
+  color: #69d2f0;
+}
+
+.analysis-panel .coverage-bar span {
+  background-color: #2bb9e0;
+}
+
+.analysis-panel .wind-vector-readout {
+  border-left-color: #2bb9e0;
+  background: rgba(13, 53, 82, 0.72);
+}
+
+.analysis-panel .wind-arrow {
+  color: #69d2f0;
+}
+
+.analysis-panel .risk-radius {
+  border-left-color: #2bb9e0;
+  background: rgba(13, 53, 82, 0.72);
+}
+
+.analysis-panel .risk-radius span {
+  color: #82abc2;
+}
+
+.analysis-panel .analysis-headline {
+  border-bottom-color: rgba(68, 174, 214, 0.25);
+  color: #7fc3de;
+}
+
+.analysis-panel .comparison-snapshot div,
+.analysis-panel .analysis-metric-list div {
+  border-bottom-color: rgba(44, 112, 151, 0.24);
+}
+
+.analysis-panel .comparison-snapshot strong,
+.analysis-panel .analysis-metric-list strong {
+  color: #9fe8ff;
+}
+
+.analysis-panel .coverage-bar {
+  background: rgba(44, 112, 151, 0.32);
+}
+
+.analysis-panel .audit-status,
+.analysis-panel .risk-boundary {
+  border-left-color: #2bb9e0;
+  color: #d8f4ff;
+  background: rgba(13, 53, 82, 0.72);
+}
+
+.analysis-panel .risk-boundary strong {
+  color: #9fe8ff;
+}
+
+.analysis-panel .audit-status small,
+.analysis-panel .risk-boundary span {
+  color: #8db5ca;
+}
+
+.analysis-panel .close-button {
+  border-color: rgba(68, 174, 214, 0.5);
+  color: #a8e8ff;
+  background: rgba(13, 58, 91, 0.7);
+}
+
+.analysis-panel .run-button {
+  border: 1px solid rgba(89, 202, 235, 0.65);
+  color: #06243a;
+  background: #2bb9e0;
+}
+
+.analysis-panel .run-button:hover:not(:disabled) {
+  background: #69d2f0;
+}
+
+.analysis-panel .run-button:disabled {
+  border-color: rgba(68, 112, 136, 0.3);
+  color: #7896a7;
+  background: rgba(25, 54, 73, 0.9);
+}
+
+.analysis-panel .panel-note {
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.analysis-panel-export {
+  border-color: rgba(92, 211, 210, 0.78);
+  color: #e4ffff;
+  background: rgba(3, 24, 38, 0.96);
+}
+
+.analysis-panel-export .panel-title {
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 </style>

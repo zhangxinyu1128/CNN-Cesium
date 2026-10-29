@@ -301,7 +301,19 @@ class AssistantFeatureService:
                             "tfbh": str(item.get("tfbh") or ""),
                             "name": item.get("name") or item.get("ename") or str(item.get("tfbh") or ""),
                             "points": points,
+                            "valid_indexes": [],
+                            "times": [],
+                            "month_positions": {month: [] for month in range(1, 13)},
                         })
+                        track = tracks[-1]
+                        for point_index, point in enumerate(points):
+                            stamp = _parse_time(point.get("time"))
+                            if stamp is None:
+                                continue
+                            position = len(track["times"])
+                            track["valid_indexes"].append(point_index)
+                            track["times"].append(stamp)
+                            track["month_positions"][stamp.month].append(position)
             self._track_cache = tracks
         return self._track_cache
 
@@ -341,17 +353,20 @@ class AssistantFeatureService:
             if track["tfbh"] == selected_id:
                 continue
             points = track["points"]
-            parsed = [(index, _parse_time(item.get("time"))) for index, item in enumerate(points)]
-            parsed = [(index, stamp) for index, stamp in parsed if stamp is not None]
-            if len(parsed) < len(observed):
+            indexes = track["valid_indexes"]
+            times = track["times"]
+            if len(times) < len(observed):
                 continue
-            indexes = [item[0] for item in parsed]
-            times = [item[1] for item in parsed]
             best = None
-            for end_position, end_time in enumerate(times):
+            candidate_positions = (
+                position
+                for month in range(1, 13)
+                if self._month_distance(anchor_time.month, month) <= 2
+                for position in track["month_positions"][month]
+            )
+            for end_position in candidate_positions:
+                end_time = times[end_position]
                 month_delta = self._month_distance(anchor_time.month, end_time.month)
-                if month_delta > 2:
-                    continue
                 matched_points = []
                 matched_indexes = []
                 for offset in offsets:
@@ -445,7 +460,10 @@ class AssistantFeatureService:
         city = self._city_in_question(question)
         if city and any(term in compact for term in CITY_TERMS + DEFENSE_TERMS):
             return self._city_answer(question, context, city[0], city[1])
-        if any(term in compact for term in SIMILARITY_TERMS):
+        similarity_intent = any(term in compact for term in SIMILARITY_TERMS) or (
+            "相似" in compact and any(term in compact for term in ("历史", "台风", "路径", "案例"))
+        )
+        if similarity_intent:
             return self._similar_answer(context)
         if any(term in compact for term in TIMELINE_TERMS):
             return self._timeline_answer(context)

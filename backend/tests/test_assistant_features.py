@@ -58,6 +58,13 @@ class AssistantFeatureTests(unittest.TestCase):
         self.assertGreater(len(result["historical_cases"][0]["points"]), 5)
         self.assertIn("不是当前台风预测", result["answer"])
 
+    def test_natural_similarity_question_routes_to_historical_case_search(self):
+        service = AssistantFeatureService(FakeRepository([]))
+        result = service.answer("找几个和当前台风路径相似的历史台风", {
+            "observed_points": [{"time": (datetime(2025, 7, 1) + timedelta(hours=6 * index)).isoformat(), "lng": 120 + index, "lat": 15} for index in range(4)]
+        })
+        self.assertEqual(result["feature_card_id"], "similar_typhoons")
+
     def test_similar_case_requires_enough_observations(self):
         service = AssistantFeatureService(FakeRepository([]))
         result = service.answer("匹配历史案例", {"observed_points": [{"lng": 120, "lat": 20}]})

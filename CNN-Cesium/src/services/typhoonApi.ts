@@ -48,7 +48,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 
 export function queryAssistant(query: string, context: AssistantContext) {
   const controller = new AbortController()
-  const timer = window.setTimeout(() => controller.abort(), 15000)
+  const timer = window.setTimeout(() => controller.abort(), 60000)
   return request<AssistantAnswer>('/api/assistant/query', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

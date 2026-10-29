@@ -53,6 +53,7 @@ const QUICK_QUESTIONS = [
 const messages = ref<ChatMessage[]>([])
 const input = ref('')
 const loading = ref(false)
+const loadingQuery = ref('')
 const isTyping = ref(false)
 const messageList = ref<HTMLDivElement | null>(null)
 const panelElement = ref<HTMLElement | null>(null)
@@ -225,6 +226,7 @@ async function send(text?: string) {
   messages.value.push({ role: 'user', content })
   input.value = ''
   loading.value = true
+  loadingQuery.value = content
   isTyping.value = true
   try {
     const answer = await queryAssistant(content, props.context)
@@ -244,6 +246,7 @@ async function send(text?: string) {
     })
   } finally {
     loading.value = false
+    loadingQuery.value = ''
     isTyping.value = false
     await nextTick()
     if (messageList.value) {
@@ -311,6 +314,9 @@ function onEnter(event: KeyboardEvent) {
     </div>
 
     <div ref="messageList" class="assistant-messages">
+      <div v-if="loading" class="assistant-loading" role="status" aria-live="polite">
+        {{ loadingQuery.includes('台风') && loadingQuery.includes('相似') ? '正在检索历史台风案例…' : '正在分析…' }}
+      </div>
       <div v-for="(msg, index) in messages" :key="index" class="assistant-message" :class="[msg.role, { error: msg.error }]">
         <div class="assistant-bubble">{{ msg.content }}</div>
         <ul v-if="msg.sources?.length" class="assistant-sources">
@@ -451,7 +457,7 @@ function onEnter(event: KeyboardEvent) {
 }
 
 .assistant-context-row span {
-  color: #7fc3de;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
@@ -492,6 +498,13 @@ function onEnter(event: KeyboardEvent) {
   flex-direction: column;
   gap: 10px;
   padding: 4px 2px;
+}
+
+.assistant-loading {
+  align-self: flex-start;
+  padding: 8px 11px;
+  color: #94c9df;
+  font-size: 12px;
 }
 
 .assistant-message {

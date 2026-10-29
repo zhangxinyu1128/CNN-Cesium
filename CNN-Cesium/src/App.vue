@@ -3997,35 +3997,38 @@ onMounted(async () => {
 }
 
 .analysis-panel .prediction-readout {
-  border-left-color: #2bb9e0;
+  border-left-color: #f7c873;
   background: rgba(13, 53, 82, 0.72);
 }
 
-.analysis-panel .environment-grid strong,
+.analysis-panel .environment-grid strong {
+  color: #f7c873;
+}
+
 .analysis-panel .risk-radius strong {
-  color: #69d2f0;
+  color: #f7c873;
 }
 
 .analysis-panel .coverage-bar span {
-  background-color: #2bb9e0;
+  background-color: #f7c873;
 }
 
 .analysis-panel .wind-vector-readout {
-  border-left-color: #2bb9e0;
+  border-left-color: #f7c873;
   background: rgba(13, 53, 82, 0.72);
 }
 
 .analysis-panel .wind-arrow {
-  color: #69d2f0;
+  color: #f7c873;
 }
 
 .analysis-panel .risk-radius {
-  border-left-color: #2bb9e0;
-  background: rgba(13, 53, 82, 0.72);
+  border-left-color: #f7c873;
+  background: rgba(60, 48, 27, 0.55);
 }
 
 .analysis-panel .risk-radius span {
-  color: #82abc2;
+  color: #c7b081;
 }
 
 .analysis-panel .analysis-headline {
@@ -4040,7 +4043,7 @@ onMounted(async () => {
 
 .analysis-panel .comparison-snapshot strong,
 .analysis-panel .analysis-metric-list strong {
-  color: #9fe8ff;
+  color: #f7c873;
 }
 
 .analysis-panel .coverage-bar {
@@ -4055,7 +4058,7 @@ onMounted(async () => {
 }
 
 .analysis-panel .risk-boundary strong {
-  color: #9fe8ff;
+  color: #f7c873;
 }
 
 .analysis-panel .audit-status small,
